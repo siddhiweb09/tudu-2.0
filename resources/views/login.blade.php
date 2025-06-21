@@ -1,3 +1,5 @@
+@section('authenticator-main')
+
 <div class="container-scroller">
     <div class="container-fluid page-body-wrapper full-page-wrapper p-0">
       <div class="content-wrapper d-flex align-items-center auth p-0">
@@ -17,30 +19,14 @@
                 <!-- Username Field -->
                 <div class="form-group">
                   <input type="text" class="form-control form-control-lg" name="username" id="employee_code"
-                    placeholder="Username" value="<?php echo htmlspecialchars($employee_code); ?>"
-                    <?php echo $showChatId ? 'readonly' : ''; ?> required>
+                    placeholder="Username" >
                 </div>
 
                 <!-- Password Field -->
                 <div class="form-group position-relative">
                   <input type="password" class="form-control form-control-lg" name="password" id="password"
-                    placeholder="Password" value="<?php echo htmlspecialchars($password); ?>"
-                    <?php echo $showChatId ? 'readonly' : ''; ?> required>
-                </div>
-
-                <!-- Chat ID Field (Only Visible When Needed) -->
-                <div class="mb-3 position-relative" id="chat_id_field" style="display: <?php echo $showChatId ? 'block' : 'none'; ?>;">
-                  <label for="chat_id" class="form-label">
-                    Scan the QR code and send a message to the bot. You will receive a Chat ID—enter it below.
-                  </label>
-                  <div class="d-flex align-items-center">
-                    <input type="text" id="chat_id" name="chat_id" class="form-control" placeholder="Enter your Chat ID"
-                      <?php echo $showChatId ? 'required' : 'disabled'; ?>>
-                    <a href="https://t.me/UnicoreErp_bot" target="_blank" class="ms-2">
-                      <img id="telegram-qr" src="" alt="Scan QR" width="50" height="50"
-                        class="rounded border border-primary p-1">
-                    </a>
-                  </div>
+                    placeholder="Password">
+                    
                 </div>
 
                 <!-- Sign-in Button -->
@@ -60,3 +46,8 @@
       </div>
     </div>
   </div>
+<!-- JavaScript to Show Chat ID Input When Needed -->
+<script>
+
+</script>
+@endsection
