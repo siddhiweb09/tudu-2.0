@@ -5,7 +5,7 @@
   <div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
     <div class="row w-100 h-100">
     <!-- Left Side - Login Form -->
-    <div class="col-lg-6 d-flex align-items-center justify-content-center bg-white">
+    <div class="col-lg-6 d-flex align-items-center justify-content-center bg-blue">
       <div class="w-100 p-4 p-md-5" style="max-width: 400px;">
       <div class="text-center mb-4">
         <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 60px;">
