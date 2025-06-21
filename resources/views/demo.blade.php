@@ -16,7 +16,7 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css" />
-   
+
 </head>
 
 <body>
@@ -318,6 +318,158 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include these modals once at the bottom of your page -->
+    <!-- Recording Modal -->
+    <div class="modal fade" id="recordingVoiceModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Record Voice Note</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="recordedNotesList" class="mb-3"></div>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary mr-2" id="startButton">
+                            <i class="fas fa-microphone-alt mr-2"></i> Start
+                        </button>
+                        <button type="button" class="btn btn-secondary mr-2" id="stopButton" disabled>
+                            <i class="fas fa-stop mr-2"></i> Stop
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger mr-2" id="cancelButton" disabled>
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-success" id="saveRecording" disabled>
+                        <i class="fas fa-save mr-2"></i> Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div class="modal fade" id="uploadDocumentModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Documents</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="documentsContainer">
+                        <div class="form-group document">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <label><i class="fas fa-file-upload mr-2"></i> Document File</label>
+                                    <input type="file" class="form-control-file document_file" required>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label><i class="fas fa-info-circle mr-2"></i> Description</label>
+                                    <input type="text" class="form-control document_description" placeholder="Description">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="addDocument">
+                        <i class="fas fa-plus mr-2"></i> Add Document
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="saveDocuments">
+                        <i class="fas fa-check mr-2"></i> Save Documents
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-2"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Link Modal -->
+    <div class="modal fade" id="addLinkModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Links</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="linksContainer">
+                        <div class="form-group">
+                            <input type="url" class="form-control link-input" placeholder="https://example.com">
+                        </div>
+                    </div>
+                    <button type="button" id="addMoreLinks" class="btn btn-outline-primary">
+                        <i class="fas fa-plus mr-2"></i> Add Link
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="saveLinks">
+                        <i class="fas fa-check mr-2"></i> Save Links
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-2"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reminder Modal -->
+    <div class="modal fade" id="reminderModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Set Reminders</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="remindersContainer">
+                        <div class="form-group reminder">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label><i class="fas fa-clock mr-2"></i> Reminder Time</label>
+                                    <input type="time" class="form-control reminder_time">
+                                </div>
+                                <div class="col-lg-6">
+                                    <label><i class="fas fa-paper-plane mr-2"></i> Method</label>
+                                    <select class="form-control reminder_method">
+                                        <option value="">Select Method</option>
+                                        <option value="email">Email</option>
+                                        <option value="whatsapp">WhatsApp</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="addReminder">
+                        <i class="fas fa-plus mr-2"></i> Add Reminder
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="saveReminders">
+                        <i class="fas fa-check mr-2"></i> Save Reminders
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-2"></i> Cancel
+                    </button>
+                </div>
             </div>
         </div>
     </div>
