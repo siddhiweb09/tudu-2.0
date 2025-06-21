@@ -70,28 +70,52 @@
                         <ul class="navbar-nav mb-2 mb-lg-0 d-flex justify-content-between w-100">
                             <li class="nav-item">
                                 <a class="nav-link" href="../../index.html">
-                                    <i class="ti ti-a-b-off menu-icon"></i>
+                                    <i class="ti ti-home-2 menu-icon"></i>
                                     <span class="menu-title">Dashboard</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Link</a>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="ti ti-a-b-off menu-icon"></i>
-                                    <span class="menu-title">Task Manager</span>
+                                    <i class="ti ti-list-details menu-icon"></i>
+                                    <span class="menu-title">My Tasks</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    <li><a class="dropdown-item" href="#">Tasks</a></li>
+                                    <li><a class="dropdown-item" href="#">Pending Tasks</a></li>
+                                    <li><a class="dropdown-item" href="#">Delayed Tasks</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
                                 </ul>
                             </li>
-
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../index.html">
+                                    <i class="ti ti-presentation-analytics menu-icon"></i>
+                                    <span class="menu-title">Projects</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../index.html">
+                                    <i class="ti ti-table-plus menu-icon"></i>
+                                    <span class="menu-title">Quick Add Task </span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../index.html">
+                                    <i class="ti ti-calendar-week menu-icon"></i>
+                                    <span class="menu-title">Calendar View</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../index.html">
+                                    <i class="ti ti-tags menu-icon"></i>
+                                    <span class="menu-title">Tags / Labels</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../index.html">
+                                    <i class="ti ti-info-square-roundedx` menu-icon"></i>
+                                    <span class="menu-title">Support</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
