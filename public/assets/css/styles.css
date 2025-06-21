@@ -663,4 +663,8 @@ img.logo {
     height: 100% !important;
 }
 
+.btn-white {
+    background-color: #FFF !important;
+}
+
 /* login end */
