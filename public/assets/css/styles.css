@@ -6,6 +6,16 @@
 }
 
 :root {
+    --secondary-color: #4361ee;
+    --primary-color: #3f37c9;
+    --success-color: #4cc9f0;
+    --warning-color: #f8961e;
+    --danger-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
     --size: 120;
     --coefficient: 1px;
     --timeline: 2.6s;
@@ -17,13 +27,6 @@
     --color-three: #4cc9f0;
 }
 
-:root {
-    --primary-color: #4361ee;
-    --primary-light: #ebf0ff;
-    --warning-color: #ff9f1c;
-    --success-color: #2ec4b6;
-}
-
 /* Animated Gradient Header */
 .bg-animated-gradient {
     background: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
@@ -31,14 +34,7 @@
     animation: gradientBG 15s ease infinite;
 }
 
-
-body {
-    background-color: #fdfdfc;
-    color: #1b1b18;
-    min-height: 100vh;
-    padding: 2rem;
-}
-
+/* preloader start */
 .preloader {
     position: fixed;
     z-index: 9999;
@@ -56,9 +52,7 @@ body {
 
 .scene {
     position: relative;
-    transform: translate3d(0, 0, 100vmin)
-        rotateX(calc(var(--rotation-y, 0) * 1deg))
-        rotateY(calc(var(--rotation-x, 0) * 1deg)) rotateX(0deg);
+    transform: translate3d(0, 0, 100vmin) rotateX(calc(var(--rotation-y, 0) * 1deg)) rotateY(calc(var(--rotation-x, 0) * 1deg)) rotateX(0deg);
 }
 
 .shadow {
@@ -68,13 +62,9 @@ body {
     aspect-ratio: 1;
     transform-origin: 50% 50%;
     background: black;
-    transform: rotateX(90deg)
-        translate3d(
+    transform: rotateX(90deg) translate3d(0,
             0,
-            0,
-            calc((var(--size) * (var(--coefficient) * -0.5)) - 1px)
-        )
-        scale(0.96);
+            calc((var(--size) * (var(--coefficient) * -0.5)) - 1px)) scale(0.96);
     animation: squish-squosh var(--timeline) var(--delay) infinite,
         fade var(--timeline) var(--delay) infinite;
 }
@@ -97,6 +87,7 @@ body {
 }
 
 @keyframes squish-squosh {
+
     0%,
     50%,
     60% {
@@ -127,6 +118,7 @@ body {
 }
 
 @keyframes fade {
+
     0%,
     10%,
     40%,
@@ -142,6 +134,7 @@ body {
 }
 
 @keyframes spin {
+
     0%,
     10% {
         rotate: 0deg;
@@ -154,6 +147,7 @@ body {
 }
 
 @keyframes jump {
+
     0%,
     10%,
     35%,
@@ -213,11 +207,9 @@ body {
     --color: var(--color-two);
     height: 100%;
     width: 100%;
-    transform: translate3d(
-        0,
-        0,
-        calc(var(--depth, 20) * (var(--coefficient) * 0.5))
-    );
+    transform: translate3d(0,
+            0,
+            calc(var(--depth, 20) * (var(--coefficient) * 0.5)));
     top: 0;
     left: 0;
 }
@@ -225,12 +217,9 @@ body {
 .cuboid__side:nth-of-type(6) {
     height: 100%;
     width: 100%;
-    transform: translate3d(
+    transform: translate3d(0,
             0,
-            0,
-            calc(var(--depth, 20) * (var(--coefficient) * -0.5))
-        )
-        rotateY(180deg);
+            calc(var(--depth, 20) * (var(--coefficient) * -0.5))) rotateY(180deg);
     top: 0;
     left: 0;
 }
@@ -239,6 +228,9 @@ body.loading {
     overflow: hidden;
 }
 
+/* preloader end */
+
+/* Header start */
 img.logo {
     height: 40px;
 }
@@ -249,7 +241,7 @@ img.logo {
 }
 
 .bg-blue {
-    background: linear-gradient(316deg, var(--primary-color), var(--secondary-color));
+    background: #1520A6;
 }
 
 .menu-icon {
@@ -265,6 +257,20 @@ img.logo {
     color: #FFF;
 }
 
+.dropdown-menu[data-bs-popper] {
+    right: 0 !important;
+    left: unset !important;
+}
+
+.profile-menu {
+    z-index: 10002 !important;
+}
+
+.dropdown-toggle::after {
+    color: #FFF !important;
+}
+
+/* Header end */
 @keyframes gradientBG {
     0% {
         background-position: 0% 50%;
@@ -308,7 +314,7 @@ img.logo {
     border-color: var(--primary-color);
 }
 
-.floating-input:focus ~ .focus-line {
+.floating-input:focus~.focus-line {
     transform: scaleX(1);
 }
 
@@ -325,8 +331,8 @@ img.logo {
     color: #6c757d;
 }
 
-.floating-input:focus ~ .floating-label,
-.floating-input:not(:placeholder-shown) ~ .floating-label {
+.floating-input:focus~.floating-label,
+.floating-input:not(:placeholder-shown)~.floating-label {
     transform: scale(0.85) translateY(-0.9rem) translateX(0.15rem);
     color: var(--primary-color);
 }
@@ -408,35 +414,35 @@ img.logo {
 }
 
 .priority-high:hover,
-.priority-input:checked ~ .priority-high {
+.priority-input:checked~.priority-high {
     color: white;
     border-color: var(--danger-color);
 }
 
 .priority-high:hover .priority-pill-bg,
-.priority-input:checked ~ .priority-high .priority-pill-bg {
+.priority-input:checked~.priority-high .priority-pill-bg {
     background: var(--danger-color);
 }
 
 .priority-medium:hover,
-.priority-input:checked ~ .priority-medium {
+.priority-input:checked~.priority-medium {
     color: white;
     border-color: var(--warning-color);
 }
 
 .priority-medium:hover .priority-pill-bg,
-.priority-input:checked ~ .priority-medium .priority-pill-bg {
+.priority-input:checked~.priority-medium .priority-pill-bg {
     background: var(--warning-color);
 }
 
 .priority-low:hover,
-.priority-input:checked ~ .priority-low {
+.priority-input:checked~.priority-low {
     color: white;
     border-color: var(--success-color);
 }
 
 .priority-low:hover .priority-pill-bg,
-.priority-input:checked ~ .priority-low .priority-pill-bg {
+.priority-input:checked~.priority-low .priority-pill-bg {
     background: var(--success-color);
 }
 
@@ -533,11 +539,11 @@ img.logo {
     background: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
 }
 
-.custom-switch-input:checked + .custom-switch-label {
+.custom-switch-input:checked+.custom-switch-label {
     background-color: rgb(153, 152, 221);
 }
 
-.custom-switch-input:checked + .custom-switch-label:before {
+.custom-switch-input:checked+.custom-switch-label:before {
     transform: translateX(30px);
 }
 
@@ -563,7 +569,7 @@ img.logo {
     transition: all 0.3s;
 }
 
-.day-checkbox:checked + .day-label {
+.day-checkbox:checked+.day-label {
     background: var(--primary-color);
     color: white;
 }
@@ -643,3 +649,5 @@ img.logo {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
 }
+
+/* end model code */
