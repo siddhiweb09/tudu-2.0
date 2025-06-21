@@ -6,6 +6,6 @@ class DemoController extends Controller
 {
     public function demoIndex()
     {
-        return view('master.list', compact('masters'));
+        return view('demo');
     }
 }
