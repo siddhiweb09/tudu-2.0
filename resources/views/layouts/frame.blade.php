@@ -122,12 +122,16 @@
             </div>
         </nav>
         <!--  Navbar End -->
-        <div class="page-wrapper">
+        <div class="page-wrapper" style="height: 80vh;">
             @yield('main')
         </div>
     </div>
 
-    
+    <div id="addtask-trigger">
+        <button class="btn" type="button" class="open-modal-btn" data-bs-toggle="modal" data-bs-target="#assign_task">
+            <i class="ti ti-plus"></i>
+        </button>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
         window.addEventListener('load', function() {
@@ -139,7 +143,7 @@
             }
         });
     </script>
-
+    @extends('modalCreateTask')
     @yield('customJs')
 </body>
 
