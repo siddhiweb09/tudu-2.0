@@ -681,6 +681,10 @@ ul.dropdown-menu li:last-child {
 
 .carousel-item {
     height: 100% !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
 .btn-white {
@@ -689,6 +693,10 @@ ul.dropdown-menu li:last-child {
 
 .spacing-margin {
     margin-top: 4.5rem;
+}
+
+.title-color {
+    color: #f5385a;
 }
 
 /* login end */
