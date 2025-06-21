@@ -17,6 +17,28 @@
     --color-three: #4cc9f0;
 }
 
+:root {
+    --primary-color: #4361ee;
+    --primary-light: #ebf0ff;
+    --warning-color: #ff9f1c;
+    --success-color: #2ec4b6;
+}
+
+/* Animated Gradient Header */
+.bg-animated-gradient {
+    background: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+
+body {
+    background-color: #fdfdfc;
+    color: #1b1b18;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
 .preloader {
     position: fixed;
     z-index: 9999;
@@ -221,19 +243,8 @@ img.logo {
     height: 60px;
 }
 
-:root {
-    --primary-color: #4361ee;
-    --primary-light: #ebf0ff;
-    --warning-color: #ff9f1c;
-    --success-color: #2ec4b6;
-}
 
-/* Animated Gradient Header */
-.bg-animated-gradient {
-    background: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-}
+
 
 @keyframes gradientBG {
     0% {
@@ -591,8 +602,6 @@ img.logo {
         flex-wrap: wrap;
     }
 }
-
-
 
 .demo-container {
     max-width: 800px;
