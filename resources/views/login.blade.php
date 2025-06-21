@@ -10,7 +10,7 @@
         <div class="text-center mb-4">
         <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 60px;">
         </div>
-        <h4 class="mb-1 text-center text-white">Welcome Back!</h4>
+        <h4 class="mb-1 text-center title-color">Welcome Back!</h4>
         <p class="text-center mb-4 text-white">Sign in to continue</p>
         <form id="loginForm" method="POST">
         @csrf
