@@ -10,6 +10,7 @@
     <!-- Core Css -->
     <link rel="stylesheet" href="assets/css/styles.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 
     <title>Make Your Tasks Easy</title>
 </head>
@@ -46,9 +47,7 @@
                 <div class="container">
                     <div class="d-flex justify-content-between">
                         <a class="navbar-brand" href="#"><img src="assets/images/logo.png" class="logo" /></a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
+
                         <!-- Example single danger button -->
                         <div class="dropdown-center">
                             <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -60,15 +59,21 @@
                                 <li><a class="dropdown-item" href="#">Action three</a></li>
                             </ul>
                         </div>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 py-3">
+            <div class="col-12 py-2">
                 <div class="container">
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <ul class="navbar-nav mb-2 mb-lg-0 d-flex justify-content-between w-100">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                <a class="nav-link" href="../../index.html">
+                                    <i class="ti ti-a-b-off menu-icon"></i>
+                                    <span class="menu-title">Dashboard</span>
+                                </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Link</a>
@@ -90,10 +95,6 @@
                                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                             </li>
                         </ul>
-                        <form class="d-flex">
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Search</button>
-                        </form>
                     </div>
                 </div>
             </div>
