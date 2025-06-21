@@ -683,4 +683,8 @@ ul.dropdown-menu li:last-child {
     height: 100% !important;
 }
 
+.btn-white {
+    background-color: #FFF !important;
+}
+
 /* login end */
