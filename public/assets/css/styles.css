@@ -52,7 +52,9 @@
 
 .scene {
     position: relative;
-    transform: translate3d(0, 0, 100vmin) rotateX(calc(var(--rotation-y, 0) * 1deg)) rotateY(calc(var(--rotation-x, 0) * 1deg)) rotateX(0deg);
+    transform: translate3d(0, 0, 100vmin)
+        rotateX(calc(var(--rotation-y, 0) * 1deg))
+        rotateY(calc(var(--rotation-x, 0) * 1deg)) rotateX(0deg);
 }
 
 .shadow {
@@ -62,9 +64,13 @@
     aspect-ratio: 1;
     transform-origin: 50% 50%;
     background: black;
-    transform: rotateX(90deg) translate3d(0,
+    transform: rotateX(90deg)
+        translate3d(
             0,
-            calc((var(--size) * (var(--coefficient) * -0.5)) - 1px)) scale(0.96);
+            0,
+            calc((var(--size) * (var(--coefficient) * -0.5)) - 1px)
+        )
+        scale(0.96);
     animation: squish-squosh var(--timeline) var(--delay) infinite,
         fade var(--timeline) var(--delay) infinite;
 }
@@ -87,7 +93,6 @@
 }
 
 @keyframes squish-squosh {
-
     0%,
     50%,
     60% {
@@ -118,7 +123,6 @@
 }
 
 @keyframes fade {
-
     0%,
     10%,
     40%,
@@ -134,7 +138,6 @@
 }
 
 @keyframes spin {
-
     0%,
     10% {
         rotate: 0deg;
@@ -147,7 +150,6 @@
 }
 
 @keyframes jump {
-
     0%,
     10%,
     35%,
@@ -207,9 +209,11 @@
     --color: var(--color-two);
     height: 100%;
     width: 100%;
-    transform: translate3d(0,
-            0,
-            calc(var(--depth, 20) * (var(--coefficient) * 0.5)));
+    transform: translate3d(
+        0,
+        0,
+        calc(var(--depth, 20) * (var(--coefficient) * 0.5))
+    );
     top: 0;
     left: 0;
 }
@@ -217,9 +221,12 @@
 .cuboid__side:nth-of-type(6) {
     height: 100%;
     width: 100%;
-    transform: translate3d(0,
+    transform: translate3d(
             0,
-            calc(var(--depth, 20) * (var(--coefficient) * -0.5))) rotateY(180deg);
+            0,
+            calc(var(--depth, 20) * (var(--coefficient) * -0.5))
+        )
+        rotateY(180deg);
     top: 0;
     left: 0;
 }
@@ -305,7 +312,7 @@ ul.dropdown-menu li:last-child {
 }
 
 #addtask-trigger .ti {
-    color: #FFF;
+    color: #fff;
 }
 
 /* Header end */
@@ -352,7 +359,7 @@ ul.dropdown-menu li:last-child {
     border-color: var(--primary-color);
 }
 
-.floating-input:focus~.focus-line {
+.floating-input:focus ~ .focus-line {
     transform: scaleX(1);
 }
 
@@ -369,8 +376,8 @@ ul.dropdown-menu li:last-child {
     color: #6c757d;
 }
 
-.floating-input:focus~.floating-label,
-.floating-input:not(:placeholder-shown)~.floating-label {
+.floating-input:focus ~ .floating-label,
+.floating-input:not(:placeholder-shown) ~ .floating-label {
     transform: scale(0.85) translateY(-0.9rem) translateX(0.15rem);
     color: var(--primary-color);
 }
@@ -452,35 +459,35 @@ ul.dropdown-menu li:last-child {
 }
 
 .priority-high:hover,
-.priority-input:checked~.priority-high {
+.priority-input:checked ~ .priority-high {
     color: white;
     border-color: var(--danger-color);
 }
 
 .priority-high:hover .priority-pill-bg,
-.priority-input:checked~.priority-high .priority-pill-bg {
+.priority-input:checked ~ .priority-high .priority-pill-bg {
     background: var(--danger-color);
 }
 
 .priority-medium:hover,
-.priority-input:checked~.priority-medium {
+.priority-input:checked ~ .priority-medium {
     color: white;
     border-color: var(--warning-color);
 }
 
 .priority-medium:hover .priority-pill-bg,
-.priority-input:checked~.priority-medium .priority-pill-bg {
+.priority-input:checked ~ .priority-medium .priority-pill-bg {
     background: var(--warning-color);
 }
 
 .priority-low:hover,
-.priority-input:checked~.priority-low {
+.priority-input:checked ~ .priority-low {
     color: white;
     border-color: var(--success-color);
 }
 
 .priority-low:hover .priority-pill-bg,
-.priority-input:checked~.priority-low .priority-pill-bg {
+.priority-input:checked ~ .priority-low .priority-pill-bg {
     background: var(--success-color);
 }
 
@@ -577,11 +584,11 @@ ul.dropdown-menu li:last-child {
     background: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
 }
 
-.custom-switch-input:checked+.custom-switch-label {
+.custom-switch-input:checked + .custom-switch-label {
     background-color: rgb(153, 152, 221);
 }
 
-.custom-switch-input:checked+.custom-switch-label:before {
+.custom-switch-input:checked + .custom-switch-label:before {
     transform: translateX(30px);
 }
 
@@ -607,7 +614,7 @@ ul.dropdown-menu li:last-child {
     transition: all 0.3s;
 }
 
-.day-checkbox:checked+.day-label {
+.day-checkbox:checked + .day-label {
     background: var(--primary-color);
     color: white;
 }
@@ -706,7 +713,7 @@ ul.dropdown-menu li:last-child {
 }
 
 .btn-white {
-    background-color: #FFF !important;
+    background-color: #fff !important;
 }
 
 .spacing-margin {
@@ -719,3 +726,313 @@ ul.dropdown-menu li:last-child {
 
 /* login end */
 
+.circle {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 50%;
+    margin: 0 auto 5px;
+}
+.step::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    right: -50%;
+    height: 2px;
+    background-color: #e5e7eb;
+    z-index: -1;
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step.active::after,
+.step.completed::after {
+    background-color: #3b82f6;
+}
+
+.form-step {
+    transition: opacity 0.3s ease;
+}
+
+.form-step.hidden {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+/* Core Attractive Styles for the Task Form */
+:root {
+    --primary-color: #4361ee;
+    --primary-hover: #3a56d4;
+    --secondary-color: #3f37c9;
+    --success-color: #4cc9f0;
+    --danger-color: #f72585;
+    --warning-color: #f8961e;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --gray-color: #6c757d;
+    --border-radius: 0.5rem;
+    --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s ease;
+}
+
+/* Form Container */
+.form-container {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.form-container:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Progress Bar */
+.progress-steps {
+    position: relative;
+    z-index: 1;
+}
+
+.progress-steps::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #e9ecef;
+    z-index: -1;
+}
+
+.step {
+    transition: var(--transition);
+}
+
+.step-number {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 600;
+    background-color: #e9ecef;
+    color: var(--gray-color);
+    margin: 0 auto;
+    position: relative;
+    transition: var(--transition);
+}
+
+.step.active .step-number {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.step.completed .step-number {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.step-title {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray-color);
+    transition: var(--transition);
+}
+
+.step.active .step-title,
+.step.completed .step-title {
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+/* Form Elements */
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--dark-color);
+    background-color: white;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #3730a3;
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+/* Form Steps Animation */
+.form-step {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* File Upload Styling */
+.file-upload {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.file-upload-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px dashed #dee2e6;
+    border-radius: var(--border-radius);
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.file-upload-label:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+/* Voice Recorder Styles */
+.voice-recorder {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.recording-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--danger-color);
+    font-weight: 500;
+}
+
+.recording-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--danger-color);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.7;
+    }
+    70% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.95);
+        opacity: 0.7;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .progress-steps {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .step {
+        margin-bottom: 1rem;
+    }
+
+    .step::after {
+        display: none;
+    }
+}
