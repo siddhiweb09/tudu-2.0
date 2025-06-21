@@ -1,53 +1,52 @@
+@extends('layouts.authentication')
+
 @section('authenticator-main')
 
-<div class="container-scroller">
-    <div class="container-fluid page-body-wrapper full-page-wrapper p-0">
-      <div class="content-wrapper d-flex align-items-center auth p-0">
-        <div class="row w-100 h-100 mx-0">
-          <div class="col-lg-7 mx-auto p-0">
-            <img src="images/login.jpg" class="login-banner">
-          </div>
-          <div class="col-lg-5 col-md-12 auth-form-light mx-auto p-0">
-            <div class="auth-form text-left py-5 px-4 px-sm-5">
-              <div class="brand-logo">
-                <img src="images/logo.png" alt="logo">
-              </div>
-              <h4>Hello! Let's get started</h4>
-              <h6 class="font-weight-light">Sign in to continue.</h6>
-              <form class="pt-3" action="dbFiles/loginSQL.php" method="POST">
-                
-                <!-- Username Field -->
-                <div class="form-group">
-                  <input type="text" class="form-control form-control-lg" name="username" id="employee_code"
-                    placeholder="Username" >
-                </div>
-
-                <!-- Password Field -->
-                <div class="form-group position-relative">
-                  <input type="password" class="form-control form-control-lg" name="password" id="password"
-                    placeholder="Password">
-                    
-                </div>
-
-                <!-- Sign-in Button -->
-                <div class="mt-3">
-                  <button type="submit" name="submit" id="submit-btn"
-                    class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
-                </div>
-
-                <!-- Forgot Password -->
-                <div class="my-2 d-flex justify-content-between align-items-center">
-                  <a href="#" class="auth-link text-black">Forgot password?</a>
-                </div>
-              </form>
-            </div>
-          </div>
+  <div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div class="row w-100 h-100">
+    <!-- Left Side - Login Form -->
+    <div class="col-lg-6 d-flex align-items-center justify-content-center bg-blue">
+      <div class="w-100 p-4 p-md-5" style="max-width: 400px;">
+      <div class="text-center mb-4">
+        <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 60px;">
+      </div>
+      <h4 class="mb-1 text-center">Welcome Back!</h4>
+      <p class="text-muted text-center mb-4">Sign in to continue</p>
+      <form id="loginForm" method="POST">
+        @csrf
+        <!-- Username Field -->
+        <div class="form-group mb-3">
+        <label for="employee_code" class="form-label">Username</label>
+        <input type="text" class="form-control form-control-lg" name="username" id="employee_code"
+          placeholder="Enter your username">
         </div>
+
+        <!-- Password Field -->
+        <div class="form-group mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control form-control-lg" name="password" id="password" placeholder="Enter your password">
+        </div>
+
+        <!-- Sign-in Button -->
+        <div class="d-grid mb-3">
+        <button type="submit" name="submit" class="btn btn-primary">Sign In</button>
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="text-end">
+        <a href="#" class="text-decoration-none">Forgot password?</a>
+        </div>
+      </form>
       </div>
     </div>
-  </div>
-<!-- JavaScript to Show Chat ID Input When Needed -->
-<script>
 
-</script>
+    <!-- Right Side - Image Banner -->
+    <div class="col-lg-6 d-none d-lg-block p-0">
+      <div class="h-100 w-100">
+      <img src="{{ asset('assets/images/login.jpg') }}" alt="Login Banner" class="img-fluid h-100 w-100">
+      </div>
+    </div>
+    </div>
+  </div>
+
 @endsection
