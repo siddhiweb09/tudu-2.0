@@ -15,7 +15,7 @@
     <title>Make Your Tasks Easy</title>
 </head>
 
-<body class="loading">
+<body class="p-0 m-0">
 
     <!-- Preloader -->
     <div class="preloader">
@@ -51,6 +51,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         window.addEventListener('load', function () {
             const preloader = document.querySelector('.preloader');
