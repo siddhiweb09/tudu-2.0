@@ -224,7 +224,6 @@ img.logo {
 :root {
     --primary-color: #4361ee;
     --primary-light: #ebf0ff;
-    --danger-color: #f5385a;
     --warning-color: #ff9f1c;
     --success-color: #2ec4b6;
 }
@@ -592,6 +591,8 @@ img.logo {
         flex-wrap: wrap;
     }
 }
+
+
 
 .demo-container {
     max-width: 800px;
