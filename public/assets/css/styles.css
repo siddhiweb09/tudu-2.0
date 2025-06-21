@@ -6,6 +6,16 @@
 }
 
 :root {
+    --secondary-color: #4361ee;
+    --primary-color: #3f37c9;
+    --success-color: #4cc9f0;
+    --warning-color: #f8961e;
+    --danger-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
     --size: 120;
     --coefficient: 1px;
     --timeline: 2.6s;
@@ -612,4 +622,15 @@ img.logo {
 .open-modal-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+}
+    height: 50px;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+}
+
+.bg-blue{
+    background-color: var(--primary-color);
 }
