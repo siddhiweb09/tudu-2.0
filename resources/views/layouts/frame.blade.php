@@ -41,16 +41,29 @@
     </div>
     <div id="main-wrapper">
         <!-- Navbar Start -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-wrap">
-            <div class="col-12">
+        <nav class="navbar navbar-expand-lg navbar-light bg-blue d-flex flex-wrap p-0">
+            <div class="col-12 border-bottom py-2">
                 <div class="container">
-                    <a class="navbar-brand" href="#"><img src="assets/images/logo.png" class="logo"/></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+                    <div class="d-flex justify-content-between">
+                        <a class="navbar-brand" href="#"><img src="assets/images/logo.png" class="logo" /></a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <!-- Example single danger button -->
+                        <div class="dropdown-center">
+                            <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="assets/images/logo.png" class="rounded-circle profile-pic" />
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Action two</a></li>
+                                <li><a class="dropdown-item" href="#">Action three</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-12 py-3">
                 <div class="container">
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
