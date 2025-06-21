@@ -10,33 +10,33 @@
           <div class="text-center mb-4">
             <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 60px;">
           </div>
-          <h4 class="mb-1 text-center">Welcome Back!</h4>
-          <p class="text-muted text-center mb-4">Sign in to continue</p>
+          <h4 class="mb-1 text-center text-white">Welcome Back!</h4>
+          <p class="text-center mb-4 text-white">Sign in to continue</p>
           <form id="loginForm" method="POST">
             @csrf
             <!-- Username Field -->
             <div class="form-group mb-3">
-              <label for="employee_code" class="form-label">Username</label>
-              <input type="text" class="form-control form-control-lg" name="username" id="employee_code"
-                placeholder="Enter your username">
+              <div class="input-group">
+                <span class="input-group-text" id="basic-addon1"> <i class="ti ti-user"></i></span>
+                <input type="text" class="form-control" name="username" id="username"
+                  aria-label="employee_code" aria-describedby="basic-addon1" placeholder="Enter your username">
+              </div>
             </div>
 
             <!-- Password Field -->
             <div class="form-group mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control form-control-lg" name="password" id="password"
-                placeholder="Enter your password">
+              <div class="input-group">
+                <span class="input-group-text" id="basic-addon1"><i class="ti ti-lock"></i></span>
+                <input type="text" class="form-control" name="password" id="password"
+                  aria-label="password" aria-describedby="basic-addon1" placeholder="Enter your password">
+              </div>
             </div>
 
             <!-- Sign-in Button -->
-            <div class="d-grid mb-3">
-              <button type="submit" name="submit" class="btn btn-primary">Sign In</button>
+            <div class="d-grid mb-3 spacing-margin">
+              <button type="submit" name="submit" class="btn btn-warning fw-bold">Sign In</button>
             </div>
 
-            <!-- Forgot Password -->
-            <div class="text-end">
-              <a href="#" class="text-decoration-none">Forgot password?</a>
-            </div>
           </form>
         </div>
       </div>

@@ -277,6 +277,26 @@ img.logo {
     color: #fff !important;
 }
 
+ul.dropdown-menu.show {
+    box-shadow: 0px 3px 21px 0px rgba(0, 0, 0, 0.2);
+    border: 0;
+    padding: 1rem;
+}
+
+ul.dropdown-menu li {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.5rem 0;
+}
+
+ul.dropdown-menu li:last-child {
+    border-bottom: 0;
+}
+
+.dropdown-item::before {
+    content: "-";
+    padding-right: 0.5rem;
+}
+
 /* Header end */
 @keyframes gradientBG {
     0% {
@@ -670,5 +690,12 @@ img.logo {
     height: 100% !important;
 }
 
-/* login end */
+.btn-white {
+    background-color: #FFF !important;
+}
 
+.spacing-margin {
+    margin-top: 4.5rem;
+}
+
+/* login end */
