@@ -6,20 +6,6 @@
     <div class="row w-100 h-100">
       <!-- Left Side - Login Form -->
       <div class="col-lg-6 d-flex align-items-center justify-content-center bg-blue">
-      <div class="w-100 p-4 p-md-5" style="max-width: 400px;">
-        <div class="text-center mb-4">
-        <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 60px;">
-        </div>
-        <h4 class="mb-1 text-center title-color">Welcome Back!</h4>
-        <p class="text-center mb-4 text-white">Sign in to continue</p>
-        <form id="loginForm" method="POST">
-        @csrf
-        <!-- Username Field -->
-        <div class="form-group mb-3">
-          <div class="input-group">
-          <span class="input-group-text" id="basic-addon1"><i class="ti ti-user"></i></span>
-          <input type="text" class="form-control form-control-lg" name="username" id="username"
-            aria-label="employee_code" aria-describedby="basic-addon1" placeholder="Enter your username">
         <div class="w-100 p-4 p-md-5" style="max-width: 400px;">
           <div class="text-center mb-4">
             <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 60px;">
