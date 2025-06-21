@@ -214,14 +214,27 @@ body.loading {
 }
 
 img.logo {
-    height: 50px;
+    height: 40px;
 }
 
 .profile-pic {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 }
 
-.bg-blue{
-    background-color: var(--primary-color);
+.bg-blue {
+    background: linear-gradient(316deg, var(--primary-color), var(--secondary-color));
+}
+
+.menu-icon {
+    margin-right: 10px;
+    font-size: 1.25rem;
+    color: #FFF;
+    font-weight: 400;
+}
+
+.menu-title {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: #FFF;
 }
