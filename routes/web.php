@@ -5,7 +5,7 @@ use App\Http\Controllers\DemoController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard');
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');
