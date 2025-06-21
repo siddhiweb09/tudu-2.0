@@ -202,3 +202,7 @@
 body.loading {
     overflow: hidden;
 }
+
+img.logo {
+    height: 60px;
+}
