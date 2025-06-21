@@ -687,4 +687,8 @@ ul.dropdown-menu li:last-child {
     background-color: #FFF !important;
 }
 
+.spacing-margin {
+    margin-top: 4.5rem;
+}
+
 /* login end */

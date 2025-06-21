@@ -33,8 +33,8 @@
             </div>
 
             <!-- Sign-in Button -->
-            <div class="d-grid mb-3 ">
-              <button type="submit" name="submit" class="btn btn-white">Sign In</button>
+            <div class="d-grid mb-3 spacing-margin">
+              <button type="submit" name="submit" class="btn btn-warning fw-bold">Sign In</button>
             </div>
 
           </form>
