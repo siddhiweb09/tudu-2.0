@@ -147,12 +147,89 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="datetime-picker-container" id="due_date_section_form1">
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-transparent border-end-0">
-                                                        <i class="far fa-clock"></i>
-                                                    </span>
-                                                    <input type="datetime-local" class="form-control border-start-0" id="due_date_form1" name="due_date" placeholder="Select Date & Time">
+                                            <div id="frequency_section_form" class="p-3">
+                                                <div class="datetime-picker-container" id="due_date_section_form1">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-transparent border-end-0">
+                                                            <i class="ti ti-calendar-time"></i>
+                                                        </span>
+                                                        <input type="datetime-local" class="form-control border-start-0" id="due_date_form1" name="due_date" placeholder="Select Date & Time">
+                                                    </div>
+                                                </div>
+
+                                                <div id="frequency_section" class="d-none">
+                                                    <select class="form-control border-bottom" id="frequency_form1" name="frequency">
+                                                        <option value="">Select Frequency</option>
+                                                        <option value="Daily">Daily</option>
+                                                        <option value="Weekly">Weekly</option>
+                                                        <option value="Monthly">Monthly</option>
+                                                        <option value="Yearly">Yearly</option>
+                                                        <option value="Periodic">Periodic</option>
+                                                        <option value="Custom">Custom</option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Recurrence Options (Hidden) -->
+                                                <div id="additional_fields_form1" class="p-4 bg-light border-top d-none">
+                                                    <div id="weekly_days_form1" class="frequency-option mb-3 d-none">
+                                                        <label class="small text-muted">Weekly on:</label>
+                                                        <div class="day-picker">
+                                                            <input type="checkbox" id="sunday_form1" name="frequency_duration[]" value="Sunday" class="day-checkbox">
+                                                            <label for="sunday_form1" class="day-label">S</label>
+
+                                                            <input type="checkbox" id="monday_form1" name="frequency_duration[]" value="Monday" class="day-checkbox">
+                                                            <label for="monday_form1" class="day-label">M</label>
+
+                                                            <input type="checkbox" id="tuesday_form1" name="frequency_duration[]" value="Tuesday" class="day-checkbox">
+                                                            <label for="tuesday_form1" class="day-label">T</label>
+
+                                                            <input type="checkbox" id="wednesday_form1" name="frequency_duration[]" value="Wednesday" class="day-checkbox">
+                                                            <label for="wednesday_form1" class="day-label">W</label>
+
+                                                            <input type="checkbox" id="thursday_form1" name="frequency_duration[]" value="Thursday" class="day-checkbox">
+                                                            <label for="thursday_form1" class="day-label">T</label>
+
+                                                            <input type="checkbox" id="friday_form1" name="frequency_duration[]" value="Friday" class="day-checkbox">
+                                                            <label for="friday_form1" class="day-label">F</label>
+
+                                                            <input type="checkbox" id="saturday_form1" name="frequency_duration[]" value="Saturday" class="day-checkbox">
+                                                            <label for="saturday_form1" class="day-label">S</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="monthly_date_form1" class="frequency-option d-none">
+                                                        <label for="monthly_day_form1">Enter Day of Month:</label>
+                                                        <input type="number" class="form-control" id="monthly_day_form1" name="frequency_duration[]" min="1" max="31" placeholder="31">
+                                                    </div>
+
+                                                    <div id="yearly_date_form1" class="frequency-option d-none">
+                                                        <label for="yearly_date_input_form1">Select Date:</label>
+                                                        <input type="date" class="form-control" id="yearly_date_input_form1" name="frequency_duration[]" placeholder="Select Date">
+                                                    </div>
+
+                                                    <div id="periodic_frequency_form1" class="frequency-option d-none">
+                                                        <label for="periodic_interval_form1">Interval (in frequency_duration):</label>
+                                                        <input type="number" class="form-control" id="periodic_interval_form1" name="frequency_duration[]" min="1" placeholder="Interval Count of Days">
+                                                    </div>
+
+                                                    <div id="custom_frequency_form1" class="frequency-option d-none">
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label for="custom_frequency_dropdown_form1">Frequency:</label>
+                                                                <select class="form-control" id="custom_frequency_dropdown_form1" name="custom_frequency_dropdown">
+                                                                    <option value="">Select Frequency</option>
+                                                                    <option value="Month">Month</option>
+                                                                    <option value="Week">Week</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label for="occurs_every_dropdown_form1">Occurs Every:</label>
+                                                                <input type="number" class="form-control" id="occurs_every_dropdown_form1" name="frequency_duration[]" min="1" placeholder="Interval Count of Week/Month">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="m-0 small mt-3"><b>Note: </b><span class="note"></span></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -173,29 +250,105 @@
                             <div class="form-step hidden" data-step="3">
                                 <h2 class="h5 fw-semibold mb-4">Attachments & Links</h2>
 
-                                <!-- Action Buttons Floating Panel -->
-                                <div class="action-panel mb-4">
-                                    <div class="action-panel-inner">
-                                        <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#recordingVoiceModal" data-form-id="form1" data-tooltip="Voice Note">
-                                            <i class="ti ti-microphone-alt"></i>
-                                        </button>
-                                        <input type="hidden" class="voice-notes-input" name="voice_notes" data-form-id="form1">
+                                <!-- Voice Recording Section -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="ti ti-microphone-alt"></i>Voice Notes</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="recordedNotesList" class="mb-3"></div>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-sm btn-primary" id="startButton">
+                                                <i class="ti ti-microphone"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-secondary" id="stopButton" disabled>
+                                                <i class="ti ti-player-stop"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" id="cancelButton" disabled>
+                                                <i class="ti ti-cancel"></i>
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="voice_notes" id="voiceNotesInput">
+                                    </div>
+                                </div>
 
-                                        <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal" data-form-id="form1" data-tooltip="Upload File">
-                                            <i class="ti ti-cloud-upload-alt"></i>
+                                <!-- Document Upload Section -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="ti ti-cloud-upload"></i>Documents</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="documentsContainer">
+                                            <div class="document-item mb-3">
+                                                <div class="input-group">
+                                                    <input type="file" class="form-control document-file" required>
+                                                    <button type="button" class="btn btn-outline-danger remove-link">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-secondary" id="addDocument">
+                                            <i class="ti ti-plus mr-2"></i> Add Document
                                         </button>
-                                        <input type="hidden" class="uploaded-files-input" name="uploaded_files" data-form-id="form1">
+                                    </div>
+                                </div>
 
-                                        <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#addLinkModal" data-form-id="form1" data-tooltip="Add Link">
-                                            <i class="ti ti-link"></i>
+                                <!-- Links Section -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="ti ti-link mr-2"></i>Links</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="linksContainer">
+                                            <div class="link-item mb-2">
+                                                <div class="input-group">
+                                                    <input type="url" class="form-control link-input" placeholder="https://example.com">
+                                                    <button type="button" class="btn btn-outline-danger remove-link">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary mt-2" id="addMoreLinks">
+                                            <i class="ti ti-plus mr-2"></i> Add Link
                                         </button>
-                                        <input type="hidden" class="links-array-input" name="links" data-form-id="form1">
+                                        <input type="hidden" name="links" id="linksInput">
+                                    </div>
+                                </div>
 
-                                        <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#reminderModal" data-form-id="form1" data-tooltip="Set Reminder">
-                                            <i class="ti ti-bell"></i>
+                                <!-- Reminders Section -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="ti ti-bell mr-2"></i>Reminders</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="remindersContainer">
+                                            <div class="reminder-item mb-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="Email" name="reminders[]" id="flexCheckChecked1" checked>
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Email
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="WhatsApp" name="reminders[]" id="flexCheckChecked2" checked>
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        WhatsApp
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="Telegram" name="reminders[]" id="flexCheckChecked3" checked>
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Telegram
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-secondary" id="addReminder">
+                                            <i class="ti ti-plus mr-2"></i> Add Reminder
                                         </button>
-                                        <input type="hidden" class="reminder-times-input" name="reminder_times" data-form-id="form1">
-                                        <input type="hidden" class="reminder-methods-input" name="reminder_methods" data-form-id="form1">
+                                        <input type="hidden" name="reminders" id="remindersInput">
                                     </div>
                                 </div>
 
@@ -203,7 +356,7 @@
                                     <button type="button" class="prev-step btn btn-outline-secondary">
                                         Back
                                     </button>
-                                    <button type="submit" class="btn btn-success">
+                                    <button type="submit" class="btn btn-primary">
                                         Create Task
                                     </button>
                                 </div>
