@@ -9,6 +9,8 @@
     <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
     <!-- Core Css -->
     <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/buttons.css" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
@@ -85,6 +87,7 @@
                                     <li><a class="dropdown-item" href="#">Pending Tasks</a></li>
                                     <li><a class="dropdown-item" href="#">Delayed Tasks</a></li>
                                     <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
+                                    <li><a class="dropdown-item" href="#">To Do List</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
