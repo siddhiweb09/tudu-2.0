@@ -32,7 +32,7 @@ class PersonalTaskController extends Controller
     public function listView()
     {
         $user = Auth::user();
-        $tasks = PersonalTask::where('user_id', $user->id)
+        $tasks = PersonalTask::where('assign_by', $user->id)
             ->orderBy('due_date', 'asc')
             ->get();
             
@@ -42,7 +42,7 @@ class PersonalTaskController extends Controller
     public function kanbanView()
     {
         $user = Auth::user();
-        $tasks = PersonalTask::where('user_id', $user->id)
+        $tasks = PersonalTask::where('assign_by', $user->id)
             ->orderBy('due_date', 'asc')
             ->get();
             
@@ -55,7 +55,7 @@ class PersonalTaskController extends Controller
         $year = $request->query('year', date('Y'));
         
         $user = Auth::user();
-        $tasks = PersonalTask::where('user_id', $user->id)
+        $tasks = PersonalTask::where('assign_by', $user->id)
             ->whereMonth('due_date', $month)
             ->whereYear('due_date', $year)
             ->orderBy('due_date', 'asc')
@@ -71,7 +71,7 @@ class PersonalTaskController extends Controller
     public function matrixView()
     {
         $user = Auth::user();
-        $tasks = PersonalTask::where('user_id', $user->id)
+        $tasks = PersonalTask::where('assign_by', $user->id)
             ->where('status', '!=', 'completed')
             ->orderBy('due_date', 'asc')
             ->get();
@@ -93,7 +93,7 @@ class PersonalTaskController extends Controller
             'okr' => 'nullable|string',
         ]);
         
-        $validated['user_id'] = Auth::id();
+        $validated['assign_by'] = Auth::id();
         
         if ($request->category === '_new_category') {
             $validated['category'] = $request->new_category_name;
@@ -175,7 +175,7 @@ class PersonalTaskController extends Controller
         
     //     // Start new timer
     //     $timeLog = new TaskTimeLog([
-    //         'user_id' => Auth::id(),
+    //         'assign_by' => Auth::id(),
     //         'task_id' => $validated['task_id'],
     //         'start_time' => now(),
     //     ]);
@@ -208,7 +208,7 @@ class PersonalTaskController extends Controller
     
     // private function getActiveTimer($user)
     // {
-    //     return TaskTimeLog::where('user_id', $user->id)
+    //     return TaskTimeLog::where('assign_by', $user->id)
     //         ->whereNull('end_time')
     //         ->first();
     // }
