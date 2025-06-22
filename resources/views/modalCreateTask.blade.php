@@ -18,7 +18,7 @@
                 <div class="container-fluid">
                     <div class="row justify-content-center">
                         <!-- Progress Bar -->
-                        <div class="px-4 py-3 border-bottom">
+                        <div class="pb-3 border-bottom">
                             <div class="d-flex justify-content-between mb-2">
                                 <div class="step flex-grow-1 text-center position-relative" data-step="1">
                                     <div class="step-number mx-auto rounded-circle d-flex align-items-center justify-content-center fw-semibold bg-primary text-white" style="width: 32px; height: 32px;">1</div>
@@ -36,7 +36,7 @@
                         </div>
 
                         <!-- Form Sections -->
-                        <form id="taskForm" action="" method="POST" enctype="multipart/form-data" class="p-4">
+                        <form id="taskForm" action="" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
                             @csrf
 
                             <!-- Step 1: Task Info -->
@@ -52,39 +52,43 @@
                                 </div>
 
                                 <div class="form-floating mb-4">
-                                    <textarea name="task_description" class="form-control floating-input h-100px" id="taskDescInput" placeholder=" " required></textarea>
+                                    <textarea name="task_description" class="form-control floating-input" id="taskDescInput" placeholder=" " style="height: 100px" required></textarea>
                                     <label for="taskDescInput" class="floating-label">
                                         <i class="ti ti-file-description me-2"></i>Task Description
                                     </label>
                                     <div class="focus-line"></div>
                                 </div>
 
-                                <!-- Priority Pills -->
-                                <div class="mb-4">
-                                    <label class="d-block text-uppercase small fw-bold text-muted mb-3">
-                                        <i class="fas fa-bolt me-2"></i>Priority Level
-                                    </label>
-                                    <div class="priority-pills">
-                                        <input type="radio" name="priority" id="priorityHigh" value="High" class="priority-input" required checked>
-                                        <label for="priorityHigh" class="priority-pill priority-high">
-                                            <i class="fas fa-fire me-2"></i>High
-                                            <span class="priority-pill-bg"></span>
-                                        </label>
-
-                                        <input type="radio" name="priority" id="priorityMedium" value="Medium" class="priority-input">
-                                        <label for="priorityMedium" class="priority-pill priority-medium">
-                                            <i class="fas fa-tachometer-alt me-2"></i>Medium
-                                            <span class="priority-pill-bg"></span>
-                                        </label>
-
-                                        <input type="radio" name="priority" id="priorityLow" value="Low" class="priority-input">
-                                        <label for="priorityLow" class="priority-pill priority-low">
-                                            <i class="fas fa-leaf me-2"></i>Low
-                                            <span class="priority-pill-bg"></span>
-                                        </label>
+                                <div class="task-container">
+                                    <!-- Initial Task Field -->
+                                    <div class="task-item mb-3" data-task-id="1">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control task-input me-3" name="tasks[]" placeholder="Enter task" required>
+                                            <button type="button" class="btn btn-inverse-primary rounded-circle add-task-btn">
+                                                <i class="ti ti-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
+                                <!-- Priority Pills -->
+                                <div class="mb-4">
+                                    <label class="d-block text-uppercase small fw-bold text-muted mb-3">
+                                        <i class="ti ti-bolt me-2"></i>Priority Level
+                                    </label>
+                                    <div class="priority-pills">
+                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                                            <label class="btn btn-check-inverse btn-inverse-danger" for="btnradio1"><i class="ti ti-flame me-1"></i>High</label>
+
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                                            <label class="btn btn-check-inverse btn-inverse-warning" for="btnradio2"><i class="ti ti-sun-high me-1"></i>Medium</label>
+
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                                            <label class="btn btn-check-inverse btn-inverse-success" for="btnradio3"><i class="ti ti-leaf me-1"></i>Low</label>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="d-flex justify-content-end mt-4">
                                     <button type="button" class="next-step btn btn-primary">
@@ -101,7 +105,7 @@
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <div class="select-card active-on-hover">
                                             <div class="select-card-header">
-                                                <i class="fas fa-tag me-2"></i>Category
+                                                <i class="ti ti-tag me-2"></i>Category
                                             </div>
                                             <select name="category" class="form-control" required>
                                                 <option value="">Select Category</option>
@@ -116,7 +120,7 @@
                                     <div class="col-md-6">
                                         <div class="select-card active-on-hover">
                                             <div class="select-card-header">
-                                                <i class="fas fa-user-friends me-2"></i>Assign To
+                                                <i class="ti ti-users me-2"></i>Assign To
                                             </div>
                                             <select name="assign_to" class="form-control" required>
                                                 <option value="">Select User</option>
@@ -151,7 +155,7 @@
                                             <div class="col-md-6 p-4">
                                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                                     <label class="d-block text-uppercase small fw-bold text-muted mb-0">
-                                                        <i class="fas fa-redo me-2"></i>Recurrence
+                                                        <i class="ti ti-redo me-2"></i>Recurrence
                                                     </label>
                                                     <div class="custom-switch-advanced">
                                                         <input type="checkbox" class="custom-switch-input" id="repeat_task_form1" name="repeat_task" value="1">
@@ -299,22 +303,22 @@
                                 <div class="action-panel mb-4">
                                     <div class="action-panel-inner">
                                         <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#recordingVoiceModal" data-form-id="form1" data-tooltip="Voice Note">
-                                            <i class="fas fa-microphone-alt"></i>
+                                            <i class="ti ti-microphone-alt"></i>
                                         </button>
                                         <input type="hidden" class="voice-notes-input" name="voice_notes" data-form-id="form1">
 
                                         <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal" data-form-id="form1" data-tooltip="Upload File">
-                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <i class="ti ti-cloud-upload-alt"></i>
                                         </button>
                                         <input type="hidden" class="uploaded-files-input" name="uploaded_files" data-form-id="form1">
 
                                         <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#addLinkModal" data-form-id="form1" data-tooltip="Add Link">
-                                            <i class="fas fa-link"></i>
+                                            <i class="ti ti-link"></i>
                                         </button>
                                         <input type="hidden" class="links-array-input" name="links" data-form-id="form1">
 
                                         <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#reminderModal" data-form-id="form1" data-tooltip="Set Reminder">
-                                            <i class="fas fa-bell"></i>
+                                            <i class="ti ti-bell"></i>
                                         </button>
                                         <input type="hidden" class="reminder-times-input" name="reminder_times" data-form-id="form1">
                                         <input type="hidden" class="reminder-methods-input" name="reminder_methods" data-form-id="form1">
@@ -335,7 +339,7 @@
                 </div>
             </div>
 
-            <div class="modal-footer bg-light border-top-0 pt-3 pb-4 px-5"></div>
+            <div class="modal-footer d-none"></div>
         </div>
     </div>
 </div>
