@@ -10,43 +10,66 @@ use App\Rules\EmployeeCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\error;
 
 
 class LoginController extends Controller
 {
     public function login()
     {
-        return view('authentication.login');
+        return view('login');
     }
 
     public function authenticate(Request $request)
     {
-        // Validate request
         $validator = Validator::make($request->all(), [
             'employee_code' => 'required',
             'password' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('authentication.login')->withInput()->withErrors($validator);
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'messages' => $validator->errors()
+                ], 422);
+            }
+            return redirect()->route('login')->withInput()->withErrors($validator);
         }
 
-        // Try logging in as a User
         $user = User::where('employee_code', $request->employee_code)->first();
         if ($user && $user->pan_card_no === $request->password) {
             Auth::guard('web')->login($user);
 
-            return redirect()->route('pages.dashboard');
+            session([
+                'employee_code' => Auth::user()->employee_code,
+                'employee_name' => Auth::user()->employee_name ?? (Auth::user()->employee->employee_name ?? 'Unknown'),
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Login successful',
+                    'redirect_url' => route('dashboard')
+                ]);
+            }
+
+            return redirect()->route('dashboard');
         }
 
-        return redirect()->route('authentication.login')->with('error', 'Either Employee Code or Password is incorrect.');
-    }
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
 
+        return redirect()->route('login')->with('error', 'Either Employee Code or Password is incorrect.');
+    }
 
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('authentication.login');
+        return redirect()->route('login');
     }
-
 }
