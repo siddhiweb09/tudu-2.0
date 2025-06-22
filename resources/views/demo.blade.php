@@ -28,6 +28,13 @@
         <button type="button" class="open-modal-btn" data-bs-toggle="modal" data-bs-target="#assign_task">
             <i class="fas fa-plus-circle me-2"></i> Create New Task
         </button>
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Launch Modal
+        </button>
+
+        <!-- Modal -->
+        
     </div>
 
     <!-- Task Creation Modal -->
