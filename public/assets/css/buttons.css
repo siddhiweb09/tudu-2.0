@@ -1,0 +1,344 @@
+:root {
+    --secondary-color: #4361ee;
+    --primary-color: #1520a6;
+    --primary-color-two: #3f37c9;
+    --success-color: #4cc9f0;
+    --warning-color: #f8961e;
+    --danger-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+/* Base Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius, 8px);
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition, all 0.3s ease);
+    border: 2px solid transparent;
+    white-space: nowrap;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--box-shadow, 0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+}
+
+/* SOLID BUTTONS */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color-two) !important;
+    border-color: var(--primary-color-two) !important;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-secondary:hover {
+    background-color: #3a56e0 !important;
+    border-color: #3a56e0 !important;
+}
+
+.btn-success {
+    background-color: var(--success-color) !important;
+    border-color: var(--success-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-success:hover {
+    background-color: #3ab0d8 !important;
+    border-color: #3ab0d8 !important;
+}
+
+.btn-warning {
+    background-color: var(--warning-color) !important;
+    border-color: var(--warning-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-warning:hover {
+    background-color: #df8515 !important;
+    border-color: #df8515 !important;
+}
+
+.btn-danger {
+    background-color: var(--danger-color) !important;
+    border-color: var(--danger-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-danger:hover {
+    background-color: #e01a6f !important;
+    border-color: #e01a6f !important;
+}
+
+.btn-light {
+    background-color: var(--light-color) !important;
+    border-color: var(--light-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea !important;
+    border-color: #e2e6ea !important;
+}
+
+.btn-dark {
+    background-color: var(--dark-color) !important;
+    border-color: var(--dark-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-dark:hover {
+    background-color: #343a40 !important;
+    border-color: #343a40 !important;
+}
+
+/* OUTLINE BUTTONS */
+.btn-outline {
+    background-color: transparent !important;
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-outline-secondary {
+    border-color: var(--secondary-color) !important;
+    color: var(--secondary-color) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--secondary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-outline-success {
+    border-color: var(--success-color) !important;
+    color: var(--success-color) !important;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--success-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-outline-warning {
+    border-color: var(--warning-color) !important;
+    color: var(--warning-color) !important;
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--warning-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-outline-danger {
+    border-color: var(--danger-color) !important;
+    color: var(--danger-color) !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-outline-light {
+    border-color: var(--light-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-outline-light:hover {
+    background-color: var(--light-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-outline-dark {
+    border-color: var(--dark-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-outline-dark:hover {
+    background-color: var(--dark-color) !important;
+    color: var(--light-color) !important;
+}
+
+/* INVERSE BUTTONS */
+.btn-inverse {
+    background-color: rgba(248, 249, 250, 0.1) !important;
+    border-color: currentColor !important;
+    box-shadow: none !important;
+}
+
+.btn-inverse-primary {
+    color: var(--primary-color) !important;
+    background-color: rgba(21, 32, 166, 0.1) !important;
+}
+
+.btn-inverse-primary:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-inverse-secondary {
+    color: var(--secondary-color) !important;
+    background-color: rgba(67, 97, 238, 0.1) !important;
+}
+
+.btn-inverse-secondary:hover {
+    background-color: var(--secondary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-inverse-success {
+    color: var(--success-color) !important;
+    background-color: rgba(76, 201, 240, 0.1) !important;
+}
+
+.btn-inverse-success:hover {
+    background-color: var(--success-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-inverse-warning {
+    color: var(--warning-color) !important;
+    background-color: rgba(248, 150, 30, 0.1) !important;
+}
+
+.btn-inverse-warning:hover {
+    background-color: var(--warning-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-inverse-danger {
+    color: var(--danger-color) !important;
+    background-color: rgba(247, 37, 133, 0.1) !important;
+}
+
+.btn-inverse-danger:hover {
+    background-color: var(--danger-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-inverse-light {
+    color: var(--light-color) !important;
+    background-color: rgba(248, 249, 250, 0.1) !important;
+}
+
+.btn-inverse-light:hover {
+    background-color: var(--light-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-inverse-dark {
+    color: var(--dark-color) !important;
+    background-color: rgba(33, 37, 41, 0.1) !important;
+}
+
+.btn-inverse-dark:hover {
+    background-color: var(--dark-color) !important;
+    color: var(--light-color) !important;
+}
+
+/* GHOST BUTTONS */
+.btn-ghost {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.btn-ghost-primary {
+    color: var(--primary-color) !important;
+}
+
+.btn-ghost-primary:hover {
+    background-color: rgba(21, 32, 166, 0.1) !important;
+}
+
+/* Repeat for other ghost buttons following same pattern */
+
+/* RADIO BUTTON STYLES */
+.btn-check:checked + .btn-inverse-primary {
+    background-color: var(--primary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-check:checked + .btn-inverse-secondary {
+    background-color: var(--secondary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-check:checked + .btn-inverse-success {
+    background-color: var(--success-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-check:checked + .btn-inverse-warning {
+    background-color: var(--warning-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-check:checked + .btn-inverse-danger {
+    background-color: var(--danger-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-check:checked + .btn-inverse-light {
+    background-color: var(--light-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.btn-check:checked + .btn-inverse-dark {
+    background-color: var(--dark-color) !important;
+    color: var(--light-color) !important;
+}
+
+/* DISABLED STATE */
+.btn:disabled {
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* BUTTON WITH ICONS */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-icon .icon {
+    width: 1em;
+    height: 1em;
+    font-size: inherit;
+}
