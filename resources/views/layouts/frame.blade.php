@@ -148,72 +148,51 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
             // Step navigation
-            const nextButtons = document.querySelectorAll('.next-step');
-            const prevButtons = document.querySelectorAll('.prev-step');
-            const formSteps = document.querySelectorAll('.form-step');
-            const stepIndicators = document.querySelectorAll('.step');
+            const $nextButtons = $('.next-step');
+            const $prevButtons = $('.prev-step');
+            const $formSteps = $('.form-step');
+            const $stepIndicators = $('.step');
 
-            nextButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const currentStep = document.querySelector('.form-step.active');
-                    const currentStepNumber = parseInt(currentStep.dataset.step);
-                    const nextStepNumber = currentStepNumber + 1;
+            $nextButtons.on('click', function() {
+                const $currentStep = $('.form-step.active');
+                const currentStepNumber = parseInt($currentStep.data('step'));
+                const nextStepNumber = currentStepNumber + 1;
 
-                    if (validateStep(currentStepNumber)) {
-                        currentStep.classList.remove('active');
-                        currentStep.classList.add('hidden');
-
-                        const nextStep = document.querySelector(`.form-step[data-step="${nextStepNumber}"]`);
-                        nextStep.classList.remove('hidden');
-                        nextStep.classList.add('active');
-
-                        // Update progress indicators
-                        updateStepIndicators(nextStepNumber);
-                    }
-                });
+                if (validateStep(currentStepNumber)) {
+                    $currentStep.removeClass('active').addClass('hidden');
+                    $(`.form-step[data-step="${nextStepNumber}"]`).removeClass('hidden').addClass('active');
+                    updateStepIndicators(nextStepNumber);
+                }
             });
 
-            prevButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const currentStep = document.querySelector('.form-step.active');
-                    const currentStepNumber = parseInt(currentStep.dataset.step);
-                    const prevStepNumber = currentStepNumber - 1;
+            $prevButtons.on('click', function() {
+                const $currentStep = $('.form-step.active');
+                const currentStepNumber = parseInt($currentStep.data('step'));
+                const prevStepNumber = currentStepNumber - 1;
 
-                    currentStep.classList.remove('active');
-                    currentStep.classList.add('hidden');
-
-                    const prevStep = document.querySelector(`.form-step[data-step="${prevStepNumber}"]`);
-                    prevStep.classList.remove('hidden');
-                    prevStep.classList.add('active');
-
-                    // Update progress indicators
-                    updateStepIndicators(prevStepNumber);
-                });
+                $currentStep.removeClass('active').addClass('hidden');
+                $(`.form-step[data-step="${prevStepNumber}"]`).removeClass('hidden').addClass('active');
+                updateStepIndicators(prevStepNumber);
             });
 
             function updateStepIndicators(activeStep) {
-                stepIndicators.forEach(step => {
-                    const stepNumber = parseInt(step.dataset.step);
-                    const stepNumberElement = step.querySelector('.step-number');
-                    const stepTitleElement = step.querySelector('.step-title');
+                $stepIndicators.each(function() {
+                    const $step = $(this);
+                    const stepNumber = parseInt($step.data('step'));
+                    const $stepNumberElement = $step.find('.step-number');
+                    const $stepTitleElement = $step.find('.step-title');
 
                     if (stepNumber === activeStep) {
-                        stepNumberElement.classList.remove('bg-gray-200', 'text-gray-700');
-                        stepNumberElement.classList.add('bg-blue-600', 'text-white');
-                        stepTitleElement.classList.remove('text-gray-500');
-                        stepTitleElement.classList.add('text-gray-900');
+                        $stepNumberElement.removeClass('bg-gray-200 text-gray-700').addClass('bg-blue-600 text-white');
+                        $stepTitleElement.removeClass('text-gray-500').addClass('text-gray-900');
                     } else if (stepNumber < activeStep) {
-                        stepNumberElement.classList.remove('bg-gray-200', 'text-gray-700');
-                        stepNumberElement.classList.add('bg-green-500', 'text-white');
-                        stepTitleElement.classList.remove('text-gray-500');
-                        stepTitleElement.classList.add('text-gray-900');
+                        $stepNumberElement.removeClass('bg-gray-200 text-gray-700').addClass('bg-green-500 text-white');
+                        $stepTitleElement.removeClass('text-gray-500').addClass('text-gray-900');
                     } else {
-                        stepNumberElement.classList.remove('bg-blue-600', 'text-white', 'bg-green-500');
-                        stepNumberElement.classList.add('bg-gray-200', 'text-gray-700');
-                        stepTitleElement.classList.remove('text-gray-900');
-                        stepTitleElement.classList.add('text-gray-500');
+                        $stepNumberElement.removeClass('bg-blue-600 text-white bg-green-500').addClass('bg-gray-200 text-gray-700');
+                        $stepTitleElement.removeClass('text-gray-900').addClass('text-gray-500');
                     }
                 });
             }
@@ -222,8 +201,8 @@
                 let isValid = true;
 
                 if (stepNumber === 1) {
-                    const title = document.getElementById('title').value;
-                    const priority = document.getElementById('priority').value;
+                    const title = $('#taskTitleInput').val();
+                    const priority = $('.btn-check').val();
 
                     if (!title.trim()) {
                         alert('Task title is required');
@@ -238,13 +217,12 @@
             }
 
             // Dynamic link fields
-            const linksContainer = document.getElementById('links-container');
-            const addLinkButton = document.getElementById('add-link');
+            const $linksContainer = $('#links-container');
+            const $addLinkButton = $('#add-link');
 
-            addLinkButton.addEventListener('click', function() {
-                const newLinkGroup = document.createElement('div');
-                newLinkGroup.className = 'link-input-group mb-2';
-                newLinkGroup.innerHTML = `
+            $addLinkButton.on('click', function() {
+                const newLinkGroup = $(`
+            <div class="link-input-group mb-2">
                 <div class="flex">
                     <input type="url" name="links[]" placeholder="https://example.com"
                            class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
@@ -252,32 +230,31 @@
                         Remove
                     </button>
                 </div>
-            `;
-                linksContainer.insertBefore(newLinkGroup, addLinkButton);
+            </div>
+        `);
+                $linksContainer.before(newLinkGroup);
             });
 
-            linksContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-link')) {
-                    const linkGroup = e.target.closest('.link-input-group');
-                    if (document.querySelectorAll('.link-input-group').length > 1) {
-                        linkGroup.remove();
-                    } else {
-                        // Don't remove the last one, just clear it
-                        linkGroup.querySelector('input').value = '';
-                    }
+            $linksContainer.on('click', '.remove-link', function() {
+                const $linkGroup = $(this).closest('.link-input-group');
+                if ($('.link-input-group').length > 1) {
+                    $linkGroup.remove();
+                } else {
+                    // Don't remove the last one, just clear it
+                    $linkGroup.find('input').val('');
                 }
             });
 
             // Voice recording functionality
             let mediaRecorder;
             let audioChunks = [];
-            const startRecordingButton = document.getElementById('start-recording');
-            const stopRecordingButton = document.getElementById('stop-recording');
-            const audioPlayback = document.getElementById('audio-playback');
-            const voiceNoteInput = document.getElementById('voice-note');
+            const $startRecordingButton = $('#start-recording');
+            const $stopRecordingButton = $('#stop-recording');
+            const $audioPlayback = $('#audio-playback');
+            const $voiceNoteInput = $('#voice-note');
 
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                startRecordingButton.addEventListener('click', async function() {
+                $startRecordingButton.on('click', async function() {
                     try {
                         const stream = await navigator.mediaDevices.getUserMedia({
                             audio: true
@@ -294,8 +271,7 @@
                                 type: 'audio/wav'
                             });
                             const audioUrl = URL.createObjectURL(audioBlob);
-                            audioPlayback.src = audioUrl;
-                            audioPlayback.classList.remove('hidden');
+                            $audioPlayback.attr('src', audioUrl).removeClass('hidden');
 
                             // Create a File object from the Blob
                             const audioFile = new File([audioBlob], 'voice-note.wav', {
@@ -305,31 +281,58 @@
                             // Create a DataTransfer object to set the file to the input
                             const dataTransfer = new DataTransfer();
                             dataTransfer.items.add(audioFile);
-                            voiceNoteInput.files = dataTransfer.files;
+                            $voiceNoteInput[0].files = dataTransfer.files;
                         };
 
                         mediaRecorder.start();
-                        startRecordingButton.disabled = true;
-                        stopRecordingButton.disabled = false;
+                        $startRecordingButton.prop('disabled', true);
+                        $stopRecordingButton.prop('disabled', false);
                     } catch (error) {
                         console.error('Error accessing microphone:', error);
                         alert('Could not access microphone. Please ensure you have granted permission.');
                     }
                 });
 
-                stopRecordingButton.addEventListener('click', function() {
+                $stopRecordingButton.on('click', function() {
                     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                         mediaRecorder.stop();
                         mediaRecorder.stream.getTracks().forEach(track => track.stop());
-                        startRecordingButton.disabled = false;
-                        stopRecordingButton.disabled = true;
+                        $startRecordingButton.prop('disabled', false);
+                        $stopRecordingButton.prop('disabled', true);
                     }
                 });
             } else {
-                startRecordingButton.disabled = true;
-                stopRecordingButton.disabled = true;
+                $startRecordingButton.prop('disabled', true);
+                $stopRecordingButton.prop('disabled', true);
                 console.warn('MediaDevices API or getUserMedia not supported in this browser');
             }
+
+            let taskCounter = 1;
+
+            // Add new task field
+            $(document).on('click', '.add-task-btn', function() {
+                taskCounter++;
+                const newTask = `
+                    <div class="task-item mb-3" data-task-id="${taskCounter}">
+                        <div class="input-group">
+                        <input type="text" class="form-control task-input me-3" name="tasks[]" placeholder="Enter task" required>
+                        <button type="button" class="btn btn-inverse-danger remove-task-btn">
+                            <i class="ti ti-minus"></i>
+                        </button>
+                        </div>
+                    </div>
+                    `;
+                $('.task-container').append(newTask);
+            });
+
+            // Remove task field
+            $(document).on('click', '.remove-task-btn', function() {
+                if ($('.task-item').length > 1) {
+                    $(this).closest('.task-item').remove();
+                } else {
+                    alert("You need at least one task field!");
+                }
+            });
         });
     </script>
     @yield('customJs')
