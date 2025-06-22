@@ -2,7 +2,8 @@
     --secondary-color: #4361ee;
     --primary-color: #1520a6;
     --primary-color-two: #3f37c9;
-    --success-color: #4cc9f0;
+    --success-color: #01796f;
+    --info-color: #4cc9f0;
     --warning-color: #f8961e;
     --danger-color: #f72585;
     --light-color: #f8f9fa;
@@ -63,15 +64,26 @@
     border-color: #3a56e0 !important;
 }
 
-.btn-success {
-    background-color: var(--success-color) !important;
-    border-color: var(--success-color) !important;
+.btn-info {
+    background-color: var(--info-color) !important;
+    border-color: var(--info-color) !important;
     color: var(--dark-color) !important;
 }
 
-.btn-success:hover {
+.btn-info:hover {
     background-color: #3ab0d8 !important;
     border-color: #3ab0d8 !important;
+}
+
+.btn-success {
+    background-color: var(--success-color) !important;
+    border-color: var(--success-color) !important;
+    color: var(--light-color) !important;
+}
+
+.btn-success:hover {
+    background-color: #016b62 !important;
+    border-color: #016b62 !important;
 }
 
 .btn-warning {
@@ -143,6 +155,16 @@
     color: var(--light-color) !important;
 }
 
+.btn-outline-info {
+    border-color: var(--info-color) !important;
+    color: var(--info-color) !important;
+}
+
+.btn-outline-info:hover {
+    background-color: var(--info-color) !important;
+    color: var(--dark-color) !important;
+}
+
 .btn-outline-success {
     border-color: var(--success-color) !important;
     color: var(--success-color) !important;
@@ -150,7 +172,7 @@
 
 .btn-outline-success:hover {
     background-color: var(--success-color) !important;
-    color: var(--dark-color) !important;
+    color: var(--light-color) !important;
 }
 
 .btn-outline-warning {
@@ -220,14 +242,24 @@
     color: var(--light-color) !important;
 }
 
+.btn-inverse-info {
+    color: var(--info-color) !important;
+    background-color: rgba(76, 201, 240, 0.1) !important;
+}
+
+.btn-inverse-info:hover {
+    background-color: var(--info-color) !important;
+    color: var(--dark-color) !important;
+}
+
 .btn-inverse-success {
     color: var(--success-color) !important;
-    background-color: rgba(76, 201, 240, 0.1) !important;
+    background-color: rgba(1, 121, 111, 0.1) !important;
 }
 
 .btn-inverse-success:hover {
     background-color: var(--success-color) !important;
-    color: var(--dark-color) !important;
+    color: var(--light-color) !important;
 }
 
 .btn-inverse-warning {
@@ -270,23 +302,6 @@
     color: var(--light-color) !important;
 }
 
-/* GHOST BUTTONS */
-.btn-ghost {
-    background-color: transparent !important;
-    border-color: transparent !important;
-    box-shadow: none !important;
-}
-
-.btn-ghost-primary {
-    color: var(--primary-color) !important;
-}
-
-.btn-ghost-primary:hover {
-    background-color: rgba(21, 32, 166, 0.1) !important;
-}
-
-/* Repeat for other ghost buttons following same pattern */
-
 /* RADIO BUTTON STYLES */
 .btn-check:checked + .btn-inverse-primary {
     background-color: var(--primary-color) !important;
@@ -298,9 +313,14 @@
     color: var(--light-color) !important;
 }
 
+.btn-check:checked + .btn-inverse-info {
+    background-color: var(--info-color) !important;
+    color: var(--dark-color) !important;
+}
+
 .btn-check:checked + .btn-inverse-success {
     background-color: var(--success-color) !important;
-    color: var(--dark-color) !important;
+    color: var(--light-color) !important;
 }
 
 .btn-check:checked + .btn-inverse-warning {
@@ -323,22 +343,92 @@
     color: var(--light-color) !important;
 }
 
-/* DISABLED STATE */
-.btn:disabled {
-    opacity: 0.65 !important;
-    cursor: not-allowed !important;
-    box-shadow: none !important;
+/* Background Utilities */
+.bg-primary {
+    background-color: var(--primary-color) !important;
 }
 
-/* BUTTON WITH ICONS */
-.btn-icon {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+.bg-primary-light {
+    background-color: rgba(21, 32, 166, 0.1) !important;
 }
 
-.btn-icon .icon {
-    width: 1em;
-    height: 1em;
-    font-size: inherit;
+.bg-secondary {
+    background-color: var(--secondary-color) !important;
+}
+
+.bg-secondary-light {
+    background-color: rgba(67, 97, 238, 0.1) !important;
+}
+
+.bg-info {
+    background-color: var(--info-color) !important;
+}
+
+.bg-info-light {
+    background-color: rgba(76, 201, 240, 0.1) !important;
+}
+
+.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.bg-success-light {
+    background-color: rgba(1, 121, 111, 0.1) !important;
+}
+
+.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.bg-warning-light {
+    background-color: rgba(248, 150, 30, 0.1) !important;
+}
+
+.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+.bg-danger-light {
+    background-color: rgba(247, 37, 133, 0.1) !important;
+}
+
+.bg-light {
+    background-color: var(--light-color) !important;
+}
+
+.bg-dark {
+    background-color: var(--dark-color) !important;
+}
+
+/* Text Utilities */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary {
+    color: var(--secondary-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-light {
+    color: var(--light-color) !important;
+}
+
+.text-dark {
+    color: var(--dark-color) !important;
 }

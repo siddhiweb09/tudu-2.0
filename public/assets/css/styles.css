@@ -728,8 +728,8 @@ ul.dropdown-menu li:last-child {
     content: "";
     position: absolute;
     top: 16px;
-    left: 50%;
-    right: -50%;
+    left: 56%;
+    right: -46%;
     height: 2px;
     background-color: #e5e7eb;
     z-index: -1;
