@@ -13,4 +13,4 @@ Route::get('/login', function () {
 });
 
 
-Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');
+Route::match(['get', 'post'], '/my-todo-list', [DemoController::class, 'demoIndex'])->name('demo');
