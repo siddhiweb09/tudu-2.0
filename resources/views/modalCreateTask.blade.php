@@ -135,58 +135,26 @@
                                     <div class="col-md-12 mb-3">
                                         <div class="select-card active-on-hover">
                                             <div class="select-card-header">
-                                                <i class="ti ti-users me-2"></i>Assign To
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <i class="ti ti-clock me-2"></i>Due Date
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-check form-switch float-end">
+                                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                                            <label class="form-check-label" for="flexSwitchCheckDefault">Recurrence</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <select name="assign_to" class="form-control" required>
-                                                <option value="">Select User</option>
-                                                <option value="1">John Doe</option>
-                                                <option value="2">Jane Smith</option>
-                                                <option value="3">Mike Johnson</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label class="d-block text-uppercase small fw-bold text-muted mb-3">
-                                            <i class="far fa-calendar-alt me-2"></i>Due Date
-                                        </label>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <label class="d-block text-uppercase small fw-bold text-muted mb-0">
-                                                <i class="ti ti-redo me-2"></i>Recurrence
-                                            </label>
-                                            <div class="custom-switch-advanced">
-                                                <input type="checkbox" class="custom-switch-input" id="repeat_task_form1" name="repeat_task" value="1">
-                                                <label for="repeat_task_form1" class="custom-switch-label"></label>
+                                            <div class="datetime-picker-container" id="due_date_section_form1">
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-transparent border-end-0">
+                                                        <i class="far fa-clock"></i>
+                                                    </span>
+                                                    <input type="datetime-local" class="form-control border-start-0" id="due_date_form1" name="due_date" placeholder="Select Date & Time">
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <!-- Due Date -->
-                                    <div class="col-md-6 mb-3">
-                                        <div class="datetime-picker-container" id="due_date_section_form1">
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-transparent border-end-0">
-                                                    <i class="far fa-clock"></i>
-                                                </span>
-                                                <input type="datetime-local" class="form-control border-start-0" id="due_date_form1" name="due_date" placeholder="Select Date & Time">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Recurrence Toggle -->
-                                    <div class="col-md-6 mb-3">
-                                        <div id="frequency_section_form1" style="display: none;">
-                                            <select class="form-control" id="frequency_form1" name="frequency">
-                                                <option value="">Select Frequency</option>
-                                                <option value="Daily">Daily</option>
-                                                <option value="Weekly">Weekly</option>
-                                                <option value="Monthly">Monthly</option>
-                                                <option value="Yearly">Yearly</option>
-                                                <option value="Periodic">Periodic</option>
-                                                <option value="Custom">Custom</option>
-                                            </select>
                                         </div>
                                     </div>
                                 </div>

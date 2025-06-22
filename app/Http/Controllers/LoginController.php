@@ -15,11 +15,6 @@ use function Laravel\Prompts\error;
 
 class LoginController extends Controller
 {
-    public function login()
-    {
-        return view('login');
-    }
-
     public function authenticate(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -34,7 +29,6 @@ class LoginController extends Controller
                     'messages' => $validator->errors()
                 ], 422);
             }
-            return redirect()->route('login')->withInput()->withErrors($validator);
         }
 
         $user = User::where('employee_code', $request->employee_code)->first();
@@ -53,8 +47,6 @@ class LoginController extends Controller
                     'redirect_url' => route('dashboard')
                 ]);
             }
-
-            return redirect()->route('dashboard');
         }
 
         if ($request->ajax()) {
@@ -63,8 +55,6 @@ class LoginController extends Controller
                 'message' => 'Invalid credentials'
             ], 401);
         }
-
-        return redirect()->route('login')->with('error', 'Either Employee Code or Password is incorrect.');
     }
 
     public function logout()

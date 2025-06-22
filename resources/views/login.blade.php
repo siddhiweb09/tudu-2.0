@@ -81,9 +81,6 @@
           </div>
         </div>
       </div>
-
-
-
     </div>
   </div>
 </div>
@@ -105,7 +102,7 @@
       e.preventDefault();
 
       $.ajax({
-        url: "{{ route('login') }}",
+        url: "/authenticate",
         type: "POST",
         data: $(this).serialize(),
         success: function(response) {
