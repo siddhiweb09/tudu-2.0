@@ -107,7 +107,6 @@
         data: $(this).serialize(),
         success: function(response) {
           if (response.status === 'success') {
-            alert(response.message); // show success message first
             setTimeout(() => {
               window.location.href = response.redirect_url ?? "{{ route('dashboard') }}";
             }, 1000); // optional delay before redirect

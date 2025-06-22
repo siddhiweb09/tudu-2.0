@@ -61,7 +61,7 @@
                             </button>
                             <ul class="dropdown-menu profile-menu">
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Logout</a></li>
+                                <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@
                                     <span class="menu-title">My Tasks</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="#">Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
                                     <li><a class="dropdown-item" href="#">Pending Tasks</a></li>
                                     <li><a class="dropdown-item" href="#">Delayed Tasks</a></li>
                                     <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
@@ -106,7 +106,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
+                                <a class="nav-link" href="{{ route('tasks.calender') }}">
                                     <i class="ti ti-calendar-week menu-icon"></i>
                                     <span class="menu-title">Calendar View</span>
                                 </a>
