@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon icon-->
-    <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
@@ -135,20 +135,20 @@
         </div>
     </div>
 
-    <div id="addtask-trigger">
+    <!-- <div id="addtask-trigger">
         <button class="btn" type="button" class="open-modal-btn" data-bs-toggle="modal" data-bs-target="#assign_task">
             <i class="ti ti-plus"></i>
         </button>
-    </div>
+    </div> -->
     @include('personal-tasks.partials.modals')
 
-    @extends('modalCreateTask')
+    <!-- @extends('modalCreateTask') -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="../assets/js/task-create.js"></script>
+    <script src="../assets/js/delegate-task-create.js"></script>
 
     <script>
         window.addEventListener('load', function() {
