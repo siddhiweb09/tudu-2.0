@@ -36,7 +36,7 @@
                         </div>
 
                         <!-- Form Sections -->
-                        <form id="taskForm" action="" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
+                        <form id="taskForm" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
                             @csrf
 
                             <!-- Step 1: Task Info -->
@@ -77,15 +77,21 @@
                                         <i class="ti ti-bolt me-2"></i>Priority Level
                                     </label>
                                     <div class="priority-pills">
-                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                                            <label class="btn btn-check-inverse btn-inverse-danger" for="btnradio1"><i class="ti ti-flame me-1"></i>High</label>
+                                        <div class="btn-group" role="group">
+                                            <input type="radio" class="btn-check" name="btnradio" id="high" value="high" autocomplete="off" checked>
+                                            <label class="btn btn-check-inverse btn-inverse-danger" for="high">
+                                                <i class="ti ti-flame me-1"></i>High
+                                            </label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                                            <label class="btn btn-check-inverse btn-inverse-warning" for="btnradio2"><i class="ti ti-sun-high me-1"></i>Medium</label>
+                                            <input type="radio" class="btn-check" name="btnradio" id="medium" value="medium" autocomplete="off">
+                                            <label class="btn btn-check-inverse btn-inverse-warning" for="medium">
+                                                <i class="ti ti-sun-high me-1"></i>Medium
+                                            </label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                                            <label class="btn btn-check-inverse btn-inverse-success" for="btnradio3"><i class="ti ti-leaf me-1"></i>Low</label>
+                                            <input type="radio" class="btn-check" name="btnradio" id="low" value="low" autocomplete="off">
+                                            <label class="btn btn-check-inverse btn-inverse-success" for="low">
+                                                <i class="ti ti-leaf me-1"></i>Low
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +147,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-check form-switch float-end">
-                                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                                            <input class="form-check-input" type="checkbox" name="is_recurring" role="switch" id="flexSwitchCheckDefault">
                                                             <label class="form-check-label" for="flexSwitchCheckDefault">Recurrence</label>
                                                         </div>
                                                     </div>
@@ -281,7 +287,7 @@
                                         <div id="documentsContainer">
                                             <div class="document-item mb-3">
                                                 <div class="input-group">
-                                                    <input type="file" class="form-control document-file" required>
+                                                    <input type="file" name="documents" class="form-control document-file" required>
                                                     <button type="button" class="btn btn-outline-danger remove-link">
                                                         <i class="ti ti-trash"></i>
                                                     </button>
@@ -313,7 +319,6 @@
                                         <button type="button" class="btn btn-outline-primary mt-2" id="addMoreLinks">
                                             <i class="ti ti-plus mr-2"></i> Add Link
                                         </button>
-                                        <input type="hidden" name="links" id="linksInput">
                                     </div>
                                 </div>
 
@@ -345,12 +350,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-outline-secondary" id="addReminder">
-                                            <i class="ti ti-plus mr-2"></i> Add Reminder
-                                        </button>
-                                        <input type="hidden" name="reminders" id="remindersInput">
                                     </div>
                                 </div>
+
+                                <!-- Add these hidden inputs at the top of your form -->
+                                <input type="hidden" name="priority" id="priorityInput">
+                                <input type="hidden" name="tasks_json" id="tasksInput">
+                                <input type="hidden" name="links_json" id="linksInput">
+                                <input type="hidden" name="reminders_json" id="remindersInput">
 
                                 <div class="d-flex justify-content-between mt-4">
                                     <button type="button" class="prev-step btn btn-outline-secondary">

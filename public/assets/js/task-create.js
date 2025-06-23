@@ -289,7 +289,7 @@ $(document).ready(function () {
         const newDocument = $(`
             <div class="document-item mb-3">
                 <div class="input-group">
-                    <input type="file" class="form-control document-file" required>
+                    <input type="file" name="document" class="form-control document-file" required>
                     <button type="button" class="btn btn-outline-danger remove-document">
                         <i class="ti ti-trash"></i>
                     </button>
@@ -344,7 +344,173 @@ $(document).ready(function () {
     }
     // Update all inputs before form submission
     $("form").on("submit", function (e) {
+        // Prevent default form submission
+        e.preventDefault();
+
+        // Update all dynamic inputs
+        updatePriorityInput();
+        updateTasksInput();
         updateLinksInput();
         updateRemindersInput();
+        updateFrequencyDuration();
+        // Serialize form data including our hidden inputs
+        const formData = new FormData(this);
+        formData.delete("tasks[]");
+        formData.delete("frequency_duration[]");
+        formData.delete("reminders[]");
+
+        // Submit the form via AJAX
+        $.ajax({
+            url: "/add-task",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Laravel
+            },
+            beforeSend: function () {
+                // Show loading indicator
+                $("#submitBtn")
+                    .prop("disabled", true)
+                    .html('<i class="ti ti-loader me-2"></i>Processing...');
+            },
+            success: function (response) {
+                if (response.success) {
+                    // Show success message
+                    toastr.success(response.message);
+
+                    // Redirect or close modal as needed
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    } else {
+                        $("#assign_task").modal("hide");
+                    }
+                } else {
+                    toastr.error(response.message || "An error occurred");
+                }
+            },
+            error: function (xhr) {
+                let errorMessage = "An error occurred";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    // Handle validation errors
+                    const errors = xhr.responseJSON.errors;
+                    errorMessage = Object.values(errors)[0][0];
+                }
+                toastr.error(errorMessage);
+            },
+            complete: function () {
+                // Re-enable submit button
+                $("#submitBtn").prop("disabled", false).html("Create Task");
+            },
+        });
+    });
+
+    // Update priority input more reliably
+    function updatePriorityInput() {
+        const priority = $('input[name="btnradio"]:checked').attr("id");
+        $("#priorityInput").val(priority.replace("btnradio", "").toLowerCase());
+    }
+
+    // Update tasks input
+    function updateTasksInput() {
+        const tasks = [];
+        $(".task-input").each(function () {
+            const val = $(this).val().trim();
+            if (val) tasks.push(val);
+        });
+        $("#tasksInput").val(JSON.stringify(tasks));
+    }
+
+    // Add this new function to handle frequency duration
+    function updateFrequencyDuration() {
+        const frequency = $("#frequency_form1").val();
+        let duration = [];
+
+        if (frequency === "Weekly") {
+            duration = $(".day-checkbox:checked")
+                .map(function () {
+                    return $(this).val();
+                })
+                .get();
+        } else if (frequency === "Monthly") {
+            duration = [$("#monthly_day_form1").val()];
+        } else if (frequency === "Yearly") {
+            duration = [$("#yearly_date_input_form1").val()];
+        } else if (frequency === "Periodic") {
+            duration = [$("#periodic_interval_form1").val()];
+        } else if (frequency === "Custom") {
+            duration = [
+                $("#custom_frequency_dropdown_form1").val(),
+                $("#occurs_every_dropdown_form1").val(),
+            ];
+        }
+
+        // Add to form as hidden input if not exists
+        if ($("#frequencyDurationInput").length === 0) {
+            $("form").append(
+                '<input type="hidden" name="frequency_duration_json" id="frequencyDurationInput">'
+            );
+        }
+        $("#frequencyDurationInput").val(JSON.stringify(duration));
+    }
+
+    // Update links input more reliably
+    function updateLinksInput() {
+        const links = [];
+        $(".link-input").each(function () {
+            const val = $(this).val().trim();
+            if (val) links.push(val);
+        });
+
+        // Add to form as hidden input if not exists
+        if ($("#linksInput").length === 0) {
+            $("form").append(
+                '<input type="hidden" name="links_json" id="linksInput">'
+            );
+        }
+        $("#linksInput").val(JSON.stringify(links));
+    }
+
+    // Update reminders input
+    function updateRemindersInput() {
+        const reminders = [];
+        $('input[name="reminders[]"]:checked').each(function () {
+            reminders.push($(this).val());
+        });
+        $("#remindersInput").val(JSON.stringify(reminders));
+    }
+
+    // Initialize form elements
+    function initializeForm() {
+        // Add hidden inputs if they don't exist
+        if ($("#linksInput").length === 0) {
+            $("form").append(
+                '<input type="hidden" name="links_json" id="linksInput">'
+            );
+        }
+        if ($("#remindersInput").length === 0) {
+            $("form").append(
+                '<input type="hidden" name="reminders_json" id="remindersInput">'
+            );
+        }
+        if ($('input[name="priority"]').length === 0) {
+            $("form").append('<input type="hidden" name="priority">');
+        }
+
+        // Initialize priority from radio buttons
+        updatePriorityInput();
+    }
+
+    // Call initialize when document is ready
+    $(document).ready(function () {
+        initializeForm();
+
+        // Also update when priority changes
+        $('input[name="btnradio"]').change(function () {
+            updatePriorityInput();
+        });
     });
 });

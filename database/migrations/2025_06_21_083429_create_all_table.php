@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('task_id');
             $table->longText('title')->nullable();
             $table->longText('description')->nullable();
+            $table->longText('task_lists')->nullable();
             $table->string('department')->nullable();
             $table->string('priority')->nullable();
             $table->string('frequency')->nullable(); // date of joining
