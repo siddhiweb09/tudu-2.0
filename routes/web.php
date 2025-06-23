@@ -38,6 +38,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::match(['get', 'post'], '/task/{task_id}', [TaskController::class, 'taskDetails'])->name('tasks.taskDetails');
 
 
+    // Delegated Tasks
+    Route::match(['get', 'post'], '/delegate-tasks', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
+
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');
     Route::post('/store-support-ticket', [TaskController::class, 'storeSupportForm'])->name('storeSupportForm');
@@ -60,9 +63,9 @@ Route::middleware(['auth:web'])->group(function () {
         return redirect()->route('personal-tasks.index', ['view' => 'matrix']);
     })->name('personal-tasks.matrix');
 
-    Route::post('/personal-tasks', [PersonalTaskController::class, 'store'])->name('personal-tasks.store');
-    Route::put('/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
-    Route::put('/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
+    Route::post('/add-personal-tasks', [PersonalTaskController::class, 'store'])->name('personal-tasks.store');
+    Route::match(['get', 'post'],'/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
+    Route::match(['get', 'post'],'/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
     Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
 
     // Timer

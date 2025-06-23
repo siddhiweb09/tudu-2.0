@@ -159,9 +159,9 @@ class TaskController extends Controller
         return view('tasks.allTasks');
     }
 
-    public function taskCalender()
+    public function delegateTask()
     {
-        return view('tasks.calender');
+        return view('tasks.delegate');
     }
 
     public function taskDetails($task_id)
