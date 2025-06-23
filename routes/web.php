@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SupportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\PersonalTaskController;
@@ -31,14 +32,18 @@ Route::middleware(['auth:web'])->group(function () {
     Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
 
     // Tasks
-    Route::match(['get', 'post'], '/tasks-calender', [TaskController::class, 'taskCalender'])->name('tasks.calender');
+    Route::get('/tasks-calender', function () {
+        return view('tasks.calender');
+    })->name('tasks.calender');
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
 
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');
     Route::post('/store-support-ticket', [TaskController::class, 'storeSupportForm'])->name('storeSupportForm');
-
-
+    Route::get('/support', function () {
+        return view('helpAndSupport');
+    })->name('helpAndSupport');
+    Route::post('/store-support-ticket', [SupportController::class, 'storeSupportForm'])->name('storeSupportForm');
     // Personal Tasks
     Route::get('/personal-tasks', [PersonalTaskController::class, 'index'])->name('personal-tasks.index');
     Route::get('/personal-tasks/list', function () {
