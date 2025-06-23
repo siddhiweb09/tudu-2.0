@@ -159,9 +159,23 @@ class TaskController extends Controller
         return view('tasks.allTasks');
     }
 
-    public function delegateTask()
+    public function delegateTask($id)
     {
-        return view('tasks.delegate');
+        return view('tasks.delegate', ['taskId' => $id]);
+    }
+
+    public function getTaskById($id)
+    {
+        $task = Task::where('task_id', $id)->first();
+
+        if (!$task) {
+            return response()->json(['error' => 'Task not found.'], 404);
+        }
+
+        return response()->json([
+            'id' => $task->id,
+            'title' => $task->title,
+        ]);
     }
 
     public function taskDetails($task_id)

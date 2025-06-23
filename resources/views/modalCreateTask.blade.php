@@ -113,13 +113,8 @@
                                             <div class="select-card-header">
                                                 <i class="ti ti-tag me-2"></i>Category
                                             </div>
-                                            <select name="category" class="form-control" required>
+                                            <select id="department" name="category" class="form-control" required>
                                                 <option value="">Select Category</option>
-                                                <option value="HR">HR</option>
-                                                <option value="IT">IT</option>
-                                                <option value="Marketing">Marketing</option>
-                                                <option value="Sales">Sales</option>
-                                                <option value="Finance">Finance</option>
                                             </select>
                                         </div>
                                     </div>
@@ -129,11 +124,8 @@
                                             <div class="select-card-header">
                                                 <i class="ti ti-users me-2"></i>Assign To
                                             </div>
-                                            <select name="assign_to" class="form-control" required>
+                                            <select id="assign_to" name="assign_to" class="form-control" required>
                                                 <option value="">Select User</option>
-                                                <option value="1">John Doe</option>
-                                                <option value="2">Jane Smith</option>
-                                                <option value="3">Mike Johnson</option>
                                             </select>
                                         </div>
                                     </div>

@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SupportTicket extends Model
 {
-    protected $fillable = ['name', 'email', 'subject', 'message'];
+    protected $fillable = ['name', 'email', 'subject', 'message', 'created_by'];
 
 }
