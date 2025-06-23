@@ -1410,4 +1410,27 @@ p.lead.mb-3 {
     font-weight: bold;
 }
 
+img.aspect-square {
+    width: 30px;
+    border-radius: 50%;
+    background: white;
+    padding: 2px;
+}
+
+.aspect-square-container {
+    position: relative;
+}
+
+.aspect-square-box {
+    position: absolute;
+}
+
+.aspect-square-box:nth-child(2) {
+    left: 20px;
+}
+
+.aspect-square-box:nth-child(3) {
+    left: 40px;
+}
+
 /* task details end */

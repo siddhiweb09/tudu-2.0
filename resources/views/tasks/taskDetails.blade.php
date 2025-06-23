@@ -34,42 +34,90 @@
                     <div class="card-body">
                         <h6 class="text-muted">Progress</h6>
                         <div class="row">
-                            <div class="col">
-                                <h5 class="card-title">{{$progressPercentage}}</h5>
+                            <div class="col-auto">
+                                <h5 class="card-title">{{$progressPercentage}} %</h5>
                             </div>
-                            <div class="col">
-                                <p class="card-text">{{$totalTasks}} tasks ({{$completedTasks}} completed)</p>
+                            <div class="col p-0">
+                                <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
+                                        completed)</small></p>
+                            </div>
+                        </div>
+                        <!-- Progress bar -->
+                        <div class="progress mt-3 rounded-pill" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
+                                aria-valuemin="0" aria-valuemax="100">
+                                {{ $progressPercentage }}%
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card h-100 bg-light">
-                    <img src="..." class="card-img-top" alt="...">
+                <div class="card h-100 bg-light border-0">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a short card.</p>
+                        <h6 class="text-muted">Progress</h6>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5 class="card-title">{{$progressPercentage}} %</h5>
+                            </div>
+                            <div class="col p-0">
+                                <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
+                                        completed)</small></p>
+                            </div>
+                        </div>
+                        <!-- Progress bar -->
+                        <div class="progress mt-3 rounded-pill" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
+                                aria-valuemin="0" aria-valuemax="100">
+                                {{ $progressPercentage }}%
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card h-100 bg-light">
-                    <img src="..." class="card-img-top" alt="...">
+                <div class="card h-100 bg-light border-0">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
-                            additional content.</p>
+                        <h6 class="text-muted">Team</h6>
+                        <div class="aspect-square-container mb-2">
+                            <span class="aspect-square-box">
+                                <img class="aspect-square" alt="Alex Morgan"
+                                    src="../assets/images/users/alex-morgan.png"></span>
+                            <span class="aspect-square-box">
+                                <img class="aspect-square" alt="Jessica Chen"
+                                    src="../assets/images/users/alex-morgan.png"></span>
+                            <span class="aspect-square-box">
+                                <img class="aspect-square" alt="Ryan Park" src="../assets/images/users/alex-morgan.png">
+                            </span>
+                        </div>
+
+                        
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card h-100 bg-light">
-                    <img src="..." class="card-img-top" alt="...">
+                <div class="card h-100 bg-light border-0">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
+                        <h6 class="text-muted">Progress</h6>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5 class="card-title">{{$progressPercentage}} %</h5>
+                            </div>
+                            <div class="col p-0">
+                                <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
+                                        completed)</small></p>
+                            </div>
+                        </div>
+                        <!-- Progress bar -->
+                        <div class="progress mt-3 rounded-pill" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
+                                aria-valuemin="0" aria-valuemax="100">
+                                {{ $progressPercentage }}%
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
