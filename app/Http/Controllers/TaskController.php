@@ -190,6 +190,10 @@ class TaskController extends Controller
 
         $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
 
+        $delegatedTask = DelegatedTask::where('task_id', $task_id)->firstOrFail();
+
+        $owner = $task->assign_to;
+
         return view('tasks.taskDetails', compact('task', 'totalTasks', 'completedTasks', 'progressPercentage'));
     }
 }
