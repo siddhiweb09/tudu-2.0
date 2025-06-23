@@ -2,6 +2,7 @@
 // app/Http/Controllers/TaskController.php
 namespace App\Http\Controllers;
 
+use App\Models\DelegatedTask;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Task;
 use App\Models\TaskList;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-
 
 class TaskController extends Controller
 {
@@ -190,7 +190,8 @@ class TaskController extends Controller
 
         $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
 
-        $delegatedTask = DelegatedTask::where('task_id', $task_id)->firstOrFail();
+        $delegatedTasks = DelegatedTask::where('task_id', $task_id)->get();
+        foreach($delegatedTasks as $delegatedTask)
 
         $owner = $task->assign_to;
 
