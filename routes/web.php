@@ -64,8 +64,10 @@ Route::middleware(['auth:web'])->group(function () {
     })->name('personal-tasks.matrix');
 
     Route::post('/add-personal-tasks', [PersonalTaskController::class, 'store'])->name('personal-tasks.store');
-    Route::match(['get', 'post'],'/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
-    Route::match(['get', 'post'],'/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
+    Route::match(['get', 'post'], '/personal-tasks-show/{task}', [PersonalTaskController::class, 'show'])->name('personal-tasks.show');
+
+    Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
+    Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
     Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
 
     // Timer

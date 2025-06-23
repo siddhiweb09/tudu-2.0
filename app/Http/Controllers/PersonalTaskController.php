@@ -63,6 +63,11 @@ class PersonalTaskController extends Controller
 
     public function store(Request $request)
     {
+
+
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
+
         // Decode JSON inputs
         $tasks = json_decode($request->tasks_json, true) ?? [];
         $links = json_decode($request->links_json, true) ?? [];
@@ -79,7 +84,7 @@ class PersonalTaskController extends Controller
             'documents.*' => 'file|max:10240', // 10MB max
             'reminders_json' => 'json',
             'frequency' => 'required_if:recurring,on',
-            // 'frequency_duration_json' => 'json',
+            'frequency_duration_json' => 'json',
         ]);
 
         if ($validator->fails()) {
@@ -98,20 +103,18 @@ class PersonalTaskController extends Controller
             'priority' => $request->priority,
             'is_recurring' => $request->has('recurring') ? true : false,
             'frequency' => $request->frequency,
-            // 'frequency_duration' => $request->frequency_duration_json,
+            'frequency_duration' => $request->frequency_duration_json,
             'reminders' => $request->reminders_json,
             'links' => $request->links_json,
             'status' => 'Pending',
-            'assign_by' => auth()->id(),
+            'assign_by' =>  $activeUser,
         ]);
-
-
 
         // Log task creation
         TaskLog::create([
-            'task_id' => $task->id,
+            'task_id' => $task->task_id,
             'log_description' => 'Task created',
-            'added_by' => auth()->id()
+            'added_by' =>  $activeUser,
         ]);
 
         // Handle file uploads
@@ -120,55 +123,17 @@ class PersonalTaskController extends Controller
                 $fileName = $this->storeFile($document);
 
                 TaskMedia::create([
-                    'task_id' => $task->id,
+                    'task_id' => $task->task_id,
                     'category' => 'document',
                     'file_name' => $fileName,
-                    'created_by' => auth()->id()
+                    'created_by' =>  $activeUser,
                 ]);
 
                 // Log document upload
                 TaskLog::create([
-                    'task_id' => $task->id,
+                    'task_id' => $task->task_id,
                     'log_description' => 'Document uploaded: ' . $fileName,
-                    'added_by' => auth()->id()
-                ]);
-            }
-        }
-
-        // Handle voice note
-        if ($request->has('voice_notes') && $request->voice_notes) {
-            $fileName = $this->storeVoiceNote($request->voice_notes);
-
-            TaskMedia::create([
-                'task_id' => $task->id,
-                'category' => 'voice_note',
-                'file_name' => $fileName,
-                'created_by' => auth()->id()
-            ]);
-
-            // Log voice note upload
-            TaskLog::create([
-                'task_id' => $task->id,
-                'log_description' => 'Voice note recorded',
-                'added_by' => auth()->id()
-            ]);
-        }
-
-        // Handle links
-        if ($request->has('links')) {
-            foreach ($request->links as $link) {
-                TaskMedia::create([
-                    'task_id' => $task->id,
-                    'category' => 'link',
-                    'file_name' => $link,
-                    'created_by' => auth()->id()
-                ]);
-
-                // Log link addition
-                TaskLog::create([
-                    'task_id' => $task->id,
-                    'log_description' => 'Link added: ' . $link,
-                    'added_by' => auth()->id()
+                    'added_by' =>  $activeUser,
                 ]);
             }
         }
@@ -181,33 +146,22 @@ class PersonalTaskController extends Controller
 
     private function storeFile($file)
     {
+        // Create uploads directory if it doesn't exist
+        $uploadPath = public_path('assets/uploads');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        // Generate unique filename
         $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
 
-        // Store file on remote server
-        $file->move('//todo.isbmerp.co.in/uploads', $fileName);
+        // Move file to public/assets/uploads
+        $file->move($uploadPath, $fileName);
 
         return $fileName;
     }
 
-    private function storeVoiceNote($base64Audio)
-    {
-        try {
-            // Extract the base64 data
-            $audioData = substr($base64Audio, strpos($base64Audio, ',') + 1);
-            $audioData = base64_decode($audioData);
 
-            // Generate a unique filename
-            $fileName = 'voice_' . time() . '_' . Str::random(10) . '.wav';
-
-            // Store the file on remote server
-            file_put_contents('//todo.isbmerp.co.in/uploads/' . $fileName, $audioData);
-
-            return $fileName;
-        } catch (\Exception $e) {
-            \Log::error('Voice note storage failed: ' . $e->getMessage());
-            return null;
-        }
-    }
     public function show(PersonalTask $task)
     {
         // $this->authorize('view', $task);
