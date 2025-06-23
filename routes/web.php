@@ -27,7 +27,6 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/', function () {
         return view('dashboard');
     })->name('dashboard');
-
     Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
 
     // Tasks
