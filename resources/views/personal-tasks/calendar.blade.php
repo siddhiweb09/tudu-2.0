@@ -1,19 +1,17 @@
-<!-- resources/views/personal-tasks/calendar.blade.php -->
-
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="card-title">Task Calendar</h5>
             <div class="btn-group">
                 <a href="{{ route('personal-tasks.calendar', ['month' => $month-1 < 1 ? 12 : $month-1, 'year' => $month-1 < 1 ? $year-1 : $year]) }}" 
-                   class="btn btn-outline-secondary">
+                   class="btn btn-outline-secondary calendar-nav">
                     <i class="ti-angle-left"></i>
                 </a>
                 <button class="btn btn-outline-primary disabled">
                     {{ \Carbon\Carbon::create($year, $month, 1)->format('F Y') }}
                 </button>
                 <a href="{{ route('personal-tasks.calendar', ['month' => $month+1 > 12 ? 1 : $month+1, 'year' => $month+1 > 12 ? $year+1 : $year]) }}" 
-                   class="btn btn-outline-secondary">
+                   class="btn btn-outline-secondary calendar-nav">
                     <i class="ti-angle-right"></i>
                 </a>
             </div>
@@ -92,72 +90,3 @@
         </div>
     </div>
 </div>
-
-<!-- Task Detail Modal for Calendar -->
-<div class="modal fade" id="calendarTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Task Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="calendarTaskDetails">
-                <!-- Content loaded via AJAX -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section('customJs')
-<script>
-$(document).ready(function() {
-    // Handle task clicks in calendar
-    $('.calendar-task').click(function() {
-        const taskId = $(this).data('task-id');
-        
-        $.get("{{ route('personal-tasks.show', ':id') }}".replace(':id', taskId), function(data) {
-            let html = `
-                <h6>${data.title}</h6>
-                <p>${data.description || 'No description'}</p>
-                <div class="task-meta">
-                    <div><strong>Status:</strong> <span class="badge badge-${getStatusClass(data.status)}">${data.status.replace('_', ' ')}</span></div>
-                    <div><strong>Priority:</strong> <span class="badge badge-${getPriorityClass(data.priority)}">${data.priority}</span></div>
-                    <div><strong>Due Date:</strong> ${data.due_date ? formatDate(data.due_date) : 'No deadline'}</div>
-                </div>
-            `;
-            
-            $('#calendarTaskDetails').html(html);
-            $('#calendarTaskModal').modal('show');
-        });
-    });
-    
-    function getStatusClass(status) {
-        const classes = {
-            'todo': 'secondary',
-            'in_progress': 'info',
-            'completed': 'success'
-        };
-        return classes[status] || 'secondary';
-    }
-    
-    function getPriorityClass(priority) {
-        const classes = {
-            'low': 'success',
-            'medium': 'warning',
-            'high': 'danger'
-        };
-        return classes[priority] || 'secondary';
-    }
-    
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
-    }
-});
-</script>
-@endsection

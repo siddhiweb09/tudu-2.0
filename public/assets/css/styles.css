@@ -21,6 +21,11 @@
     --color-three: #4cc9f0;
 }
 
+.page-wrapper{
+    background-color: #ecf8f9 !important ;
+    padding: 3rem !important;
+}
+
 /* Animated Gradient Header */
 .bg-animated-gradient {
     background: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
