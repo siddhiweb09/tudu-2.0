@@ -13,35 +13,33 @@
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         text-align: center;
-        margin-bottom: 12px;
-        gap: 8px;
+        margin-bottom: 8px;
+        gap: 6px;
     }
 
     .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 12px;
-        max-height: 75vh;
-        overflow-y: hidden;
+        gap: 8px;
     }
 
     .calendar-day {
-        min-height: 120px;
-        border-radius: 12px;
+        min-height: 100px;
+        height: 100%;
+        border-radius: 8px;
         background-color: #fff;
-        padding: 10px;
+        padding: 8px;
         transition: all 0.2s ease-in-out;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         border: 1px solid var(--border-color);
         position: relative;
     }
 
     .calendar-day:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         border-color: var(--primary-light);
     }
 
@@ -49,12 +47,7 @@
         background-color: var(--bg-light);
         border-color: var(--bg-light);
         box-shadow: none;
-    }
-
-    .calendar-day.empty:hover {
-        transform: none;
-        box-shadow: none;
-        cursor: default;
+        min-height: 100px;
     }
 
     .calendar-day.today {
@@ -62,19 +55,14 @@
         border: 1px solid var(--primary-color);
     }
 
-    .calendar-day.today .day-number {
-        color: var(--primary-color);
-        font-weight: 700;
-    }
-
     .day-number {
-        font-size: 0.95rem;
-        margin-bottom: 6px;
+        font-size: 0.85rem;
+        margin-bottom: 4px;
         color: var(--text-dark);
         font-weight: 500;
         align-self: flex-end;
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -87,23 +75,38 @@
     }
 
     .day-tasks {
-        overflow-y: auto;
         flex-grow: 1;
-        padding-right: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
 
-    /* Your original task style */
     .calendar-task {
-        font-size: 12px;
-        border-left: 4px solid #ffc107;
+        font-size: 11px;
+        border-left: 3px solid #ffc107;
         background-color: #fffbea;
-        margin-bottom: 6px;
-        padding: 6px 8px;
+        padding: 4px 6px;
         display: flex;
         align-items: center;
-        gap: 6px;
-        border-radius: 4px;
+        gap: 4px;
+        border-radius: 3px;
         cursor: pointer;
+        line-height: 1.3;
+    }
+
+    .calendar-task.high-priority {
+        border-left-color: #ef4444;
+        background-color: #fee2e2;
+    }
+
+    .calendar-task.medium-priority {
+        border-left-color: #f59e0b;
+        background-color: #fffbeb;
+    }
+
+    .calendar-task.low-priority {
+        border-left-color: #10b981;
+        background-color: #ecfdf5;
     }
 
     .task-title {
@@ -115,24 +118,48 @@
         font-weight: 500;
     }
 
+    .badge {
+        font-size: 9px;
+        font-weight: 600;
+        padding: 2px 5px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+
+    .bg-warning {
+        background-color: var(--secondary-color);
+        color: #000;
+    }
+
+    .bg-danger {
+        background-color: var(--danger-color);
+        color: white;
+    }
+
+    .bg-success {
+        background-color: var(--success-color);
+        color: white;
+    }
+
     .calendar-day-header {
-        padding: 10px;
+        padding: 8px 4px;
         color: var(--text-light);
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
     .calendar-nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
     }
 
     .calendar-title {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 700;
         color: var(--text-dark);
         margin: 0;
@@ -142,8 +169,8 @@
         border: none;
         background: var(--primary-color);
         color: white;
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -159,52 +186,14 @@
 
     .nav-btn-group {
         display: flex;
-        gap: 8px;
-    }
-
-    /* Scrollbar styling */
-    .day-tasks::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    .day-tasks::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-
-    .day-tasks::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 10px;
-    }
-
-    .day-tasks::-webkit-scrollbar-thumb:hover {
-        background: #a1a1a1;
+        gap: 6px;
     }
 
     /* Responsive adjustments */
-    @media (max-width: 768px) {
+    @media (max-width: 992px) {
         .calendar-day {
-            min-height: 100px;
-            padding: 8px;
-            border-radius: 8px;
-        }
-
-        .calendar-grid {
-            gap: 8px;
-        }
-
-        .calendar-title {
-            font-size: 1.2rem;
-        }
-
-        .task-title {
-            font-size: 11px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .calendar-day {
-            min-height: 80px;
+            min-height: 90px;
+            padding: 6px;
         }
 
         .day-number {
@@ -214,11 +203,49 @@
         }
 
         .calendar-task {
-            padding: 4px 6px;
+            font-size: 10px;
+            padding: 3px 4px;
+        }
+
+        .badge {
+            font-size: 8px;
+            padding: 1px 3px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .calendar-day {
+            min-height: 80px;
+        }
+
+        .calendar-title {
+            font-size: 1.1rem;
+        }
+
+        .calendar-day-header {
+            font-size: 0.7rem;
+            padding: 6px 2px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .calendar-day {
+            min-height: 70px;
+            padding: 4px;
+        }
+
+        .day-number {
+            font-size: 0.75rem;
+            width: 18px;
+            height: 18px;
+        }
+
+        .calendar-task {
+            font-size: 9px;
         }
     }
 </style>
-<div class="container-fluid">
+<div class="container-fluid mt-3">
     <div class="row mt-3 justify-content-center">
         <div class="col-xl-10 col-lg-11 col-md-12">
             <!-- Calendar View -->
@@ -273,7 +300,7 @@
                             <div class="calendar-day">
                                 <div class="day-number">3</div>
                                 <div class="day-tasks">
-                                    <div class="calendar-task" data-task-id="1">
+                                    <div class="calendar-task medium-priority" data-task-id="1">
                                         <span class="badge bg-warning">Medium</span>
                                         <span class="task-title">Team sync meeting</span>
                                     </div>
@@ -288,7 +315,7 @@
                             <div class="calendar-day">
                                 <div class="day-number">6</div>
                                 <div class="day-tasks">
-                                    <div class="calendar-task" data-task-id="2">
+                                    <div class="calendar-task high-priority" data-task-id="2">
                                         <span class="badge bg-danger">High</span>
                                         <span class="task-title">Project deadline</span>
                                     </div>
@@ -311,7 +338,7 @@
                             <div class="calendar-day">
                                 <div class="day-number">11</div>
                                 <div class="day-tasks">
-                                    <div class="calendar-task" data-task-id="3">
+                                    <div class="calendar-task medium-priority" data-task-id="3">
                                         <span class="badge bg-warning">Medium</span>
                                         <span class="task-title">Client presentation</span>
                                     </div>
@@ -343,7 +370,7 @@
                             <div class="calendar-day">
                                 <div class="day-number">19</div>
                                 <div class="day-tasks">
-                                    <div class="calendar-task" data-task-id="4">
+                                    <div class="calendar-task low-priority" data-task-id="4">
                                         <span class="badge bg-success">Low</span>
                                         <span class="task-title">Monthly review</span>
                                     </div>
@@ -358,11 +385,11 @@
                             <div class="calendar-day today">
                                 <div class="day-number">22</div>
                                 <div class="day-tasks">
-                                    <div class="calendar-task" data-task-id="5">
+                                    <div class="calendar-task high-priority" data-task-id="5">
                                         <span class="badge bg-danger">High</span>
                                         <span class="task-title">Important meeting</span>
                                     </div>
-                                    <div class="calendar-task" data-task-id="6">
+                                    <div class="calendar-task medium-priority" data-task-id="6">
                                         <span class="badge bg-warning">Medium</span>
                                         <span class="task-title">Team lunch</span>
                                     </div>
@@ -382,7 +409,7 @@
                             <div class="calendar-day">
                                 <div class="day-number">26</div>
                                 <div class="day-tasks">
-                                    <div class="calendar-task" data-task-id="7">
+                                    <div class="calendar-task medium-priority" data-task-id="7">
                                         <span class="badge bg-warning">Medium</span>
                                         <span class="task-title">Product demo</span>
                                     </div>
@@ -400,11 +427,11 @@
                             <div class="calendar-day">
                                 <div class="day-number">30</div>
                                 <div class="day-tasks">
-                                    <div class="calendar-task" data-task-id="8">
+                                    <div class="calendar-task medium-priority" data-task-id="8">
                                         <span class="badge bg-warning">Medium</span>
                                         <span class="task-title">Friday Task: Meeting Review</span>
                                     </div>
-                                    <div class="calendar-task" data-task-id="9">
+                                    <div class="calendar-task medium-priority" data-task-id="9">
                                         <span class="badge bg-warning">Medium</span>
                                         <span class="task-title">Second Task: Demo Prep</span>
                                     </div>
