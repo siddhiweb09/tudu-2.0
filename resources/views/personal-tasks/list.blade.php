@@ -31,7 +31,7 @@
                             </td>
                             <td>
                                 @if ($task->frequency)
-                                    <span class="badge" >
+                                    <span>
                                         {{ $task->frequency }}
                                     </span>
                                 @endif
@@ -71,13 +71,13 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <button class="btn btn-info view-task" data-id="{{ $task->task_id }}">
-                                        <i class="ti-eye"></i>
+                                        <i class="ti ti-eye"></i>
                                     </button>
                                     <button class="btn btn-warning edit-task" data-id="{{ $task->task_id }}">
-                                        <i class="ti-pencil"></i>
+                                        <i class="ti ti-pencil"></i>
                                     </button>
                                     <button class="btn btn-danger delete-task" data-id="{{ $task->task_id }}">
-                                        <i class="ti-trash"></i>
+                                        <i class="ti ti-trash"></i>
                                     </button>
                                 </div>
                             </td>

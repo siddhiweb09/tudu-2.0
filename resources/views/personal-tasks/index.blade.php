@@ -34,7 +34,7 @@
     }
 </style>
 <!-- AI Suggestions -->
-<div class="personal-tasks-container">
+<div class="personal-tasks-container p-4">
     <!-- Header with View Controls -->
     <div class=" row mb-4">
         <div class="col-12">
@@ -517,7 +517,7 @@
 
             // Load task details
             $.get({
-                url: `/personal-tasks/${taskId}`,
+                url: `/personal-tasks-show/${taskId}`,
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
