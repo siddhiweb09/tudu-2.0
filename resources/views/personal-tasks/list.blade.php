@@ -30,20 +30,10 @@
                                 @endif
                             </td>
                             <td>
-                                @if ($task->category)
-                                    <span class="badge" style="background-color: {{ $task->category }}">
-                                        {{ $task->category }}
+                                @if ($task->frequency)
+                                    <span>
+                                        {{ $task->frequency }}
                                     </span>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($task->due_date)
-                                    {{ $task->due_date->format('M j, Y') }}
-                                    @if ($task->due_date->isPast() && $task->status != 'completed')
-                                        <span class="badge badge-danger">Overdue</span>
-                                    @endif
-                                @else
-                                    No deadline
                                 @endif
                             </td>
                             <td>
@@ -56,6 +46,16 @@
                                 <span class="badge badge-{{ $priority_class }}">
                                     {{ ucfirst($task->priority) }}
                                 </span>
+                            </td>
+                             <td>
+                                @if ($task->due_date)
+                                    {{ $task->due_date->format('M j, Y') }}
+                                    @if ($task->due_date->isPast() && $task->status != 'completed')
+                                        <span class="badge badge-danger">Overdue</span>
+                                    @endif
+                                @else
+                                    No deadline
+                                @endif
                             </td>
                             <td>
                                 <form class="status-form" data-task-id="{{ $task->id }}" action="{{ route('personal-tasks.update-status', $task) }}" method="POST">
@@ -70,14 +70,14 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-info view-task" data-id="{{ $task->id }}">
-                                        <i class="ti-eye"></i>
+                                    <button class="btn btn-info view-task" data-id="{{ $task->task_id }}">
+                                        <i class="ti ti-eye"></i>
                                     </button>
-                                    <button class="btn btn-warning edit-task" data-id="{{ $task->id }}">
-                                        <i class="ti-pencil"></i>
+                                    <button class="btn btn-warning edit-task" data-id="{{ $task->task_id }}">
+                                        <i class="ti ti-pencil"></i>
                                     </button>
-                                    <button class="btn btn-danger delete-task" data-id="{{ $task->id }}">
-                                        <i class="ti-trash"></i>
+                                    <button class="btn btn-danger delete-task" data-id="{{ $task->task_id }}">
+                                        <i class="ti ti-trash"></i>
                                     </button>
                                 </div>
                             </td>

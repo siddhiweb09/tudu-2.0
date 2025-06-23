@@ -1,50 +1,59 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
 
 class PersonalTask extends Model
 {
     use HasFactory;
-
     protected $fillable = [
-        'user_id',
+        'task_id',
         'title',
         'description',
-        'category',
-        'due_date',
         'priority',
+        'is_recurring',
+        'frequency',
+        'frequency_duration',
+        'reminders',
+        'assign_by',
         'status',
-        'time_estimate',
-        'is_habit',
-        'habit_frequency',
-        'notes',
-        'okr'
+        'due_date'
     ];
 
-    protected $casts = [
-        'due_date' => 'datetime',
-        'is_habit' => 'boolean',
-    ];
-
-    public function user()
+    protected static function boot()
     {
-        return $this->belongsTo(User::class);
+        parent::boot();
+
+        static::creating(function ($task) {
+            $task->task_id = self::generateTaskId();
+        });
     }
 
-    public function documents()
+    public static function generateTaskId()
     {
-        return $this->hasMany(TaskDocument::class);
+        $prefix = 'TASK-';
+        $datePart = now()->format('Ymd');
+        $randomPart = Str::upper(Str::random(4));
+
+        do {
+            $taskId = $prefix . $datePart . '-' . $randomPart;
+            $randomPart = Str::upper(Str::random(4));
+        } while (self::where('task_id', $taskId)->exists());
+
+        return $taskId;
     }
 
-    public function timeLogs()
-    {
-        return $this->hasMany(TaskTimeLog::class);
-    }
+    // public function items()
+    // {
+    //     return $this->hasMany(TaskItem::class);
+    // }
 
-    public function totalTimeSpent()
+    public function media()
     {
-        return $this->timeLogs()->sum('duration');
+        return $this->hasMany(TaskMedia::class);
     }
 }

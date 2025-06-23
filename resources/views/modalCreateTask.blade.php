@@ -78,17 +78,17 @@
                                     </label>
                                     <div class="priority-pills">
                                         <div class="btn-group" role="group">
-                                            <input type="radio" class="btn-check" name="btnradio" id="high" value="high" autocomplete="off" checked>
+                                            <input type="radio" class="btn-check" name="btnradio" id="high" value="High" autocomplete="off" checked>
                                             <label class="btn btn-check-inverse btn-inverse-danger" for="high">
                                                 <i class="ti ti-flame me-1"></i>High
                                             </label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="medium" value="medium" autocomplete="off">
+                                            <input type="radio" class="btn-check" name="btnradio" id="medium" value="Medium" autocomplete="off">
                                             <label class="btn btn-check-inverse btn-inverse-warning" for="medium">
                                                 <i class="ti ti-sun-high me-1"></i>Medium
                                             </label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="low" value="low" autocomplete="off">
+                                            <input type="radio" class="btn-check" name="btnradio" id="low" value="Low" autocomplete="off">
                                             <label class="btn btn-check-inverse btn-inverse-success" for="low">
                                                 <i class="ti ti-leaf me-1"></i>Low
                                             </label>

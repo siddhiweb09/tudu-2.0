@@ -20,7 +20,7 @@
                                                 </span>
                                             @endif
                                             @if ($task->due_date)
-                                                <small class="d-block">Due: {{ $task->due_date->format('M j') }}</small>
+                                                <small class="d-block">Due: {{ $task->due_date->format('Y-m-d') }}</small>
                                             @endif
                                         </div>
                                     </div>
