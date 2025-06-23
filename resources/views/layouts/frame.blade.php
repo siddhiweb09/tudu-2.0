@@ -120,7 +120,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('helpAndSupport') }}">
-                                    <i class="ti ti-info-square-roundedx` menu-icon"></i>
+                                   <i class="ti ti-info-square-rounded menu-icon"></i>
                                     <span class="menu-title">Support</span>
                                 </a>
                             </li>
