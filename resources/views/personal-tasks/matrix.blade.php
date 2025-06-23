@@ -144,28 +144,7 @@ $(document).ready(function() {
     });
 
     // Handle task clicks
-    $('.view-task').click(function() {
-        const taskId = $(this).data('task-id');
-        
-        $.get("{{ route('personal-tasks.show', ':id') }}".replace(':id', taskId), function(data) {
-            let html = `
-            <h6>${data.title}</h6>
-            <p>${data.description || 'No description'}</p>
-            <div class="task-meta">
-                <div><strong>Status:</strong> <span class="badge badge-${getStatusClass(data.status)}">
-                    ${data.status.replace('_', ' ')}
-                </span></div>
-                <div><strong>Priority:</strong> <span class="badge badge-${getPriorityClass(data.priority)}">
-                    ${data.priority}
-                </span></div>
-                <div><strong>Due Date:</strong> ${data.due_date ? formatDate(data.due_date) : 'No deadline'}</div>
-            </div>
-            `;
-
-            $('#calendarTaskDetails').html(html);
-            $('#calendarTaskModal').modal('show');
-        });
-    });
+   
     
     function getStatusClass(status) {
         const classes = {

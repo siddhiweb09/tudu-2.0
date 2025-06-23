@@ -130,7 +130,7 @@
             </div>
         </nav>
         <!--  Navbar End -->
-        <div class="page-wrapper" style="height: 80vh;">
+        <div class="page-wrapper " style="height: 80vh;">
             @yield('main')
         </div>
     </div>
