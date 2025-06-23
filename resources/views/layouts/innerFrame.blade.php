@@ -16,8 +16,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
     <!-- Core Css -->
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <link rel="stylesheet" href="assets/css/buttons.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <link rel="stylesheet" href="../assets/css/buttons.css" />
 
     <title>Make Your Tasks Easy</title>
 </head>
@@ -53,12 +53,12 @@
             <div class="col-12 border-bottom py-2">
                 <div class="container">
                     <div class="d-flex justify-content-between">
-                        <a class="navbar-brand" href="#"><img src="assets/images/logo.png" class="logo" /></a>
+                        <a class="navbar-brand" href="#"><img src="../assets/images/logo.png" class="logo" /></a>
 
                         <!-- Example single danger button -->
                         <div class="dropdown-center">
                             <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="assets/images/logo.png" class="rounded-circle profile-pic" />
+                                <img src="../assets/images/logo.png" class="rounded-circle profile-pic" />
                             </button>
                             <ul class="dropdown-menu profile-menu">
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -135,20 +135,20 @@
         </div>
     </div>
 
-    <div id="addtask-trigger">
+    <!-- <div id="addtask-trigger">
         <button class="btn" type="button" class="open-modal-btn" data-bs-toggle="modal" data-bs-target="#assign_task">
             <i class="ti ti-plus"></i>
         </button>
-    </div>
+    </div> -->
     @include('personal-tasks.partials.modals')
 
-    @extends('modalCreateTask')
+    <!-- @extends('modalCreateTask') -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="assets/js/task-create.js"></script>
+    <script src="../assets/js/delegate-task-create.js"></script>
 
     <script>
         window.addEventListener('load', function() {

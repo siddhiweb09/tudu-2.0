@@ -4,7 +4,7 @@ use App\Http\Controllers\SupportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\PersonalTaskController;
-
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Console\View\Components\Task;
@@ -37,7 +37,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
 
     // Delegated Tasks
-    Route::match(['get', 'post'], '/delegate-tasks', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
+    Route::match(['get', 'post'], '/delegate-tasks/{id}', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
 
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');
@@ -79,6 +79,13 @@ Route::middleware(['auth:web'])->group(function () {
 
     // Task Time
     // Route::get('/personal-tasks/{task}/time', [TaskTimeController::class, 'index'])->name('task-time.index');
+
+    //fetch Functions
+    Route::get('/get-task-details/{id}', [TaskController::class, 'getTaskById']);
+    Route::get('/get-departments', [UserController::class, 'getDepartments']);
+    Route::get('/get-users-by-department/{department}', [UserController::class, 'getUsersByDepartment']);
+    Route::get('/get-task-visibility/{task_id}', [UserController::class, 'getTaskVisibilityUsers']);
+
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');

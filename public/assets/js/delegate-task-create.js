@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     // Fetch Users Departments
     $.ajax({
         url: '/get-departments',
@@ -6,9 +7,7 @@ $(document).ready(function () {
         success: function (response) {
             $('#department').empty();
             $('#department').append('<option value="">Select Department Value</option>');
-            console.log(response);
             response.forEach(function (dept) {
-                console.log(dept);
                 $('#department').append(`<option value="${dept}">${dept}</option>`);
             });
         },
@@ -47,8 +46,6 @@ $(document).ready(function () {
             assignDropdown.html('<option value="">Select User</option>');
         }
     });
-
-
     // Step navigation
     const $nextButtons = $(".next-step");
     const $prevButtons = $(".prev-step");
@@ -558,117 +555,91 @@ $(document).ready(function () {
         // Prevent default form submission
         e.preventDefault();
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Do you want to create this task?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#4cc9f0',
-            cancelButtonColor: '#f72585',
-            confirmButtonText: 'Yes, submit it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
+        // Update all dynamic inputs
+        updatePriorityInput();
+        updateTasksInput();
+        updateLinksInput();
+        updateRemindersInput();
+        updateFrequencyDuration();
 
-                // Update all dynamic inputs
-                updatePriorityInput();
-                updateTasksInput();
-                updateLinksInput();
-                updateRemindersInput();
-                updateFrequencyDuration();
+        // Serialize form data including our hidden inputs
+        const formData = new FormData(this);
 
-                // Serialize form data including our hidden inputs
-                const formData = new FormData(this);
+        // Remove array versions
+        formData.delete("tasks[]");
+        formData.delete("reminders[]");
+        formData.delete("frequency_duration[]");
+        formData.delete("voice_notes"); // Remove the JSON version
 
-                // Remove array versions
-                formData.delete("tasks[]");
-                formData.delete("reminders[]");
-                formData.delete("frequency_duration[]");
-                formData.delete("voice_notes"); // Remove the JSON version
+        for (const [index, note] of voiceNotes.entries()) {
+            formData.append(
+                `voice_notes[${index}]`,
+                note.blob,
+                `voice_note_${note.id}.wav`
+            );
+        }
 
-                for (const [index, note] of voiceNotes.entries()) {
-                    formData.append(
-                        `voice_notes[${index}]`,
-                        note.blob,
-                        `voice_note_${note.id}.wav`
-                    );
-                }
+        // Submit the form via AJAX
+        try {
+            $.ajax({
+                url: "/add-task",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ), // Laravel
+                },
+                beforeSend: function () {
+                    // Show loading indicator
+                    $("#submitBtn")
+                        .prop("disabled", true)
+                        .html('<i class="ti ti-loader me-2"></i>Processing...');
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Show success message
+                        toastr.success(response.message);
 
-                // Submit the form via AJAX
-                try {
-                    $.ajax({
-                        url: "/add-task",
-                        type: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ), // Laravel
-                        },
-                        beforeSend: function () {
-                            // Show loading indicator
-                            $("#submitBtn")
-                                .prop("disabled", true)
-                                .html('<i class="ti ti-loader me-2"></i>Processing...');
-                        },
-                        success: function (response) {
-                            if (response.status) {
-                                Swal.fire({
-                                    title: 'Task Created!',
-                                    text: response.message || 'A new task has been successfully created.',
-                                    icon: 'success',
-                                    confirmButtonText: 'Okay',
-                                    customClass: {
-                                        confirmButton: 'btn btn-success'
-                                    },
-                                    buttonsStyling: false
-                                }).then(() => {
-                                    if (response.redirect) {
-                                        window.location.href = response.redirect;
-                                    } else {
-                                        // Use Bootstrap 5 compatible hide
-                                        let modalEl = document.getElementById('assign_task');
-                                        let modalInstance = bootstrap.Modal.getInstance(modalEl);
-                                        if (modalInstance) {
-                                            modalInstance.hide();
-                                        }
-                                    }
-                                });
-                            } else {
-                                toastr.error(response.message || "An error occurred");
-                            }
-                        },
-                        error: function (xhr) {
-                            let errorMessage = "An error occurred";
-                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                                errorMessage = xhr.responseJSON.message;
-                            } else if (xhr.responseJSON && xhr.responseJSON.errors) {
-                                // Handle validation errors
-                                const errors = xhr.responseJSON.errors;
-                                errorMessage = Object.values(errors)[0][0];
-                            }
-                            toastr.error(errorMessage);
-                        },
-                        complete: function () {
-                            // Re-enable submit button
-                            $("#submitBtn").prop("disabled", false).html("Create Task");
-                        },
-                    });
-                } catch (error) {
+                        // Redirect or close modal as needed
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else {
+                            $("#assign_task").modal("hide");
+                        }
+                    } else {
+                        toastr.error(response.message || "An error occurred");
+                    }
+                },
+                error: function (xhr) {
                     let errorMessage = "An error occurred";
-                    if (error.responseJSON && error.responseJSON.message) {
-                        errorMessage = error.responseJSON.message;
-                    } else if (error.responseJSON && error.responseJSON.errors) {
-                        const errors = error.responseJSON.errors;
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        // Handle validation errors
+                        const errors = xhr.responseJSON.errors;
                         errorMessage = Object.values(errors)[0][0];
                     }
                     toastr.error(errorMessage);
-                } finally {
+                },
+                complete: function () {
+                    // Re-enable submit button
                     $("#submitBtn").prop("disabled", false).html("Create Task");
-                }
+                },
+            });
+        } catch (error) {
+            let errorMessage = "An error occurred";
+            if (error.responseJSON && error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+            } else if (error.responseJSON && error.responseJSON.errors) {
+                const errors = error.responseJSON.errors;
+                errorMessage = Object.values(errors)[0][0];
             }
-        });
+            toastr.error(errorMessage);
+        } finally {
+            $("#submitBtn").prop("disabled", false).html("Create Task");
+        }
     });
 });
-

@@ -49,7 +49,7 @@
     <div id="main-wrapper">
         <!-- Navbar Start -->
         <!--  Navbar End -->
-        <div class="page-wrapper">
+        <div class="p-0 page-wrapper">
             @yield('authenticator-main')
 
         </div>
