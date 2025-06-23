@@ -2,18 +2,16 @@
 // app/Http/Controllers/TaskController.php
 namespace App\Http\Controllers;
 
-use App\Models\SupportTicket;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Task;
-use App\Models\TaskItem;
+use App\Models\TaskList;
 use App\Models\TaskMedia;
 use App\Models\TaskLog;
-use App\Models\TaskReminder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -110,7 +108,7 @@ class TaskController extends Controller
         foreach ($links as $link) {
             if (!empty($link)) {
                 TaskMedia::create([
-                    'task_id' => $task->id,
+                    'task_id' => $task->task_id,
                     'category' => 'link',
                     'file_name' => $link,
                     'created_by' => $activeUser
@@ -118,10 +116,24 @@ class TaskController extends Controller
             }
         }
 
+        // Handle Tasks
+        $task_list = json_decode($request->tasks_json, true) ?? [];
+        foreach ($task_list as $taskItem) {
+            if (!empty($taskItem)) {
+                TaskList::create([
+                    'task_id' => $task->task_id,
+                    'tasks' => $taskItem,
+                    'assign_to' => $request->assign_to,
+                    'assign_by' => $activeUser,
+                    'updated_by' => $activeUser
+                ]);
+            }
+        }
+
         return response()->json([
             'status' => 'success',
             'message' => 'Task created successfully!',
-            'task_id' => $task->id
+            'task_id' => $task->task_id
         ]);
     }
 
@@ -142,26 +154,6 @@ class TaskController extends Controller
         return $fileName;
     }
 
-    private function storeVoiceNote($base64Audio)
-    {
-        try {
-            // Extract the base64 data
-            $audioData = substr($base64Audio, strpos($base64Audio, ',') + 1);
-            $audioData = base64_decode($audioData);
-
-            // Generate a unique filename
-            $fileName = 'voice_' . time() . '_' . Str::random(10) . '.wav';
-
-            // Store the file on remote server
-            file_put_contents('https://todo.isbmerp.co.in/uploads/' . $fileName, $audioData);
-
-            return $fileName;
-        } catch (\Exception $e) {
-            Log::error('Voice note storage failed: ' . $e->getMessage());
-            return null;
-        }
-    }
-
     public function allTask()
     {
         return view('tasks.allTasks');
@@ -170,5 +162,20 @@ class TaskController extends Controller
     public function delegateTask()
     {
         return view('tasks.delegate');
+    }
+
+    public function taskDetails($task_id)
+    {
+        // To find by a specific column (e.g., task_id when it's not the primary key):
+        $task = Task::where('task_id', $task_id)->firstOrFail();
+
+        $taskItems = TaskList::where('task_id', $task_id)->get();
+
+        $totalTasks = $taskItems->count();
+        $completedTasks = $taskItems->where('status', 'Completed')->count(); // adjust 'completed' as needed
+
+        $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
+
+        return view('tasks.taskDetails', compact('task', 'totalTasks', 'completedTasks', 'progressPercentage'));
     }
 }

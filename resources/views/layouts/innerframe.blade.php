@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon icon-->
-    <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
@@ -16,8 +16,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
     <!-- Core Css -->
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <link rel="stylesheet" href="assets/css/buttons.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <link rel="stylesheet" href="../assets/css/buttons.css" />
 
     <title>Make Your Tasks Easy</title>
 </head>
@@ -53,12 +53,12 @@
             <div class="col-12 border-bottom py-2">
                 <div class="container">
                     <div class="d-flex justify-content-between">
-                        <a class="navbar-brand" href="#"><img src="assets/images/logo.png" class="logo" /></a>
+                        <a class="navbar-brand" href="#"><img src="../assets/images/logo.png" class="logo" /></a>
 
                         <!-- Example single danger button -->
                         <div class="dropdown-center">
                             <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="assets/images/logo.png" class="rounded-circle profile-pic" />
+                                <img src="../assets/images/logo.png" class="rounded-circle profile-pic" />
                             </button>
                             <ul class="dropdown-menu profile-menu">
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -148,7 +148,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="assets/js/task-create.js"></script>
+    <script src="../assets/js/task-create.js"></script>
 
     <script>
         window.addEventListener('load', function() {

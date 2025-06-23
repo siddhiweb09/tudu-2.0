@@ -35,6 +35,8 @@ Route::middleware(['auth:web'])->group(function () {
         return view('tasks.calender');
     })->name('tasks.calender');
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
+    Route::match(['get', 'post'], '/task/{task_id}', [TaskController::class, 'taskDetails'])->name('tasks.taskDetails');
+
 
     // Delegated Tasks
     Route::match(['get', 'post'], '/delegate-tasks', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
