@@ -28,7 +28,6 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/', function () {
         return view('dashboard');
     })->name('dashboard');
-
     Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
 
     // Tasks
@@ -36,6 +35,9 @@ Route::middleware(['auth:web'])->group(function () {
         return view('tasks.calender');
     })->name('tasks.calender');
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
+
+    // Delegated Tasks
+    Route::match(['get', 'post'], '/delegate-tasks', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
 
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');

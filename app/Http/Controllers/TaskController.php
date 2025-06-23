@@ -1,15 +1,17 @@
 <?php
 // app/Http/Controllers/TaskController.php
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use App\Models\SupportTicket;
 
+use App\Models\SupportTicket;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Task;
 use App\Models\TaskItem;
 use App\Models\TaskMedia;
 use App\Models\TaskLog;
 use App\Models\TaskReminder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,11 +19,8 @@ class TaskController extends Controller
 {
     public function store(Request $request)
     {
-        // Decode JSON inputs
-        $tasks = json_decode($request->tasks_json, true) ?? [];
-        $links = json_decode($request->links_json, true) ?? [];
-        $reminders = json_decode($request->reminders_json, true) ?? [];
-        $frequencyDuration = json_decode($request->frequency_duration_json, true) ?? [];
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
 
         // Validate the main task data
         $validator = Validator::make($request->all(), [
@@ -32,7 +31,9 @@ class TaskController extends Controller
             'due_date' => 'nullable|string',
             'priority' => 'required|in:high,medium,low',
             'tasks_json' => 'json',
-            'voice_notes' => 'nullable|string',
+            // 'voice_notes' => 'json',
+            'voice_notes' => 'nullable|array',
+            'voice_notes.*' => 'file|max:10240',
             'documents' => 'nullable|array',
             'documents.*' => 'file|max:10240', // 10MB max
             'links_json' => 'json',
@@ -64,16 +65,14 @@ class TaskController extends Controller
             'assign_to' => $request->assign_to,
             'status' => 'Pending',
             'final_status' => 'Pending',
-            'assign_by' => auth()->id(),
+            'assign_by' => $activeUser,
         ]);
-
-
 
         // Log task creation
         TaskLog::create([
-            'task_id' => $task->id,
+            'task_id' => $task->task_id,
             'log_description' => 'Task created',
-            'added_by' => auth()->id()
+            'added_by' => $activeUser
         ]);
 
         // Handle file uploads
@@ -82,71 +81,63 @@ class TaskController extends Controller
                 $fileName = $this->storeFile($document);
 
                 TaskMedia::create([
-                    'task_id' => $task->id,
+                    'task_id' => $task->task_id,
                     'category' => 'document',
                     'file_name' => $fileName,
-                    'created_by' => auth()->id()
-                ]);
-
-                // Log document upload
-                TaskLog::create([
-                    'task_id' => $task->id,
-                    'log_description' => 'Document uploaded: ' . $fileName,
-                    'added_by' => auth()->id()
+                    'created_by' => $activeUser
                 ]);
             }
         }
 
-        // Handle voice note
-        if ($request->has('voice_notes') && $request->voice_notes) {
-            $fileName = $this->storeVoiceNote($request->voice_notes);
-
-            TaskMedia::create([
-                'task_id' => $task->id,
-                'category' => 'voice_note',
-                'file_name' => $fileName,
-                'created_by' => auth()->id()
-            ]);
-
-            // Log voice note upload
-            TaskLog::create([
-                'task_id' => $task->id,
-                'log_description' => 'Voice note recorded',
-                'added_by' => auth()->id()
-            ]);
+        // Handle voice notes from JSON
+        if ($request->hasFile('voice_notes')) {
+            foreach ($request->file('voice_notes') as $voiceNote) {
+                if ($voiceNote->isValid()) {
+                    $fileName = 'voice_note_' . time() . '_' . uniqid() . '.wav';
+                    $voiceNote->move(public_path('assets/uploads'), $fileName);
+                    // ... create record ...
+                    TaskMedia::create([
+                        'task_id' => $task->task_id,
+                        'category' => 'voice_note',
+                        'file_name' => $fileName,
+                        'created_by' => $activeUser
+                    ]);
+                }
+            }
         }
-
         // Handle links
-        if ($request->has('links')) {
-            foreach ($request->links as $link) {
+        $links = json_decode($request->links_json, true) ?? [];
+        foreach ($links as $link) {
+            if (!empty($link)) {
                 TaskMedia::create([
                     'task_id' => $task->id,
                     'category' => 'link',
                     'file_name' => $link,
-                    'created_by' => auth()->id()
-                ]);
-
-                // Log link addition
-                TaskLog::create([
-                    'task_id' => $task->id,
-                    'log_description' => 'Link added: ' . $link,
-                    'added_by' => auth()->id()
+                    'created_by' => $activeUser
                 ]);
             }
         }
 
         return response()->json([
             'status' => 'success',
-            'messages' => 'Task created successfully!'
+            'message' => 'Task created successfully!',
+            'task_id' => $task->id
         ]);
     }
 
     private function storeFile($file)
     {
+        // Create uploads directory if it doesn't exist
+        $uploadPath = public_path('assets/uploads');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        // Generate unique filename
         $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
 
-        // Store file on remote server
-        $file->move('//todo.isbmerp.co.in/uploads', $fileName);
+        // Move file to public/assets/uploads
+        $file->move($uploadPath, $fileName);
 
         return $fileName;
     }
@@ -162,11 +153,11 @@ class TaskController extends Controller
             $fileName = 'voice_' . time() . '_' . Str::random(10) . '.wav';
 
             // Store the file on remote server
-            file_put_contents('//todo.isbmerp.co.in/uploads/' . $fileName, $audioData);
+            file_put_contents('https://todo.isbmerp.co.in/uploads/' . $fileName, $audioData);
 
             return $fileName;
         } catch (\Exception $e) {
-            \Log::error('Voice note storage failed: ' . $e->getMessage());
+            Log::error('Voice note storage failed: ' . $e->getMessage());
             return null;
         }
     }
@@ -176,9 +167,8 @@ class TaskController extends Controller
         return view('tasks.allTasks');
     }
 
-    public function taskCalender()
+    public function delegateTask()
     {
-        return view('tasks.calender');
+        return view('tasks.delegate');
     }
-
 }
