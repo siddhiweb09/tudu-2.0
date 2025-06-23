@@ -287,7 +287,7 @@
                                         <div id="documentsContainer">
                                             <div class="document-item mb-3">
                                                 <div class="input-group">
-                                                    <input type="file" name="documents" class="form-control document-file" required>
+                                                    <input type="file" name="documents[]" class="form-control document-file" required>
                                                     <button type="button" class="btn btn-outline-danger remove-link">
                                                         <i class="ti ti-trash"></i>
                                                     </button>
