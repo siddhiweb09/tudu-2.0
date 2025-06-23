@@ -36,6 +36,9 @@ Route::middleware(['auth:web'])->group(function () {
     })->name('tasks.calender');
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
 
+    // Delegated Tasks
+    Route::match(['get', 'post'], '/delegate-tasks', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
+
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');
     Route::post('/store-support-ticket', [TaskController::class, 'storeSupportForm'])->name('storeSupportForm');

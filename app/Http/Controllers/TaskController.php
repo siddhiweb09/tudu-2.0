@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SupportTicket;
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Task;
 use App\Models\TaskItem;
@@ -167,9 +167,8 @@ class TaskController extends Controller
         return view('tasks.allTasks');
     }
 
-    public function taskCalender()
+    public function delegateTask()
     {
-        return view('tasks.calender');
+        return view('tasks.delegate');
     }
-
 }
