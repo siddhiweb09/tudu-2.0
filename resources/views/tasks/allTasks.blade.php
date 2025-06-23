@@ -125,21 +125,21 @@
             object-fit: cover;
             border: 2px solid #fff;
             display: block;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
         }
 
         .story-ring.notify {
-            border: 2px solid #0d6efd;
-            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.2);
-            animation: pulse 2s infinite;
+            border: 2px solid #3a0ca3;
+            box-shadow: 0 0 10px rgba(58, 12, 163, 0.6);
+            animation: pulse-ring 1.5s infinite ease-in-out;
         }
 
         .user-avatar-link {
             min-width: 80px;
             text-align: center;
             color: inherit;
-            transition: transform 0.2s ease;
+            transition: transform 0.3s ease;
             position: relative;
         }
 
@@ -188,17 +188,17 @@
             object-fit: cover;
         }
 
-        @keyframes pulse {
+        @keyframes pulse-ring {
             0% {
-                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+                box-shadow: 0 0 0 0 rgba(58, 12, 163, 0.5);
             }
 
             70% {
-                box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+                box-shadow: 0 0 0 8px rgba(58, 12, 163, 0);
             }
 
             100% {
-                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+                box-shadow: 0 0 0 0 rgba(58, 12, 163, 0);
             }
         }
 
@@ -231,12 +231,28 @@
                 height: 56px;
             }
         }
+
+        .animate-slide-in {
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            0% {
+                transform: translateX(-30%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 
     <!-- Blade View -->
     <div class="container-fluid">
         <!-- User Status Ring Section -->
-        <div class="d-flex overflow-auto gap-4 py-3 px-3 mb-4 border-bottom">
+        <div class="d-flex overflow-auto gap-4 py-3 px-3 mb-4 border-bottom animate-slide-in">
             @php
                 $users = [
                     ['name' => 'Alice', 'image' => '10491834.jpg', 'section' => 'todo-column', 'notify' => true, 'status' => 'active'],
