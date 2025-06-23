@@ -289,7 +289,7 @@ $(document).ready(function () {
         const newDocument = $(`
             <div class="document-item mb-3">
                 <div class="input-group">
-                    <input type="file" name="document" class="form-control document-file" required>
+                    <input type="file" name="documents[]" class="form-control document-file" required>
                     <button type="button" class="btn btn-outline-danger remove-document">
                         <i class="ti ti-trash"></i>
                     </button>
