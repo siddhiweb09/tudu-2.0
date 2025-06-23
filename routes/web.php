@@ -35,6 +35,8 @@ Route::middleware(['auth:web'])->group(function () {
         return view('tasks.calender');
     })->name('tasks.calender');
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
+    Route::match(['get', 'post'], '/task/{task_id}', [TaskController::class, 'taskDetails'])->name('tasks.taskDetails');
+
 
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');
