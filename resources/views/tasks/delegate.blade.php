@@ -397,8 +397,7 @@
                                                 <input type="hidden" name="tasks_json" id="tasksInput">
                                                 <input type="hidden" name="links_json" id="linksInput">
                                                 <input type="hidden" name="reminders_json" id="remindersInput">
-                                                <input type="hidden" name="frequency_duration_json"
-                                                    id="frequencyDurationInput">
+                                                <input type="hidden" name="frequency_duration_json" id="frequencyDurationInput">
 
                                                 <div class="d-flex justify-content-between mt-4">
                                                     <button type="button" class="prev-step btn btn-outline-secondary">

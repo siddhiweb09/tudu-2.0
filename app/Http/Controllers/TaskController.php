@@ -177,29 +177,41 @@ class TaskController extends Controller
             'title' => $task->title,
         ]);
     }
-
+    
     public function taskDetails($task_id)
     {
-        // To find by a specific column (e.g., task_id when it's not the primary key):
+        // Fetch the main task or throw 404 if not found
         $task = Task::where('task_id', $task_id)->firstOrFail();
 
+        // Fetch task items related to this task
         $taskItems = TaskList::where('task_id', $task_id)->get();
 
+        // Calculate total and completed tasks
         $totalTasks = $taskItems->count();
-        $completedTasks = $taskItems->where('status', 'Completed')->count(); // adjust 'completed' as needed
+        $completedTasks = $taskItems->where('status', 'Completed')->count();
+        $progressPercentage = $totalTasks > 0
+            ? round(($completedTasks / $totalTasks) * 100, 2)
+            : 0;
 
-        $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
+        // Get owner of the main task
         $owner = $task->assign_to;
 
-        $team = array();
+        // Fetch delegated task assignees
+        $delegatedAssignees = DelegatedTask::where('task_id', $task_id)
+            ->pluck('assign_to')
+            ->toArray();
 
-        $delegatedTasks = DelegatedTask::where('task_id', $task_id)->get();
-        foreach ($delegatedTasks as $delegatedTask) {
-            $delegatedOwner = $delegatedTask->assign_to;
-            array_push($team, $delegatedOwner);
-        }
-        array_push($team, $owner);
+        // Merge and deduplicate team members (delegated + owner)
+        $team = array_unique(array_merge($delegatedAssignees, [$owner]));
 
-        return view('tasks.taskDetails', compact('task', 'totalTasks', 'completedTasks', 'progressPercentage', 'team'));
+        // Pass all required data to the view
+        return view('tasks.taskDetails', compact(
+            'task',
+            'taskItems',
+            'totalTasks',
+            'completedTasks',
+            'progressPercentage',
+            'team'
+        ));
     }
 }
