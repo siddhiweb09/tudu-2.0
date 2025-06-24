@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // Initialize all forms
     initializeTaskForm('form1');
     initializeTaskForm('form2');
@@ -10,20 +10,20 @@ function initializeTaskForm(formId) {
     $.ajax({
         url: '/get-departments',
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             $(`#${formId} #department`).empty();
             $(`#${formId} #department`).append('<option value="">Select Department Value</option>');
-            response.forEach(function(dept) {
+            response.forEach(function (dept) {
                 $(`#${formId} #department`).append(`<option value="${dept}">${dept}</option>`);
             });
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error('Error fetching departments:', xhr.responseText);
         }
     });
 
     // Fetch User Department Wise 
-    $(`#${formId} #department`).on('change', function() {
+    $(`#${formId} #department`).on('change', function () {
         const department = $(this).val();
         const assignDropdown = $(`#${formId} #assign_to`);
 
@@ -33,18 +33,18 @@ function initializeTaskForm(formId) {
             $.ajax({
                 url: `/get-users-by-department/${department}`,
                 method: 'GET',
-                success: function(response) {
+                success: function (response) {
                     assignDropdown.html('<option value="">Select User</option>');
 
                     if (response.length === 0) {
                         assignDropdown.append('<option value="">No users found</option>');
                     }
 
-                    response.forEach(function(user) {
+                    response.forEach(function (user) {
                         assignDropdown.append(`<option value="${user.employee_code} * ${user.employee_name}">${user.employee_code} - ${user.employee_name}</option>`);
                     });
                 },
-                error: function() {
+                error: function () {
                     assignDropdown.html('<option value="">Error loading users</option>');
                 }
             });
@@ -59,7 +59,7 @@ function initializeTaskForm(formId) {
     var formSteps = $(`#${formId} .form-step`);
     var stepIndicators = $(`#${formId} .step`);
 
-    nextButtons.on("click", function() {
+    nextButtons.on("click", function () {
         var currentStep = $(`#${formId} .form-step.active`);
         const currentStepNumber = parseInt(currentStep.data("step"));
         const nextStepNumber = currentStepNumber + 1;
@@ -73,7 +73,7 @@ function initializeTaskForm(formId) {
         }
     });
 
-    prevButtons.on("click", function() {
+    prevButtons.on("click", function () {
         var currentStep = $(`#${formId} .form-step.active`);
         const currentStepNumber = parseInt(currentStep.data("step"));
         const prevStepNumber = currentStepNumber - 1;
@@ -86,7 +86,7 @@ function initializeTaskForm(formId) {
     });
 
     function updateStepIndicators(formId, activeStep) {
-        $(`#${formId} .step`).each(function() {
+        $(`#${formId} .step`).each(function () {
             var step = $(this);
             var stepNumber = parseInt(step.data("step"));
             var stepNumberElement = step.find(".step-number");
@@ -139,7 +139,7 @@ function initializeTaskForm(formId) {
     let taskCounter = 1;
 
     // Add new task field
-    $(document).on("click", `#${formId} .add-task-btn`, function() {
+    $(document).on("click", `#${formId} .add-task-btn`, function () {
         taskCounter++;
         const newTask = `
             <div class="task-item mb-3" data-task-id="${taskCounter}">
@@ -155,7 +155,7 @@ function initializeTaskForm(formId) {
     });
 
     // Remove task field
-    $(document).on("click", `#${formId} .remove-task-btn`, function() {
+    $(document).on("click", `#${formId} .remove-task-btn`, function () {
         if ($(`#${formId} .task-item`).length > 1) {
             $(this).closest(".task-item").remove();
         } else {
@@ -163,7 +163,7 @@ function initializeTaskForm(formId) {
         }
     });
 
-    $(`#${formId} #flexSwitchCheckDefault`).on("change", function() {
+    $(`#${formId} #flexSwitchCheckDefault`).on("change", function () {
         if ($(this).is(":checked")) {
             $(`#${formId} #frequency_section`).removeClass("d-none");
             $(`#${formId} #due_date_section_form1`).addClass("d-none");
@@ -176,7 +176,7 @@ function initializeTaskForm(formId) {
         updateFrequencyDuration(formId);
     });
 
-    $(`#${formId} #frequency_form1`).on("change", function() {
+    $(`#${formId} #frequency_form1`).on("change", function () {
         var frequency = $(this).val();
         $(`#${formId} #additional_fields_form1`).removeClass("d-none");
 
@@ -248,7 +248,7 @@ function initializeTaskForm(formId) {
     });
 
     // Update frequency duration when any related field changes
-    $(document).on("change", `#${formId} .day-checkbox, #${formId} #monthly_day_form1, #${formId} #yearly_date_input_form1, #${formId} #periodic_interval_form1, #${formId} #custom_frequency_dropdown_form1, #${formId} #occurs_every_dropdown_form1`, function() {
+    $(document).on("change", `#${formId} .day-checkbox, #${formId} #monthly_day_form1, #${formId} #yearly_date_input_form1, #${formId} #periodic_interval_form1, #${formId} #custom_frequency_dropdown_form1, #${formId} #occurs_every_dropdown_form1`, function () {
         updateFrequencyDuration(formId);
     });
 
@@ -264,7 +264,7 @@ function initializeTaskForm(formId) {
     let voiceNotes = [];
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        startButton.on("click", async function() {
+        startButton.on("click", async function () {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     audio: true,
@@ -272,11 +272,11 @@ function initializeTaskForm(formId) {
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
 
-                mediaRecorder.ondataavailable = function(e) {
+                mediaRecorder.ondataavailable = function (e) {
                     audioChunks.push(e.data);
                 };
 
-                mediaRecorder.onstop = function() {
+                mediaRecorder.onstop = function () {
                     const audioBlob = new Blob(audioChunks, {
                         type: "audio/wav",
                     });
@@ -287,7 +287,7 @@ function initializeTaskForm(formId) {
 
                     // Convert blob to data URL for storage
                     const reader = new FileReader();
-                    reader.onload = function() {
+                    reader.onload = function () {
                         const dataUrl = reader.result;
 
                         // Add to our voice notes array
@@ -333,7 +333,7 @@ function initializeTaskForm(formId) {
             }
         });
 
-        stopButton.on("click", function() {
+        stopButton.on("click", function () {
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
                 mediaRecorder.stop();
                 startButton.prop("disabled", false);
@@ -341,7 +341,7 @@ function initializeTaskForm(formId) {
             }
         });
 
-        cancelButton.on("click", function() {
+        cancelButton.on("click", function () {
             recordedNotesList.empty();
             voiceNotes = [];
             updateVoiceNotesInput();
@@ -349,7 +349,7 @@ function initializeTaskForm(formId) {
         });
 
         // Handle audio removal
-        recordedNotesList.on("click", ".remove-audio", function() {
+        recordedNotesList.on("click", ".remove-audio", function () {
             const noteId = $(this).closest(".audio-player").data("note-id");
             voiceNotes = voiceNotes.filter((note) => note.id !== noteId);
             $(this).closest(".audio-player").remove();
@@ -380,7 +380,7 @@ function initializeTaskForm(formId) {
     var documentsContainer = $(`#${formId} #documentsContainer`);
     var addDocumentButton = $(`#${formId} #addDocument`);
 
-    addDocumentButton.on("click", function() {
+    addDocumentButton.on("click", function () {
         const newDocument = $(`
             <div class="document-item mb-3">
                 <div class="input-group">
@@ -395,7 +395,7 @@ function initializeTaskForm(formId) {
     });
 
     // Handle document removal
-    documentsContainer.on("click", ".remove-document", function() {
+    documentsContainer.on("click", ".remove-document", function () {
         $(this).closest(".document-item").remove();
     });
 
@@ -404,7 +404,7 @@ function initializeTaskForm(formId) {
     var addMoreLinksButton = $(`#${formId} #addMoreLinks`);
     var linksInput = $(`#${formId} #linksInput`);
 
-    addMoreLinksButton.on("click", function() {
+    addMoreLinksButton.on("click", function () {
         const newLink = $(`
             <div class="link-item mb-2">
                 <div class="input-group">
@@ -419,13 +419,13 @@ function initializeTaskForm(formId) {
     });
 
     // Handle link removal and update hidden input
-    linksContainer.on("click", ".remove-link", function() {
+    linksContainer.on("click", ".remove-link", function () {
         $(this).closest(".link-item").remove();
         updateLinksInput(formId);
     });
 
     // Update links input when links change
-    linksContainer.on("change", ".link-input", function() {
+    linksContainer.on("change", ".link-input", function () {
         updateLinksInput(formId);
     });
 
@@ -438,7 +438,7 @@ function initializeTaskForm(formId) {
     // Update tasks input
     function updateTasksInput(formId) {
         const tasks = [];
-        $(`#${formId} .task-input`).each(function() {
+        $(`#${formId} .task-input`).each(function () {
             const val = $(this).val().trim();
             if (val) tasks.push(val);
         });
@@ -452,7 +452,7 @@ function initializeTaskForm(formId) {
 
         if (frequency === "Weekly") {
             duration = $(`#${formId} .day-checkbox:checked`)
-                .map(function() {
+                .map(function () {
                     return $(this).val();
                 })
                 .get();
@@ -484,7 +484,7 @@ function initializeTaskForm(formId) {
     // Update links input more reliably
     function updateLinksInput(formId) {
         const links = [];
-        $(`#${formId} .link-input`).each(function() {
+        $(`#${formId} .link-input`).each(function () {
             const val = $(this).val().trim();
             if (val) links.push(val);
         });
@@ -501,10 +501,19 @@ function initializeTaskForm(formId) {
     // Update reminders input
     function updateRemindersInput(formId) {
         const reminders = [];
-        $(`#${formId} input[name="reminders[]"]:checked`).each(function() {
+        $(`#${formId} input[name="reminders[]"]:checked`).each(function () {
             reminders.push($(this).val());
         });
         $(`#${formId} #remindersInput`).val(JSON.stringify(reminders));
+    }
+
+    // Update reminders input
+    function updateVisibilityInputs(formId) {
+        const visibleTo = [];
+        $(`#${formId} input[visible_users[]"]:checked`).each(function () {
+            visibleTo.push($(this).val());
+        });
+        $(`#${formId} #visibleInput`).val(JSON.stringify(visibleTo));
     }
 
     // Initialize form elements
@@ -528,7 +537,11 @@ function initializeTaskForm(formId) {
         if ($(`#${formId} input[name="priority"]`).length === 0) {
             $(`#${formId} form`).append('<input type="hidden" name="priority">');
         }
-
+        if ($(`#${formId} #visibleInput`).length === 0) {
+            $(`#${formId} form`).append(
+                '<input type="hidden" name="visible_json" id="visibleInput">'
+            );
+        }
         // Initialize priority from radio buttons
         updatePriorityInput(formId);
     }
@@ -537,15 +550,16 @@ function initializeTaskForm(formId) {
     initializeForm(formId);
 
     // Event listeners for form-specific elements
-    $(`#${formId} input[name="btnradio"]`).change(function() {
+    $(`#${formId} input[name="btnradio"]`).change(function () {
         updatePriorityInput(formId);
     });
 
     // Form submission handler
-    $(`#${formId} form`).on("submit", function(e) {
+    $(`#${formId} form`).on("submit", function (e) {
         // Prevent default form submission
         e.preventDefault();
-
+        console.log(formId);
+        
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you want to create this task?",
@@ -562,6 +576,7 @@ function initializeTaskForm(formId) {
                 updateLinksInput(formId);
                 updateRemindersInput(formId);
                 updateFrequencyDuration(formId);
+                updateVisibilityInputs(formId);
 
                 // Serialize form data including our hidden inputs
                 const formData = new FormData(this);
@@ -580,10 +595,18 @@ function initializeTaskForm(formId) {
                     );
                 }
 
+                // 🔽 ADD THIS block before AJAX call
+                let url = "";
+                if (formId === "form1") {
+                    url = "/add-task";
+                } else if (formId === "form2") {
+                    url = "/store-delegate-task";
+                }
+
                 // Submit the form via AJAX
                 try {
                     $.ajax({
-                        url: "/add-task",
+                        url: "url",
                         type: "POST",
                         data: formData,
                         processData: false,
@@ -593,13 +616,13 @@ function initializeTaskForm(formId) {
                                 "content"
                             ),
                         },
-                        beforeSend: function() {
+                        beforeSend: function () {
                             // Show loading indicator
                             $(`#${formId} #submitBtn`)
                                 .prop("disabled", true)
                                 .html('<i class="ti ti-loader me-2"></i>Processing...');
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.status) {
                                 Swal.fire({
                                     title: 'Task Created!',
@@ -626,7 +649,7 @@ function initializeTaskForm(formId) {
                                 toastr.error(response.message || "An error occurred");
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             let errorMessage = "An error occurred";
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMessage = xhr.responseJSON.message;
@@ -637,7 +660,7 @@ function initializeTaskForm(formId) {
                             }
                             toastr.error(errorMessage);
                         },
-                        complete: function() {
+                        complete: function () {
                             // Re-enable submit button
                             $(`#${formId} #submitBtn`).prop("disabled", false).html("Create Task");
                         },
