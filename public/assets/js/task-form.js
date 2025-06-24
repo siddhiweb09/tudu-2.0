@@ -1,29 +1,38 @@
 $(document).ready(function () {
     // Initialize all forms
-    initializeTaskForm('form1');
-    initializeTaskForm('form2');
-    initializeTaskForm('form3');
+    initializeTaskForm("form1");
+    initializeTaskForm("form2");
+    initializeTaskForm("form3");
+    $(".summernote").summernote({
+        placeholder: "Hello Bootstrap 4",
+        tabsize: 2,
+        height: 100,
+    });
 });
 
 function initializeTaskForm(formId) {
     // Fetch Users Departments
     $.ajax({
-        url: '/get-departments',
-        method: 'GET',
+        url: "/get-departments",
+        method: "GET",
         success: function (response) {
             $(`#${formId} #department`).empty();
-            $(`#${formId} #department`).append('<option value="">Select Department Value</option>');
+            $(`#${formId} #department`).append(
+                '<option value="">Select Department Value</option>'
+            );
             response.forEach(function (dept) {
-                $(`#${formId} #department`).append(`<option value="${dept}">${dept}</option>`);
+                $(`#${formId} #department`).append(
+                    `<option value="${dept}">${dept}</option>`
+                );
             });
         },
         error: function (xhr) {
-            console.error('Error fetching departments:', xhr.responseText);
-        }
+            console.error("Error fetching departments:", xhr.responseText);
+        },
     });
 
-    // Fetch User Department Wise 
-    $(`#${formId} #department`).on('change', function () {
+    // Fetch User Department Wise
+    $(`#${formId} #department`).on("change", function () {
         const department = $(this).val();
         const assignDropdown = $(`#${formId} #assign_to`);
 
@@ -37,7 +46,9 @@ function initializeTaskForm(formId) {
                     assignDropdown.html('<option value="">Select User</option>');
 
                     if (response.length === 0) {
-                        assignDropdown.append('<option value="">No users found</option>');
+                        assignDropdown.append(
+                            '<option value="">No users found</option>'
+                        );
                     }
 
                     response.forEach(function (user) {
@@ -248,9 +259,13 @@ function initializeTaskForm(formId) {
     });
 
     // Update frequency duration when any related field changes
-    $(document).on("change", `#${formId} .day-checkbox, #${formId} #monthly_day_form1, #${formId} #yearly_date_input_form1, #${formId} #periodic_interval_form1, #${formId} #custom_frequency_dropdown_form1, #${formId} #occurs_every_dropdown_form1`, function () {
-        updateFrequencyDuration(formId);
-    });
+    $(document).on(
+        "change",
+        `#${formId} .day-checkbox, #${formId} #monthly_day_form1, #${formId} #yearly_date_input_form1, #${formId} #periodic_interval_form1, #${formId} #custom_frequency_dropdown_form1, #${formId} #occurs_every_dropdown_form1`,
+        function () {
+            updateFrequencyDuration(formId);
+        }
+    );
 
     // Voice Recording - Multiple Notes Version
     var startButton = $(`#${formId} #startButton`);
@@ -431,8 +446,12 @@ function initializeTaskForm(formId) {
 
     // Update priority input more reliably
     function updatePriorityInput(formId) {
-        const priority = $(`#${formId} input[name="btnradio"]:checked`).attr("id");
-        $(`#${formId} #priorityInput`).val(priority.replace("btnradio", "").toLowerCase());
+        const priority = $(`#${formId} input[name="btnradio"]:checked`).attr(
+            "id"
+        );
+        $(`#${formId} #priorityInput`).val(
+            priority.replace("btnradio", "").toLowerCase()
+        );
     }
 
     // Update tasks input
@@ -535,7 +554,9 @@ function initializeTaskForm(formId) {
             );
         }
         if ($(`#${formId} input[name="priority"]`).length === 0) {
-            $(`#${formId} form`).append('<input type="hidden" name="priority">');
+            $(`#${formId} form`).append(
+                '<input type="hidden" name="priority">'
+            );
         }
         if ($(`#${formId} #visibleInput`).length === 0) {
             $(`#${formId} form`).append(
@@ -561,13 +582,13 @@ function initializeTaskForm(formId) {
         console.log(formId);
         
         Swal.fire({
-            title: 'Are you sure?',
+            title: "Are you sure?",
             text: "Do you want to create this task?",
-            icon: 'question',
+            icon: "question",
             showCancelButton: true,
-            confirmButtonColor: '#4cc9f0',
-            cancelButtonColor: '#f72585',
-            confirmButtonText: 'Yes, submit it!'
+            confirmButtonColor: "#4cc9f0",
+            cancelButtonColor: "#f72585",
+            confirmButtonText: "Yes, submit it!",
         }).then((result) => {
             if (result.isConfirmed) {
                 // Update all dynamic inputs
@@ -620,40 +641,54 @@ function initializeTaskForm(formId) {
                             // Show loading indicator
                             $(`#${formId} #submitBtn`)
                                 .prop("disabled", true)
-                                .html('<i class="ti ti-loader me-2"></i>Processing...');
+                                .html(
+                                    '<i class="ti ti-loader me-2"></i>Processing...'
+                                );
                         },
                         success: function (response) {
                             if (response.status) {
                                 Swal.fire({
-                                    title: 'Task Created!',
-                                    text: response.message || 'A new task has been successfully created.',
-                                    icon: 'success',
-                                    confirmButtonText: 'Okay',
+                                    title: "Task Created!",
+                                    text:
+                                        response.message ||
+                                        "A new task has been successfully created.",
+                                    icon: "success",
+                                    confirmButtonText: "Okay",
                                     customClass: {
-                                        confirmButton: 'btn btn-success'
+                                        confirmButton: "btn btn-success",
                                     },
-                                    buttonsStyling: false
+                                    buttonsStyling: false,
                                 }).then(() => {
                                     if (response.redirect) {
-                                        window.location.href = response.redirect;
+                                        window.location.href =
+                                            response.redirect;
                                     } else {
                                         // Use Bootstrap 5 compatible hide
-                                        let modalEl = document.getElementById(formId);
-                                        let modalInstance = bootstrap.Modal.getInstance(modalEl);
+                                        let modalEl =
+                                            document.getElementById(formId);
+                                        let modalInstance =
+                                            bootstrap.Modal.getInstance(
+                                                modalEl
+                                            );
                                         if (modalInstance) {
                                             modalInstance.hide();
                                         }
                                     }
                                 });
                             } else {
-                                toastr.error(response.message || "An error occurred");
+                                toastr.error(
+                                    response.message || "An error occurred"
+                                );
                             }
                         },
                         error: function (xhr) {
                             let errorMessage = "An error occurred";
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMessage = xhr.responseJSON.message;
-                            } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            } else if (
+                                xhr.responseJSON &&
+                                xhr.responseJSON.errors
+                            ) {
                                 // Handle validation errors
                                 const errors = xhr.responseJSON.errors;
                                 errorMessage = Object.values(errors)[0][0];
@@ -662,20 +697,27 @@ function initializeTaskForm(formId) {
                         },
                         complete: function () {
                             // Re-enable submit button
-                            $(`#${formId} #submitBtn`).prop("disabled", false).html("Create Task");
+                            $(`#${formId} #submitBtn`)
+                                .prop("disabled", false)
+                                .html("Create Task");
                         },
                     });
                 } catch (error) {
                     let errorMessage = "An error occurred";
                     if (error.responseJSON && error.responseJSON.message) {
                         errorMessage = error.responseJSON.message;
-                    } else if (error.responseJSON && error.responseJSON.errors) {
+                    } else if (
+                        error.responseJSON &&
+                        error.responseJSON.errors
+                    ) {
                         const errors = error.responseJSON.errors;
                         errorMessage = Object.values(errors)[0][0];
                     }
                     toastr.error(errorMessage);
                 } finally {
-                    $(`#${formId} #submitBtn`).prop("disabled", false).html("Create Task");
+                    $(`#${formId} #submitBtn`)
+                        .prop("disabled", false)
+                        .html("Create Task");
                 }
             }
         });
