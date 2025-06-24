@@ -61,28 +61,17 @@ Route::middleware(['auth:web'])->group(function () {
 
     // Notes routes
     Route::post('/add-personal-tasks-notes', [PersonalTaskController::class, 'addNote'])->name('personal-tasks.add-note');
-    Route::put('/personal-tasks/notes/{note}', [PersonalTaskController::class, 'updateNote'])->name('personal-tasks.update-note');
-    Route::delete('/personal-tasks/notes/{note}', [PersonalTaskController::class, 'deleteNote'])->name('personal-tasks.delete-note');
+    Route::post('/edit-personal-tasks-notes', [PersonalTaskController::class, 'editNote'])->name('personal-tasks.update-note');
+    Route::post('/delete-personal-tasks-notes', [PersonalTaskController::class, 'deleteNote'])->name('personal-tasks.delete-note');
 
     // Document routes
     Route::get('/personal-tasks/{task}/documents', [PersonalTaskController::class, 'getDocuments'])->name('personal-tasks.documents');
     Route::post('/personal-tasks/{task}/documents/upload', [PersonalTaskController::class, 'uploadDocument'])->name('personal-tasks.upload-document');
-    Route::put('/personal-tasks/documents/{document}', [PersonalTaskController::class, 'updateDocument'])->name('personal-tasks.update-document');
-    Route::delete('/personal-tasks/documents/{document}', [PersonalTaskController::class, 'deleteDocument'])->name('personal-tasks.delete-document');
+    Route::post('/personal-tasks-delete-document', [PersonalTaskController::class, 'deleteDocument'])->name('personal-tasks.delete-document');
 
     Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
     Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
     Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
-
-    // Task Documents
-    // Route::get('/personal-tasks/{task}/documents', [TaskDocumentController::class, 'index'])->name('task-documents.index');
-    // Route::post('/personal-tasks/{task}/documents', [TaskDocumentController::class, 'store'])->name('task-documents.store');
-    // Route::get('/documents/{document}', [TaskDocumentController::class, 'show'])->name('task-documents.show');
-    // Route::put('/documents/{document}', [TaskDocumentController::class, 'update'])->name('task-documents.update');
-    // Route::delete('/documents/{document}', [TaskDocumentController::class, 'destroy'])->name('task-documents.destroy');
-
-    // Task Time
-    // Route::get('/personal-tasks/{task}/time', [TaskTimeController::class, 'index'])->name('task-time.index');
 
     //fetch Functions
     Route::get('/get-task-details/{id}', [TaskController::class, 'getTaskById']);
