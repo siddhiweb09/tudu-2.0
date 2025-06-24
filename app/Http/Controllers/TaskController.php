@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\TaskList;
 use App\Models\TaskMedia;
 use App\Models\TaskLog;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -177,7 +178,7 @@ class TaskController extends Controller
             'title' => $task->title,
         ]);
     }
-    
+
     public function taskDetails($task_id)
     {
         // Fetch the main task or throw 404 if not found
@@ -193,16 +194,38 @@ class TaskController extends Controller
             ? round(($completedTasks / $totalTasks) * 100, 2)
             : 0;
 
-        // Get owner of the main task
-        $owner = $task->assign_to;
+        // Extract owner employee_code
+        $ownerParts = explode('*', $task->assign_to);
+        $ownerId = $ownerParts[0];
 
-        // Fetch delegated task assignees
-        $delegatedAssignees = DelegatedTask::where('task_id', $task_id)
+        // Extract delegated task assignee employee_codes
+        $delegatedAssigneesRaw = DelegatedTask::where('task_id', $task_id)
             ->pluck('assign_to')
             ->toArray();
 
-        // Merge and deduplicate team members (delegated + owner)
-        $team = array_unique(array_merge($delegatedAssignees, [$owner]));
+        $ids = [];
+        foreach ($delegatedAssigneesRaw as $rawAssignTo) {
+            $parts = explode('*', $rawAssignTo);
+            if (isset($parts[0])) {
+                $ids[] = $parts[0];
+            }
+        }
+
+        // Merge and deduplicate employee codes
+        $empIds = array_unique(array_merge($ids, [$ownerId]));
+
+        // Fetch users' details
+        $team = User::whereIn('employee_code', $empIds)
+            ->get(['employee_code', 'employee_name', 'profile_picture']);
+
+        $teamCount = $team->count();
+
+        $activity = TaskLog::where('task_id', $task_id)
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        $totalActivity = $activity->count();
+        $lastActivity = $activity->first(); // first() because it's already ordered DESC
 
         // Pass all required data to the view
         return view('tasks.taskDetails', compact(
@@ -211,7 +234,11 @@ class TaskController extends Controller
             'totalTasks',
             'completedTasks',
             'progressPercentage',
-            'team'
+            'teamCount',
+            'team',
+            'totalActivity',
+            'lastActivity',
+            'activity'
         ));
     }
 }

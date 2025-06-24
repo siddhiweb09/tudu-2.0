@@ -10,14 +10,12 @@
     <!-- Favicon icon-->
     <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
-
     <!-- Core Css -->
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css" />
     <link rel="stylesheet" href="assets/css/buttons.css" />
+    <link rel="stylesheet" href="assets/css/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 
     <title>Make Your Tasks Easy</title>
 </head>
@@ -57,7 +55,8 @@
 
                         <!-- Example single danger button -->
                         <div class="dropdown-center">
-                            <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <img src="assets/images/logo.png" class="rounded-circle profile-pic" />
                             </button>
                             <ul class="dropdown-menu profile-menu">
@@ -65,7 +64,9 @@
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                     </div>
@@ -82,7 +83,8 @@
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ti ti-list-details menu-icon"></i>
                                     <span class="menu-title">My Tasks</span>
                                 </a>
@@ -91,7 +93,8 @@
                                     <li><a class="dropdown-item" href="#">Pending Tasks</a></li>
                                     <li><a class="dropdown-item" href="#">Delayed Tasks</a></li>
                                     <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do List</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do
+                                            List</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -120,7 +123,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('helpAndSupport') }}">
-                                   <i class="ti ti-info-square-rounded menu-icon"></i>
+                                    <i class="ti ti-info-square-rounded menu-icon"></i>
                                     <span class="menu-title">Support</span>
                                 </a>
                             </li>
@@ -143,11 +146,16 @@
 
     @extends('modalCreateTask')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="assets/js/task-form.js"></script>
+    <!-- include summernote css/js -->
+    <link href="assets/summernote/summernote.min.css" rel="stylesheet">
+    <script src="assets/summernote/summernote.min.js"></script>
+
+    <script src="assets/js/task-form.js">
+    </script>
 
     <script>
         window.addEventListener('load', function() {
@@ -157,8 +165,12 @@
                 preloader.style.visibility = 'hidden';
                 preloader.style.transition = 'opacity 0.5s ease';
             }
+            $(".summernote").summernote({
+                placeholder: "Describe your task here....",
+                tabsize: 2,
+                height: 100,
+            });
         });
-
     </script>
     @yield('customJs')
 </body>

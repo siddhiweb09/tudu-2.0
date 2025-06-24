@@ -52,11 +52,11 @@
                                 </div>
 
                                 <div class="form-floating mb-4">
-                                    <textarea name="task_description" class="form-control floating-input" id="taskDescInput" placeholder=" " style="height: 100px" required></textarea>
-                                    <label for="taskDescInput" class="floating-label">
+                                    <textarea name="task_description" class="form-control summernote" id="taskDescInput" placeholder=" " style="height: 100px" required></textarea>
+                                    <!-- <label for="taskDescInput" class="floating-label">
                                         <i class="ti ti-file-description me-2"></i>Task Description
                                     </label>
-                                    <div class="focus-line"></div>
+                                    <div class="focus-line"></div> -->
                                 </div>
 
                                 <div class="task-container">
