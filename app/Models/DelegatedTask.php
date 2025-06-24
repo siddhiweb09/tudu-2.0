@@ -27,8 +27,33 @@ class DelegatedTask extends Model
         'final_status',
         'remarks',
         'ratings',
+        'is_recurring',
+        'links',
         'due_date',
         'visible_to'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($task) {
+            $task->delegate_task_id = self::generateDelegateTaskId();
+        });
+    }
+
+    public static function generateDelegateTaskId()
+    {
+        $prefix = 'DELTASK-';
+        $datePart = now()->format('Ymd');
+        $randomPart = Str::upper(Str::random(4));
+
+        do {
+            $delTaskId = $prefix . $datePart . '-' . $randomPart;
+            $randomPart = Str::upper(Str::random(4));
+        } while (self::where('delegate_task_id', $delTaskId)->exists());
+
+        return $delTaskId;
+    }
 
 }

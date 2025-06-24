@@ -159,84 +159,84 @@ $(document).ready(function () {
     $("#flexSwitchCheckDefault").on("change", function () {
         if ($(this).is(":checked")) {
             $("#frequency_section").removeClass("d-none");
-            $("#due_date_section_form1").addClass("d-none");
-            $("#additional_fields_form1").removeClass("d-none");
+            $("#due_date_section_form2").addClass("d-none");
+            $("#additional_fields_form2").removeClass("d-none");
         } else {
             console.log("Switch is OFF");
             $("#frequency_section").addClass("d-none");
-            $("#due_date_section_form1").removeClass("d-none");
-            $("#additional_fields_form1").addClass("d-none");
+            $("#due_date_section_form2").removeClass("d-none");
+            $("#additional_fields_form2").addClass("d-none");
         }
         updateFrequencyDuration();
     });
 
-    $("#frequency_form1").on("change", function () {
+    $("#frequency_form2").on("change", function () {
         var frequency = $(this).val();
-        $("#additional_fields_form1").removeClass("d-none");
+        $("#additional_fields_form2").removeClass("d-none");
 
         if (frequency === "Daily") {
-            $("#additional_fields_form1").removeClass("d-none");
-            $("#weekly_days_form1").addClass("d-none");
-            $("#monthly_date_form1").addClass("d-none");
-            $("#yearly_date_form1").addClass("d-none");
-            $("#periodic_frequency_form1").addClass("d-none");
-            $("#custom_frequency_form1").addClass("d-none");
+            $("#additional_fields_form2").removeClass("d-none");
+            $("#weekly_days_form2").addClass("d-none");
+            $("#monthly_date_form2").addClass("d-none");
+            $("#yearly_date_form2").addClass("d-none");
+            $("#periodic_frequency_form2").addClass("d-none");
+            $("#custom_frequency_form2").addClass("d-none");
             $(".note").text(
                 "This task will be automatically reassigned on a daily basis until it is either closed or manually stopped."
             );
         } else if (frequency === "Weekly") {
-            $("#weekly_days_form1").removeClass("d-none");
-            $("#monthly_date_form1").addClass("d-none");
-            $("#yearly_date_form1").addClass("d-none");
-            $("#periodic_frequency_form1").addClass("d-none");
-            $("#custom_frequency_form1").addClass("d-none");
+            $("#weekly_days_form2").removeClass("d-none");
+            $("#monthly_date_form2").addClass("d-none");
+            $("#yearly_date_form2").addClass("d-none");
+            $("#periodic_frequency_form2").addClass("d-none");
+            $("#custom_frequency_form2").addClass("d-none");
             $(".note").text(
                 "This task will be automatically reassigned on the selected days of each week."
             );
         } else if (frequency === "Monthly") {
-            $("#weekly_days_form1").addClass("d-none");
-            $("#monthly_date_form1").removeClass("d-none");
-            $("#yearly_date_form1").addClass("d-none");
-            $("#periodic_frequency_form1").addClass("d-none");
-            $("#custom_frequency_form1").addClass("d-none");
+            $("#weekly_days_form2").addClass("d-none");
+            $("#monthly_date_form2").removeClass("d-none");
+            $("#yearly_date_form2").addClass("d-none");
+            $("#periodic_frequency_form2").addClass("d-none");
+            $("#custom_frequency_form2").addClass("d-none");
             $(".note").text(
                 "This task will be automatically reassigned on the selected date each month."
             );
         } else if (frequency === "Yearly") {
-            $("#weekly_days_form1").addClass("d-none");
-            $("#monthly_date_form1").addClass("d-none");
-            $("#yearly_date_form1").removeClass("d-none");
-            $("#periodic_frequency_form1").addClass("d-none");
-            $("#custom_frequency_form1").addClass("d-none");
+            $("#weekly_days_form2").addClass("d-none");
+            $("#monthly_date_form2").addClass("d-none");
+            $("#yearly_date_form2").removeClass("d-none");
+            $("#periodic_frequency_form2").addClass("d-none");
+            $("#custom_frequency_form2").addClass("d-none");
             $(".note").text(
                 "This task will be automatically reassigned on the selected date each year."
             );
         } else if (frequency === "Periodic") {
-            $("#weekly_days_form1").addClass("d-none");
-            $("#monthly_date_form1").addClass("d-none");
-            $("#yearly_date_form1").addClass("d-none");
-            $("#periodic_frequency_form1").removeClass("d-none");
-            $("#custom_frequency_form1").addClass("d-none");
+            $("#weekly_days_form2").addClass("d-none");
+            $("#monthly_date_form2").addClass("d-none");
+            $("#yearly_date_form2").addClass("d-none");
+            $("#periodic_frequency_form2").removeClass("d-none");
+            $("#custom_frequency_form2").addClass("d-none");
             $(".note").text(
                 "This task will be automatically reassigned at the interval of days specified in the input"
             );
         } else if (frequency === "Custom") {
-            $("#weekly_days_form1").addClass("d-none");
-            $("#monthly_date_form1").addClass("d-none");
-            $("#yearly_date_form1").addClass("d-none");
-            $("#periodic_frequency_form1").addClass("d-none");
-            $("#custom_frequency_form1").removeClass("d-none");
+            $("#weekly_days_form2").addClass("d-none");
+            $("#monthly_date_form2").addClass("d-none");
+            $("#yearly_date_form2").addClass("d-none");
+            $("#periodic_frequency_form2").addClass("d-none");
+            $("#custom_frequency_form2").removeClass("d-none");
             $(".note").text(
                 "This task will be automatically reassigned at the interval of months or weeks you’ve specified in the input."
             );
         } else {
-            $("#weekly_days_form1").addClass("d-none");
-            $("#monthly_date_form1").addClass("d-none");
-            $("#yearly_date_form1").addClass("d-none");
-            $("#periodic_frequency_form1").addClass("d-none");
-            $("#custom_frequency_form1").addClass("d-none");
+            $("#weekly_days_form2").addClass("d-none");
+            $("#monthly_date_form2").addClass("d-none");
+            $("#yearly_date_form2").addClass("d-none");
+            $("#periodic_frequency_form2").addClass("d-none");
+            $("#custom_frequency_form2").addClass("d-none");
 
-            $("#additional_fields_form1").addClass("d-none");
+            $("#additional_fields_form2").addClass("d-none");
             $(".note").text("");
         }
         updateFrequencyDuration();
@@ -244,7 +244,7 @@ $(document).ready(function () {
 
     // Update frequency duration when any related field changes
     $(
-        ".day-checkbox, #monthly_day_form1, #yearly_date_input_form1, #periodic_interval_form1, #custom_frequency_dropdown_form1, #occurs_every_dropdown_form1"
+        ".day-checkbox, #monthly_day_form2, #yearly_date_input_form2, #periodic_interval_form2, #custom_frequency_dropdown_form2, #occurs_every_dropdown_form2"
     ).on("change", function () {
         updateFrequencyDuration();
     });
@@ -458,7 +458,7 @@ $(document).ready(function () {
 
     // Add this new function to handle frequency duration
     function updateFrequencyDuration() {
-        const frequency = $("#frequency_form1").val();
+        const frequency = $("#frequency_form2").val();
         let duration = [];
 
         if (frequency === "Weekly") {
@@ -468,17 +468,17 @@ $(document).ready(function () {
                 })
                 .get();
         } else if (frequency === "Monthly") {
-            const day = $("#monthly_day_form1").val();
+            const day = $("#monthly_day_form2").val();
             if (day) duration = [day];
         } else if (frequency === "Yearly") {
-            const date = $("#yearly_date_input_form1").val();
+            const date = $("#yearly_date_input_form2").val();
             if (date) duration = [date];
         } else if (frequency === "Periodic") {
-            const interval = $("#periodic_interval_form1").val();
+            const interval = $("#periodic_interval_form2").val();
             if (interval) duration = [interval];
         } else if (frequency === "Custom") {
-            const freq = $("#custom_frequency_dropdown_form1").val();
-            const occurs = $("#occurs_every_dropdown_form1").val();
+            const freq = $("#custom_frequency_dropdown_form2").val();
+            const occurs = $("#occurs_every_dropdown_form2").val();
             if (freq && occurs) duration = [freq, occurs];
         }
 
@@ -607,7 +607,7 @@ $(document).ready(function () {
                         if (response.redirect) {
                             window.location.href = response.redirect;
                         } else {
-                            $("#assign_task").modal("hide");
+                            $("#add-task").modal("hide");
                         }
                     } else {
                         toastr.error(response.message || "An error occurred");

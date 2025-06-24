@@ -32,7 +32,20 @@
     animation: gradientBG 15s ease infinite;
 }
 
+.border-animated-gradient {
+    border-color: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
+    animation: gradientBG 15s ease infinite;
+}
+
 /* preloader start */
+/* preloader start */
+.preloader *,
+.preloader *:after,
+.preloader *:before {
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+}
+
 .preloader {
     position: fixed;
     z-index: 9999;
@@ -46,6 +59,11 @@
     justify-content: center;
     overflow: hidden;
     transition: opacity 0.5s ease;
+}
+
+.scene {
+    position: relative;
+    transform: translate3d(0, 0, 100vmin) rotateX(calc(var(--rotation-y, 0) * 1deg)) rotateY(calc(var(--rotation-x, 0) * 1deg)) rotateX(0deg);
 }
 
 .scene {
@@ -1419,6 +1437,7 @@ img.aspect-square {
 
 .aspect-square-container {
     position: relative;
+    height: 40px;
 }
 
 .aspect-square-box {

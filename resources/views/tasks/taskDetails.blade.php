@@ -56,24 +56,9 @@
             <div class="col">
                 <div class="card h-100 bg-light border-0">
                     <div class="card-body">
-                        <h6 class="text-muted">Progress</h6>
-                        <div class="row">
-                            <div class="col-auto">
-                                <h5 class="card-title">{{$progressPercentage}} %</h5>
-                            </div>
-                            <div class="col p-0">
-                                <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
-                                        completed)</small></p>
-                            </div>
-                        </div>
-                        <!-- Progress bar -->
-                        <div class="progress mt-3 rounded-pill" style="height: 20px;">
-                            <div class="progress-bar bg-success" role="progressbar"
-                                style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
-                                aria-valuemin="0" aria-valuemax="100">
-                                {{ $progressPercentage }}%
-                            </div>
-                        </div>
+                        <h6 class="text-muted">Assigned by</h6>
+                        <h5 class="card-title">{{$task->assign_by}}</h5>
+                        <p class="card-text text-muted"><small>Final status: {{$task->final_status}}</small></p>
                     </div>
                 </div>
             </div>
@@ -81,43 +66,31 @@
                 <div class="card h-100 bg-light border-0">
                     <div class="card-body">
                         <h6 class="text-muted">Team</h6>
-                        <div class="aspect-square-container mb-2">
-                            <span class="aspect-square-box">
-                                <img class="aspect-square" alt="Alex Morgan"
-                                    src="../assets/images/users/alex-morgan.png"></span>
-                            <span class="aspect-square-box">
-                                <img class="aspect-square" alt="Jessica Chen"
-                                    src="../assets/images/users/alex-morgan.png"></span>
-                            <span class="aspect-square-box">
-                                <img class="aspect-square" alt="Ryan Park" src="../assets/images/users/alex-morgan.png">
-                            </span>
+                        <div class="aspect-square-container">
+                            @foreach ($team as $teamMember)
+                            @if(!empty($teamMember->profile_picture))
+                            <div class="aspect-square-box">
+                                <img class="aspect-square" alt="{{ $teamMember->employee_name }}"
+                                    src="../assets/images/profile_picture/{{$teamMember->profile_picture}}">
+                            </div>
+                            @else
+                            <div class="aspect-square-box">
+                                <img class="aspect-square" alt="{{ $teamMember->employee_name }}"
+                                    src="../assets/images/profile_picture/user.png">
+                            </div>
+                            @endif
+                            @endforeach
                         </div>
-
-                        
+                        <p class="card-text text-muted"><small>{{$teamCount}} team members</small></p>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card h-100 bg-light border-0">
                     <div class="card-body">
-                        <h6 class="text-muted">Progress</h6>
-                        <div class="row">
-                            <div class="col-auto">
-                                <h5 class="card-title">{{$progressPercentage}} %</h5>
-                            </div>
-                            <div class="col p-0">
-                                <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
-                                        completed)</small></p>
-                            </div>
-                        </div>
-                        <!-- Progress bar -->
-                        <div class="progress mt-3 rounded-pill" style="height: 20px;">
-                            <div class="progress-bar bg-success" role="progressbar"
-                                style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
-                                aria-valuemin="0" aria-valuemax="100">
-                                {{ $progressPercentage }}%
-                            </div>
-                        </div>
+                        <h6 class="text-muted">Activity</h6>
+                        <h5 class="card-title">{{$totalActivity}}</h5>
+                        <p class="card-text text-muted"><small>Last updated: {{$lastActivity->created_at}}</small></p>
                     </div>
                 </div>
             </div>
@@ -147,8 +120,27 @@
                     class="ti ti-chart-bar me-1"></i> Analytics</button>
         </div>
     </nav>
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">...
+    <div class="tab-content mt-4" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+            <div class="row m-0">
+                <div class="col-md-6 col-lg-8 ps-0">
+                    <div class="card bg-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Project Description</h5>
+                            <p class="card-text text-muted"><small>Final status: {{$task->final_status}}</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 pe-0">
+                    <div class="card bg-white">
+                        <div class="card-body">
+                            <h6 class="text-muted">Assigned by</h6>
+                            <h5 class="card-title">{{$task->assign_by}}</h5>
+                            <p class="card-text text-muted"><small>Final status: {{$task->final_status}}</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">...</div>
         <div class="tab-pane fade" id="nav-team" role="tabpanel" aria-labelledby="nav-team-tab">...</div>

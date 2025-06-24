@@ -40,6 +40,7 @@ Route::middleware(['auth:web'])->group(function () {
 
     // Delegated Tasks
     Route::match(['get', 'post'], '/delegate-tasks/{id}', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
+    Route::post('/store-delegate-task', [TaskController::class,'storeDelegateForm'])->name('storeDelegateForm');
 
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');
