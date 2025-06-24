@@ -32,6 +32,11 @@
     animation: gradientBG 15s ease infinite;
 }
 
+.border-animated-gradient {
+    border-color: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7, #f72585);
+    animation: gradientBG 15s ease infinite;
+}
+
 /* preloader start */
 .preloader {
     position: fixed;
