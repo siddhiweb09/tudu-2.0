@@ -50,30 +50,29 @@ Route::middleware(['auth:web'])->group(function () {
     })->name('helpAndSupport');
     Route::post('/store-support-ticket', [SupportController::class, 'storeSupportForm'])->name('storeSupportForm');
     // Personal Tasks
-    Route::get('/personal-tasks', [PersonalTaskController::class, 'index'])->name('personal-tasks.index');
-    Route::get('/personal-tasks/list', function () {
-        return redirect()->route('personal-tasks.index', ['view' => 'list']);
-    })->name('personal-tasks.list');
-    Route::get('/personal-tasks/kanban', function () {
-        return redirect()->route('personal-tasks.index', ['view' => 'kanban']);
-    })->name('personal-tasks.kanban');
-    Route::get('/personal-tasks/calendar', function () {
-        return redirect()->route('personal-tasks.index', ['view' => 'calendar']);
-    })->name('personal-tasks.calendar');
-    Route::get('/personal-tasks/matrix', function () {
-        return redirect()->route('personal-tasks.index', ['view' => 'matrix']);
-    })->name('personal-tasks.matrix');
 
+
+    Route::get('/personal-tasks', [PersonalTaskController::class, 'index'])->name('personal-tasks.index');
+    Route::get('/personal-tasks-kanban', [PersonalTaskController::class, 'kanban'])->name('personal-tasks.kanban');
+    Route::get('/personal-tasks-calendar', [PersonalTaskController::class, 'calendar'])->name('personal-tasks.calendar');
+    Route::get('/personal-tasks-matrix', [PersonalTaskController::class, 'matrix'])->name('personal-tasks.matrix');
+    Route::get('/personal-tasks-show/{task:task_id}', [PersonalTaskController::class, 'show'])->name('personal-tasks.show');
     Route::post('/add-personal-tasks', [PersonalTaskController::class, 'store'])->name('personal-tasks.store');
-    Route::match(['get', 'post'], '/personal-tasks-show/{task}', [PersonalTaskController::class, 'show'])->name('personal-tasks.show');
+
+    // Notes routes
+    Route::post('/add-personal-tasks-notes', [PersonalTaskController::class, 'addNote'])->name('personal-tasks.add-note');
+    Route::put('/personal-tasks/notes/{note}', [PersonalTaskController::class, 'updateNote'])->name('personal-tasks.update-note');
+    Route::delete('/personal-tasks/notes/{note}', [PersonalTaskController::class, 'deleteNote'])->name('personal-tasks.delete-note');
+
+    // Document routes
+    Route::get('/personal-tasks/{task}/documents', [PersonalTaskController::class, 'getDocuments'])->name('personal-tasks.documents');
+    Route::post('/personal-tasks/{task}/documents/upload', [PersonalTaskController::class, 'uploadDocument'])->name('personal-tasks.upload-document');
+    Route::put('/personal-tasks/documents/{document}', [PersonalTaskController::class, 'updateDocument'])->name('personal-tasks.update-document');
+    Route::delete('/personal-tasks/documents/{document}', [PersonalTaskController::class, 'deleteDocument'])->name('personal-tasks.delete-document');
 
     Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
     Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
     Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
-
-    // Timer
-    Route::post('/personal-tasks/start-timer', [PersonalTaskController::class, 'startTimer'])->name('personal-tasks.start-timer');
-    Route::post('/personal-tasks/stop-timer', [PersonalTaskController::class, 'stopTimer'])->name('personal-tasks.stop-timer');
 
     // Task Documents
     // Route::get('/personal-tasks/{task}/documents', [TaskDocumentController::class, 'index'])->name('task-documents.index');
@@ -90,7 +89,6 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/get-departments', [UserController::class, 'getDepartments']);
     Route::get('/get-users-by-department/{department}', [UserController::class, 'getUsersByDepartment']);
     Route::get('/get-task-visibility/{task_id}', [UserController::class, 'getTaskVisibilityUsers']);
-
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');

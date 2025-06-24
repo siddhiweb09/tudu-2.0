@@ -9,54 +9,18 @@
                 <div class="card border-1 shadow-5 mt-3">
                     <form id="form2" method="POST" enctype="multipart/form-data">
                         @csrf
-
-                        <!-- Step 1: Task Info -->
-                        <div class="form-step active" data-step="1">
-                            <h2 class="h5 fw-semibold mb-4">Task Information</h2>
-
-                            <div class="form-floating mb-4">
-                                <input name="task_title" type="text" class="form-control floating-input"
-                                    id="taskTitleInput" placeholder=" " required>
-                                <label for="taskTitleInput" class="floating-label">
-                                    <i class="ti ti-heading me-2"></i>Task Title
-                                </label>
-                                <div cla Fss="focus-line"></div>
-                            </div>
-
-                            <div class="form-floating mb-4">
-                                <textarea name="task_description" class="form-control summernote"
-                                    id="taskDescInput" placeholder=" " style="height: 100px" required></textarea>
-                                <!-- <label for="taskDescInput" class="floating-label">
-                                            <i class="ti ti-file-description me-2"></i>Task Description
-                                        </label>
-                                        <div class="focus-line"></div> -->
-                            </div>
-
-                            <div class="task-container">
-                                <!-- Initial Task Field -->
-                                <div class="task-item mb-3" data-task-id="1">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control task-input me-3" name="tasks[]"
-                                            placeholder="Enter task" required>
-                                        <button type="button"
-                                            class="btn btn-inverse-primary rounded-circle add-task-btn">
-                                            <i class="ti ti-plus"></i>
-                                        </button>
-                                    </div>
+                        <div class="card-header bg-animated-gradient text-white py-4">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-circle bg-white-10 me-3">
+                                    <i class="ti ti-playlist-add fs-1 text-white"></i>
                                 </div>
                                 <div>
                                     <h5 class="card-title fw-bold mb-0" id="taskTitle"></h5>
-                                    <input type="hidden" name="task_id" id="taskIdInput">
                                     <input type="hidden" name="task_title" id="taskTitleInput">
+                                    <input type="hidden" name="task_id" id="taskIdInput">
                                     <p class="text-white-80 mb-0 small">You are delegating this task, originally
                                         assigned to you by a supervisor, to your team for execution.</p>
                                 </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end mt-4">
-                                <button type="button" class="next-step btn btn-primary">
-                                    Next: Assignment
-                                </button>
                             </div>
                         </div>
 
@@ -506,9 +470,9 @@
                                             <input type="hidden" name="tasks_json" id="tasksInput">
                                             <input type="hidden" name="links_json" id="linksInput">
                                             <input type="hidden" name="reminders_json" id="remindersInput">
-                                            <input type="hidden" name="visible_json" id="visibleInput">
                                             <input type="hidden" name="frequency_duration_json"
                                                 id="frequencyDurationInput">
+                                            <input type="hidden" name="visible_json" id="visibleInput">
 
                                             <div class="d-flex justify-content-between mt-4">
                                                 <button type="button" class="prev-step btn btn-outline-secondary">
@@ -524,76 +488,11 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-outline-primary mt-2"
-                            id="addMoreLinks">
-                            <i class="ti ti-plus mr-2"></i> Add Link
-                        </button>
+                    </form>
                 </div>
-            </div>
-
-            <!-- Reminders Section -->
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0"><i class="ti ti-bell mr-2"></i>Reminders</h6>
-                </div>
-                <div class="card-body">
-                    <div id="remindersContainer">
-                        <div class="reminder-item mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"
-                                    value="Email" name="reminders[]"
-                                    id="flexCheckChecked1" checked>
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    Email
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"
-                                    value="WhatsApp" name="reminders[]"
-                                    id="flexCheckChecked2" checked>
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    WhatsApp
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"
-                                    value="Telegram" name="reminders[]"
-                                    id="flexCheckChecked3" checked>
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    Telegram
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add these hidden inputs at the top of your form -->
-            <input type="hidden" name="priority" id="priorityInput">
-            <input type="hidden" name="tasks_json" id="tasksInput">
-            <input type="hidden" name="links_json" id="linksInput">
-            <input type="hidden" name="reminders_json" id="remindersInput">
-            <input type="hidden" name="frequency_duration_json" id="frequencyDurationInput">
-
-            <div class="d-flex justify-content-between mt-4">
-                <button type="button" class="prev-step btn btn-outline-secondary">
-                    Back
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    Create Task
-                </button>
             </div>
         </div>
     </div>
-
-</div>
-</div>
-</div>
-</form>
-</div>
-</div>
-</div>
-</div>
 </div>
 @endsection
 
@@ -609,6 +508,26 @@
                 $('#taskIdInput').val(response.id);
                 $('#taskTitle').text(response.title);
                 $('#taskTitleInput').val(response.title);
+
+            },
+            error: function(xhr) {
+                $('#taskTitle').text('Error loading task');
+                console.error('Error:', xhr.responseText);
+            }
+        });
+
+        $.ajax({
+            url: `/get-task-visibility/${taskId}`,
+            method: 'GET',
+            success: function(users) {
+                const container = $('#task-visibility');
+                container.empty();
+
+                if (users.length === 0) {
+                    container.append(`<div class="text-muted">No assigned users found.</div>`);
+                    return;
+                }
+
                 // Append the Select All checkbox first
                 const selectAllCheckbox = `
                                 <div class="form-check mb-2">

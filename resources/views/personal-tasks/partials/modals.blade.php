@@ -1,93 +1,3 @@
-<!-- Add Task Modal -->
-<div class="modal fade" id="addTaskModal2" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="POST" id="addTaskForm" action="{{ route('personal-tasks.store') }}">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Task Title*</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="okr" class="form-label">Linked Objective/OKR (Optional)</label>
-                                <input type="text" class="form-control" id="okr" name="okr">
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="category" class="form-label">Category</label>
-                                <select class="form-select" id="category" name="category">
-                                    <option value="">Select a category</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium" selected>Medium</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 new-category-group" style="display: none;">
-                                <label for="new_category_name" class="form-label">New Category Name</label>
-                                <input type="text" class="form-control" id="new_category_name" name="new_category_name">
-                                <label for="new_category_color" class="form-label">Color</label>
-                                <input type="color" class="form-control form-control-color" id="new_category_color" name="new_category_color" value="#3f51b5">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="due_date" class="form-label">Due Date</label>
-                                <input type="datetime-local" class="form-control" id="due_date" name="due_date">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="priority" class="form-label">Priority</label>
-                                <select class="form-select" id="priority" name="priority">
-                                    <option value="low">Low</option>
-                                    <option value="medium" selected>Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="time_estimate" class="form-label">Time Estimate (minutes)</label>
-                                <input type="number" class="form-control" id="time_estimate" name="time_estimate" min="0" step="5">
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input type="checkbox" class="form-check-input" id="is_habit" name="is_habit">
-                                <label class="form-check-label" for="is_habit">This is a habit/recurring task</label>
-                            </div>
-
-                            <div class="mb-3 habit-frequency" style="display: none;">
-                                <label for="habit_frequency" class="form-label">Habit Frequency</label>
-                                <select class="form-select" id="habit_frequency" name="habit_frequency">
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="weekdays">Weekdays Only</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" name="add_task" class="btn btn-primary">Add Task</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Task Detail Modal -->
 <div class="modal fade" id="taskDetailModal" tabindex="-1" aria-hidden="true">
@@ -197,21 +107,6 @@
                                     </button>
                                     <button class="btn btn-danger w-100 mb-3 delete-task" id="modalDeleteTaskBtn">
                                         <i class="ti-trash me-1"></i> Delete Task
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="card mb-4">
-                                <div class="card-header bg-light">
-                                    <h5 class="mb-0"><i class="ti-timer me-2"></i>Time Tracking</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="time-tracked mb-3 text-center">
-                                        <div class="display-4 text-primary" id="total-time-spent">0</div>
-                                        <small class="text-muted">minutes spent</small>
-                                    </div>
-                                    <button class="btn btn-success w-100 start-timer-from-modal">
-                                        <i class="ti-control-play me-1"></i> Start Timer
                                     </button>
                                 </div>
                             </div>
@@ -611,3 +506,4 @@
         </div>
     </div>
 </div>
+
