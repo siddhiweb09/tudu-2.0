@@ -22,8 +22,8 @@
             </div>
             <div class="col align-self-center">
                 <!-- Deadline Section -->
-                <h5 class="text-muted text-end mb-2">Deadline: Nov 15, 2023</h5>
-                <p class="text-muted text-end small mb-0"><i class="bi bi-calendar-event me-1"></i>Started: Oct 1, 2023
+                <h5 class="text-muted text-end mb-2"><i class="ti ti-calendar-event me-1"></i>Deadline: Nov 15, 2023</h5>
+                <p class="text-muted text-end small mb-0"><i class="ti ti-alarm me-1"></i>Started: Oct 1, 2023
                 </p>
             </div>
         </div>
@@ -126,8 +126,35 @@
                 <div class="col-md-6 col-lg-8 ps-0">
                     <div class="card bg-white">
                         <div class="card-body">
-                            <h5 class="card-title">Project Description</h5>
-                            <p class="card-text text-muted"><small>Final status: {{$task->final_status}}</small></p>
+                            <h4 class="card-title mb-3 text-decoration-underline">Task Description</h4>
+                            {!! $task->description !!}
+                        </div>
+                    </div>
+                    <div class="card bg-white mt-4">
+                        <div class="card-body">
+                            <h4 class="card-title mb-3 text-decoration-underline">Timeline</h4>
+                            <div class="timeline p-4 block mb-4">
+                                @foreach ($activities as $activity)
+                                @if(!empty($activity->log_description))
+                                <div class="tl-item">
+                                    <div class="tl-dot b-primary"></div>
+                                    <div class="tl-content">
+                                        <h6 class="">{{$activity->log_description}}</h6>
+                                        <div class="tl-date text-muted mt-1">{{$activity->created_at}} | {{$activity->added_by}}
+                                        </div>
+                                    </div>
+                                </div>
+                                @else
+                                <div class="tl-item">
+                                    <div class="tl-dot b-primary"></div>
+                                    <div class="tl-content">
+                                        <h6 class="">No log found.</h6>
+                                        <div class="tl-date text-muted mt-1"></div>
+                                    </div>
+                                </div>
+                                @endif
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -142,8 +169,92 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">...</div>
-        <div class="tab-pane fade" id="nav-team" role="tabpanel" aria-labelledby="nav-team-tab">...</div>
+        <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
+            <div class="card bg-white">
+                <div class="card-body">
+                    <h4 class="card-title mb-3 text-decoration-underline">Task Description</h4>
+                    <div class="p-3">
+                        <!-- Create todo section -->
+                        <div class="row rounded shadow mx-0 mb-4">
+                            <div class="col">
+                                <input class="form-control form-control-lg border-0 add-todo-input bg-transparent rounded" type="text" placeholder="Add new ..">
+                            </div>
+                            <div class="col-auto px-0 mx-0 mr-2">
+                                <button type="button" class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            @foreach ($taskItems as $taskItem)
+                            @if(!empty($taskItem->tasks) && $taskItem->status === "Completed")
+                            <li class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
+                                    <label class="form-check-label" for="checkChecked">
+                                        <del>Checked checkbox</del>
+                                    </label>
+                                </div>
+                            </li>
+                            @elseif(!empty($taskItem->tasks) && $taskItem->status !== "Completed")
+                            <li class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+                                    <label class="form-check-label" for="checkDefault">
+                                        {{$taskItem->tasks}}
+                                    </label>
+                                </div>
+                            </li>
+                            @else
+                            <li class="list-group-item">Task no available</li>
+                            @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-team" role="tabpanel" aria-labelledby="nav-team-tab">
+            <div class="card bg-white">
+                <div class="card-body">
+                    <h4 class="card-title mb-3 text-decoration-underline">Task Description</h4>
+                    <div class="p-3">
+                        <!-- Create todo section -->
+                        <div class="row rounded shadow mx-0 mb-4">
+                            <div class="col">
+                                <input class="form-control form-control-lg border-0 add-todo-input bg-transparent rounded" type="text" placeholder="Add new ..">
+                            </div>
+                            <div class="col-auto px-0 mx-0 mr-2">
+                                <button type="button" class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            @foreach ($taskItems as $taskItem)
+                            @if(!empty($taskItem->tasks) && $taskItem->status === "Completed")
+                            <li class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
+                                    <label class="form-check-label" for="checkChecked">
+                                        <del>Checked checkbox</del>
+                                    </label>
+                                </div>
+                            </li>
+                            @elseif(!empty($taskItem->tasks) && $taskItem->status !== "Completed")
+                            <li class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+                                    <label class="form-check-label" for="checkDefault">
+                                        {{$taskItem->tasks}}
+                                    </label>
+                                </div>
+                            </li>
+                            @else
+                            <li class="list-group-item">Task no available</li>
+                            @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="tab-pane fade" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">...</div>
         <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">...</div>
     </div>

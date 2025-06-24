@@ -25,7 +25,7 @@
     <!-- Preloader -->
     <div class="preloader">
         <div class="scene">
-            <div class="shadow"></div>
+            <div class="shadow-preloader"></div>
             <div class="jumper">
                 <div class="spinner">
                     <div class="scaler">

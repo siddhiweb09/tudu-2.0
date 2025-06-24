@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DelegatedTask;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Task;
+use App\Models\TaskComment;
 use App\Models\TaskList;
 use App\Models\TaskMedia;
 use App\Models\TaskLog;
@@ -308,9 +309,10 @@ class TaskController extends Controller
     {
         // Fetch the main task or throw 404 if not found
         $task = Task::where('task_id', $task_id)->firstOrFail();
+        $delegatedTaskId = DelegatedTask::where('task_id', $task_id)->pluck('delegate_task_id');
 
         // Fetch task items related to this task
-        $taskItems = TaskList::where('task_id', $task_id)->get();
+        $taskItems = TaskList::where('task_id', $task_id)->orwhere('task_id', $task_id)->get();
 
         // Calculate total and completed tasks
         $totalTasks = $taskItems->count();
@@ -345,12 +347,12 @@ class TaskController extends Controller
 
         $teamCount = $team->count();
 
-        $activity = TaskLog::where('task_id', $task_id)
+        $activities = TaskLog::where('task_id', $task_id)
             ->orderBy('id', 'DESC')
             ->get();
 
-        $totalActivity = $activity->count();
-        $lastActivity = $activity->first(); // first() because it's already ordered DESC
+        $totalActivity = $activities->count();
+        $lastActivity = $activities->first(); // first() because it's already ordered DESC
 
         // Pass all required data to the view
         return view('tasks.taskDetails', compact(
@@ -363,7 +365,7 @@ class TaskController extends Controller
             'team',
             'totalActivity',
             'lastActivity',
-            'activity'
+            'activities'
         ));
     }
 }

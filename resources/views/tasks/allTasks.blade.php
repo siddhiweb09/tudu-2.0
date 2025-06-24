@@ -55,7 +55,7 @@
 
         .kanban-card {
             background-color: #fff;
-            border-left: 4px solid #0d6efd;
+            border-left: 4px solid #1520a6;
             border-radius: 10px;
             padding: 1.25rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -211,7 +211,7 @@
 
         .kanban-column.drop-zone {
             background-color: rgba(13, 110, 253, 0.05);
-            border: 2px dashed #0d6efd;
+            border: 2px dashed #1520a6;
         }
 
         /* Responsive adjustments */

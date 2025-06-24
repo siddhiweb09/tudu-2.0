@@ -20,7 +20,7 @@
                                 <label for="taskTitleInput" class="floating-label">
                                     <i class="ti ti-heading me-2"></i>Task Title
                                 </label>
-                                <div class="focus-line"></div>
+                                <div cla Fss="focus-line"></div>
                             </div>
 
                             <div class="form-floating mb-4">
@@ -585,6 +585,15 @@
             </div>
         </div>
     </div>
+
+</div>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
 </div>
 @endsection
 
@@ -634,6 +643,8 @@
                 $('#task-visibility').html('<div class="text-danger">Failed to load visibility users.</div>');
             }
         });
+
+
     });
 </script>
 @endsection
