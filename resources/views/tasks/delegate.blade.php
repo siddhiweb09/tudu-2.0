@@ -43,7 +43,7 @@
                             </div>
 
                             <!-- Form Sections -->
-                            <form id="taskForm" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
+                            <form id="form2" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
                                 @csrf
 
                                 <!-- Step 1: Task Info -->
@@ -163,19 +163,19 @@
                                                     </div>
                                                 </div>
                                                 <div id="frequency_section_form" class="p-3">
-                                                    <div class="datetime-picker-container" id="due_date_section_form1">
+                                                    <div class="datetime-picker-container" id="due_date_section_form2">
                                                         <div class="input-group">
                                                             <span class="input-group-text bg-transparent border-end-0">
                                                                 <i class="ti ti-calendar-time"></i>
                                                             </span>
                                                             <input type="datetime-local" class="form-control border-start-0"
-                                                                id="due_date_form1" name="due_date"
+                                                                id="due_date_form2" name="due_date"
                                                                 placeholder="Select Date & Time">
                                                         </div>
                                                     </div>
 
                                                     <div id="frequency_section" class="d-none">
-                                                        <select class="form-control border-bottom" id="frequency_form1"
+                                                        <select class="form-control border-bottom" id="frequency_form2"
                                                             name="frequency">
                                                             <option value="">Select Frequency</option>
                                                             <option value="Daily">Daily</option>
@@ -188,77 +188,77 @@
                                                     </div>
 
                                                     <!-- Recurrence Options (Hidden) -->
-                                                    <div id="additional_fields_form1"
+                                                    <div id="additional_fields_form2"
                                                         class="p-4 bg-light border-top d-none">
-                                                        <div id="weekly_days_form1" class="frequency-option mb-3 d-none">
+                                                        <div id="weekly_days_form2" class="frequency-option mb-3 d-none">
                                                             <label class="small text-muted">Weekly on:</label>
                                                             <div class="day-picker">
-                                                                <input type="checkbox" id="sunday_form1"
+                                                                <input type="checkbox" id="sunday_form2"
                                                                     name="frequency_duration[]" value="Sunday"
                                                                     class="day-checkbox">
-                                                                <label for="sunday_form1" class="day-label">S</label>
+                                                                <label for="sunday_form2" class="day-label">S</label>
 
-                                                                <input type="checkbox" id="monday_form1"
+                                                                <input type="checkbox" id="monday_form2"
                                                                     name="frequency_duration[]" value="Monday"
                                                                     class="day-checkbox">
-                                                                <label for="monday_form1" class="day-label">M</label>
+                                                                <label for="monday_form2" class="day-label">M</label>
 
-                                                                <input type="checkbox" id="tuesday_form1"
+                                                                <input type="checkbox" id="tuesday_form2"
                                                                     name="frequency_duration[]" value="Tuesday"
                                                                     class="day-checkbox">
-                                                                <label for="tuesday_form1" class="day-label">T</label>
+                                                                <label for="tuesday_form2" class="day-label">T</label>
 
-                                                                <input type="checkbox" id="wednesday_form1"
+                                                                <input type="checkbox" id="wednesday_form2"
                                                                     name="frequency_duration[]" value="Wednesday"
                                                                     class="day-checkbox">
-                                                                <label for="wednesday_form1" class="day-label">W</label>
+                                                                <label for="wednesday_form2" class="day-label">W</label>
 
-                                                                <input type="checkbox" id="thursday_form1"
+                                                                <input type="checkbox" id="thursday_form2"
                                                                     name="frequency_duration[]" value="Thursday"
                                                                     class="day-checkbox">
-                                                                <label for="thursday_form1" class="day-label">T</label>
+                                                                <label for="thursday_form2" class="day-label">T</label>
 
-                                                                <input type="checkbox" id="friday_form1"
+                                                                <input type="checkbox" id="friday_form2"
                                                                     name="frequency_duration[]" value="Friday"
                                                                     class="day-checkbox">
-                                                                <label for="friday_form1" class="day-label">F</label>
+                                                                <label for="friday_form2" class="day-label">F</label>
 
-                                                                <input type="checkbox" id="saturday_form1"
+                                                                <input type="checkbox" id="saturday_form2"
                                                                     name="frequency_duration[]" value="Saturday"
                                                                     class="day-checkbox">
-                                                                <label for="saturday_form1" class="day-label">S</label>
+                                                                <label for="saturday_form2" class="day-label">S</label>
                                                             </div>
                                                         </div>
 
-                                                        <div id="monthly_date_form1" class="frequency-option d-none">
-                                                            <label for="monthly_day_form1">Enter Day of Month:</label>
-                                                            <input type="number" class="form-control" id="monthly_day_form1"
+                                                        <div id="monthly_date_form2" class="frequency-option d-none">
+                                                            <label for="monthly_day_form2">Enter Day of Month:</label>
+                                                            <input type="number" class="form-control" id="monthly_day_form2"
                                                                 name="frequency_duration[]" min="1" max="31"
                                                                 placeholder="31">
                                                         </div>
 
-                                                        <div id="yearly_date_form1" class="frequency-option d-none">
-                                                            <label for="yearly_date_input_form1">Select Date:</label>
+                                                        <div id="yearly_date_form2" class="frequency-option d-none">
+                                                            <label for="yearly_date_input_form2">Select Date:</label>
                                                             <input type="date" class="form-control"
-                                                                id="yearly_date_input_form1" name="frequency_duration[]"
+                                                                id="yearly_date_input_form2" name="frequency_duration[]"
                                                                 placeholder="Select Date">
                                                         </div>
 
-                                                        <div id="periodic_frequency_form1" class="frequency-option d-none">
-                                                            <label for="periodic_interval_form1">Interval (in
+                                                        <div id="periodic_frequency_form2" class="frequency-option d-none">
+                                                            <label for="periodic_interval_form2">Interval (in
                                                                 frequency_duration):</label>
                                                             <input type="number" class="form-control"
-                                                                id="periodic_interval_form1" name="frequency_duration[]"
+                                                                id="periodic_interval_form2" name="frequency_duration[]"
                                                                 min="1" placeholder="Interval Count of Days">
                                                         </div>
 
-                                                        <div id="custom_frequency_form1" class="frequency-option d-none">
+                                                        <div id="custom_frequency_form2" class="frequency-option d-none">
                                                             <div class="row">
                                                                 <div class="col-md-6 mb-3">
                                                                     <label
-                                                                        for="custom_frequency_dropdown_form1">Frequency:</label>
+                                                                        for="custom_frequency_dropdown_form2">Frequency:</label>
                                                                     <select class="form-control"
-                                                                        id="custom_frequency_dropdown_form1"
+                                                                        id="custom_frequency_dropdown_form2"
                                                                         name="custom_frequency_dropdown">
                                                                         <option value="">Select Frequency</option>
                                                                         <option value="Month">Month</option>
@@ -266,10 +266,10 @@
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-md-6 mb-3">
-                                                                    <label for="occurs_every_dropdown_form1">Occurs
+                                                                    <label for="occurs_every_dropdown_form2">Occurs
                                                                         Every:</label>
                                                                     <input type="number" class="form-control"
-                                                                        id="occurs_every_dropdown_form1"
+                                                                        id="occurs_every_dropdown_form2"
                                                                         name="frequency_duration[]" min="1"
                                                                         placeholder="Interval Count of Week/Month">
                                                                 </div>
