@@ -492,18 +492,18 @@
                 $("#modalEditTaskBtn").data("id", taskId);
                 $("#modalDeleteTaskBtn").data("id", taskId);
                 $("#task-id").val(taskId);
-                $("#document-task-id").val(taskId); // Make sure this is set
+                $("#document-task-id").val(taskId);
                 const $modal = $("#taskDetailModal");
 
                 $modal.modal("show");
 
-                $.ajax({
+                // Load task details
+                $.get({
                     url: `/personal-tasks-show/${taskId}`,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        console.log("Received data:", data);
-                        if (!data || typeof data !== "object") {
+                        if (!data) {
                             throw new Error("Invalid data received");
                         }
 
@@ -511,10 +511,8 @@
                         $("#detail-title").text(data.title || "No title");
                         $("#detail-description").text(data.description || "No description");
 
-                        // Update status with appropriate badge
+                        // Update status and priority badges
                         updateStatusBadge(data.status);
-
-                        // Update priority with appropriate badge
                         updatePriorityBadge(data.priority);
 
                         // Format and display due date
@@ -522,43 +520,40 @@
                             data.due_date ? formatDate(data.due_date) : "No deadline"
                         );
 
-                        // Update category with color
+                        // Update category
                         $("#detail-category")
                             .text(data.category || "None")
                             .css("background-color", getCategoryColor(data.category));
 
-                        // Handle habit section visibility
+                        // Handle habit section
                         if (data.is_habit) {
-                            $("#detail-habit-frequency").text(
-                                data.habit_frequency || "Not specified"
-                            );
+                            $("#detail-habit-frequency").text(data.habit_frequency || "Not specified");
                             $("[data-habit-section]").show();
                         } else {
                             $("[data-habit-section]").hide();
                         }
 
-                        // Display notes
-                        displayNotes(data.notes || null);
-
+                        // Display notes and documents
+                        displayNotes(taskId, data.notes || null);
                         displayDocuments(taskId);
 
-                        // Initialize form submission handlers
+                        // Initialize form handlers
                         initFormHandlers(taskId);
                     },
-                    error: function(xhr, status, error) {
-                        console.error("AJAX Error:", status, error);
-                        $modal
-                            .find(".modal-body")
-                            .html(
-                                '<div class="alert alert-danger">Failed to load task details. Please check console for errors.</div>'
-                            );
+                    error: function(xhr) {
+                        console.error("AJAX Error:", xhr.responseText);
+                        $modal.find(".modal-body").html(
+                            '<div class="alert alert-danger">Failed to load task details. Please check console for errors.</div>'
+                        );
                     },
                 });
 
-
-
+                loadTotalTimeSpent(taskId);
             });
 
+
+
+            // Helper functions
             function updateStatusBadge(status) {
                 const $status = $("#detail-status").text(status || "unknown");
                 $status
@@ -627,31 +622,31 @@
                         }
 
                         html += `
-            <div class="note-item card mb-3" data-note-id="${note.id}">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <small class="text-muted">
-                            <i class="ti-time mr-1"></i>${note.timestamp}
-                        </small>
-                        <div class="note-actions">
-                            <button class="btn btn-sm btn-outline-primary edit-note mr-1" data-note-id="${
-                              note.id
-                            }">
-                                <i class="ti-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger delete-note" data-note-id="${
-                              note.id
-                            }">
-                                <i class="ti-trash"></i>
-                            </button>
+                    <div class="note-item card mb-3" data-note-id="${note.id}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <small class="text-muted">
+                                    <i class="ti-time mr-1"></i>${note.timestamp}
+                                </small>
+                                <div class="note-actions">
+                                    <button class="btn btn-sm btn-outline-primary edit-note mr-1" data-note-id="${
+                                      note.id
+                                    }">
+                                        <i class="ti-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-note" data-note-id="${
+                                      note.id
+                                    }">
+                                        <i class="ti-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="note-content mt-2">${note.content.replace(
+                              /\n/g,
+                              "<br>"
+                            )}</div>
                         </div>
-                    </div>
-                    <div class="note-content mt-2">${note.content.replace(
-                      /\n/g,
-                      "<br>"
-                    )}</div>
-                </div>
-            </div>`;
+                    </div>`;
                     });
                     html += "</div>";
                     notesContainer.html(html);
@@ -663,12 +658,12 @@
                     // Fallback for plain text notes
                     notesContainer.html(
                         `<div class="alert alert-info">
-                <h5>Notes History</h5>
-                <div style="white-space: pre-line">${notesJson.replace(
-                  /\n/g,
-                  "<br>"
-                )}</div>
-            </div>`
+                        <h5>Notes History</h5>
+                        <div style="white-space: pre-line">${notesJson.replace(
+                          /\n/g,
+                          "<br>"
+                        )}</div>
+                    </div>`
                     );
                 }
             }
@@ -692,23 +687,23 @@
                         .replace(/<br\s*[\/]?>/gi, "\n");
 
                     noteItem.html(`
-            <div class="card-body">
-                <form class="edit-note-form">
-                    <div class="form-group">
-                        <textarea class="form-control" rows="3" name="note">${currentContent}</textarea>
-                    </div>
-                    <input type="hidden" name="note_id" value="${noteId}">
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-secondary mr-2 cancel-edit">
-                            <i class="ti-close mr-1"></i> Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti-save mr-1"></i> Save Changes
-                        </button>
-                    </div>
-                </form>
-            </div>
-        `);
+                <div class="card-body">
+                    <form class="edit-note-form">
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3" name="note">${currentContent}</textarea>
+                        </div>
+                        <input type="hidden" name="note_id" value="${noteId}">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary mr-2 cancel-edit">
+                                <i class="ti-close mr-1"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti-save mr-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                 `);
 
                     // Cancel edit handler
                     noteItem.find(".cancel-edit").click(function() {
@@ -741,21 +736,23 @@
 
             function addNote(taskId, content) {
                 $.ajax({
-                    url: "add_note.php",
+                    url: "/add-personal-tasks-notes",
                     method: "POST",
                     data: {
                         task_id: taskId,
-                        note: content,
+                        content: content,
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         if (response.success) {
-                            fetchTaskDetails(taskId);
+                            displayNotes(taskId, response.notes);
                             $("#addNoteForm")[0].reset();
                         } else {
                             alert(response.error || "Failed to add note");
                         }
                     },
-                    error: function() {
+                    error: function(xhr) {
+                        console.error("Error adding note:", xhr.responseText);
                         alert("Error adding note");
                     },
                 });
@@ -765,12 +762,13 @@
                 const taskId = $("#task-id").val();
 
                 $.ajax({
-                    url: "update_note.php",
+                    url: "/update-note",
                     method: "POST",
                     data: {
                         task_id: taskId,
                         note_id: noteId,
                         note: newContent,
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         if (response.success) {
@@ -789,11 +787,12 @@
                 const taskId = $("#task-id").val();
 
                 $.ajax({
-                    url: "delete_note.php",
+                    url: "/delete-note",
                     method: "POST",
                     data: {
                         task_id: taskId,
                         note_id: noteId,
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         if (response.success) {
@@ -810,7 +809,7 @@
 
             function fetchTaskDetails(taskId) {
                 $.ajax({
-                    url: "get_personal_task_details.php?task_id=" + taskId,
+                    url: `/personal-tasks/${taskId}`,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
@@ -824,73 +823,61 @@
                 });
             }
 
-            function displayDocuments(taskId) {
-                $.ajax({
-                    url: "get_task_documents.php?task_id=" + taskId,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(documents) {
-                        const container = $("#detail-documents");
-                        container.empty();
+            // Update the displayDocuments function
+            function displayNotes(taskId, notesJson) {
+                const notesContainer = $("#detail-notes");
+                notesContainer.empty();
 
-                        if (!documents || documents.length === 0) {
-                            container.html(
-                                '<div class="alert alert-light">No documents uploaded yet</div>'
-                            );
-                            return;
-                        }
+                if (!notesJson) {
+                    notesContainer.html('<div class="alert alert-light">No notes yet</div>');
+                    return;
+                }
 
-                        let html = '<div class="document-list">';
-                        documents.forEach((doc) => {
-                            html += `
-                <div class="document-item card mb-3" data-doc-id="${doc.id}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="mb-1">
-                                    ${getDocumentIcon(doc.file_type)} ${
-              doc.file_name
-            }
-                                </h6>
-                                <small class="text-muted">
-                                    ${formatFileSize(doc.file_size)} • 
-                                    ${new Date(doc.created_at).toLocaleString()}
-                                </small>
-                                ${
-                                  doc.description
-                                    ? `<p class="mt-2 mb-1">${doc.description}</p>`
-                                    : ""
-                                }
-                            </div>
-                            <div class="document-actions">
-                                <button class="btn btn-sm btn-outline-primary edit-doc mr-1" data-doc-id="${
-                                  doc.id
-                                }">
-                                    <i class="ti-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger delete-doc" data-doc-id="${
-                                  doc.id
-                                }">
-                                    <i class="ti-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="document-preview mt-2">
-                            ${getDocumentPreview(doc)}
+                try {
+                    const notes = typeof notesJson === 'string' ? JSON.parse(notesJson) : notesJson;
+
+                    if (!notes || !notes.length) {
+                        notesContainer.html('<div class="alert alert-light">No notes yet</div>');
+                        return;
+                    }
+
+                    let html = '<div class="notes-list">';
+                    notes.forEach((note) => {
+                        html += `
+                <div class="note-item card mb-3" data-note-id="${note.id}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <small class="text-muted">
+                            <i class="ti-time mr-1"></i>${new Date(note.created_at).toLocaleString()}
+                        </small>
+                        <div class="note-actions">
+                            <button class="btn btn-sm btn-outline-primary edit-note mr-1" data-note-id="${note.id}">
+                                <i class="ti-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-note" data-note-id="${note.id}">
+                                <i class="ti-trash"></i>
+                            </button>
                         </div>
                     </div>
+                    <div class="note-content mt-2">${note.content.replace(/\n/g, "<br>")}</div>
+                </div>
                 </div>`;
                         });
                         html += "</div>";
-                        container.html(html);
+                        notesContainer.html(html);
 
-                        initDocumentActionHandlers();
-                    },
-                    error: function() {
-                        console.error("Failed to load documents");
-                    },
-                });
+                        initNoteActionHandlers(taskId);
+                    } catch (e) {
+                        console.error("Error parsing notes:", e);
+                        notesContainer.html(`
+                <div class="alert alert-info">
+                    <h5>Notes History</h5>
+                    <div style="white-space: pre-line">${notesJson.replace(/\n/g, "<br>")}</div>
+                </div>
+            `);
+                    }
             }
+
 
             function getDocumentIcon(fileType) {
                 const type = fileType.split("/")[0];
@@ -916,8 +903,8 @@
                 if (type === "application") {
                     const subtype = fileType.split("/")[1];
                     return `<i class="${
-          icons.application[subtype] || "ti-file"
-        } mr-2"></i>`;
+              icons.application[subtype] || "ti-file"
+            } mr-2"></i>`;
                 }
                 return `<i class="${icons[type] || "ti-file"} mr-2"></i>`;
             }
@@ -932,7 +919,7 @@
 
             function getDocumentPreview(doc) {
                 const type = doc.file_type.split("/")[0];
-                const fileUrl = "uploads/" + doc.file_path;
+                const fileUrl = "/storage/" + doc.file_path;
 
                 if (type === "image") {
                     return `<img src="${fileUrl}" class="img-thumbnail" style="max-height: 200px;">`;
@@ -940,20 +927,20 @@
 
                 if (doc.file_type === "application/pdf") {
                     return `
-        <div class="pdf-preview">
-            <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
-                <i class="ti-eye mr-1"></i> View PDF
-            </a>
-            <embed src="${fileUrl}#toolbar=0&navpanes=0" width="100%" height="300px" type="application/pdf">
-        </div>`;
+            <div class="pdf-preview">
+                <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="ti-eye mr-1"></i> View PDF
+                </a>
+                <embed src="${fileUrl}#toolbar=0&navpanes=0" width="100%" height="300px" type="application/pdf">
+            </div>`;
                 }
 
                 return `
-    <div class="file-preview">
-        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
-            <i class="ti-download mr-1"></i> Download File
-        </a>
-    </div>`;
+            <div class="file-preview">
+                <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="ti-download mr-1"></i> Download File
+                </a>
+            </div>`;
             }
 
             function initDocumentActionHandlers() {
@@ -971,37 +958,37 @@
                     const docItem = $(this).closest(".document-item");
 
                     $.ajax({
-                        url: "get_document_details.php?doc_id=" + docId,
+                        url: `/documents/${docId}`,
                         type: "GET",
                         dataType: "json",
                         success: function(doc) {
                             docItem.html(`
-                    <div class="card-body">
-                        <form class="edit-document-form">
-                            <div class="form-group">
-                                <label>File Name</label>
-                                <input type="text" class="form-control" name="file_name" value="${
-                                  doc.file_name
-                                }">
-                            </div>
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea class="form-control" name="description">${
-                                  doc.description || ""
-                                }</textarea>
-                            </div>
-                            <input type="hidden" name="doc_id" value="${docId}">
-                            <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-secondary mr-2 cancel-edit-doc">
-                                    <i class="ti-close mr-1"></i> Cancel
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="ti-save mr-1"></i> Save Changes
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                `);
+                        <div class="card-body">
+                            <form class="edit-document-form">
+                                <div class="form-group">
+                                    <label>File Name</label>
+                                    <input type="text" class="form-control" name="file_name" value="${
+                                      doc.file_name
+                                    }">
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control" name="description">${
+                                      doc.description || ""
+                                    }</textarea>
+                                </div>
+                                <input type="hidden" name="doc_id" value="${docId}">
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-secondary mr-2 cancel-edit-doc">
+                                        <i class="ti-close mr-1"></i> Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="ti-save mr-1"></i> Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    `);
 
                             // Cancel edit handler
                             docItem.find(".cancel-edit-doc").click(function() {
@@ -1022,18 +1009,12 @@
                 });
             }
 
-            $("#uploadDocumentForm").on("submit", function(e) {
+            // Update document upload handler
+            $("#uploadDocumentForm").off('submit').on("submit", function(e) {
                 e.preventDefault();
-                e.stopPropagation(); // Add this to prevent any parent form handlers
-
                 const form = this;
                 const formData = new FormData(form);
                 const taskId = $("#task-id").val();
-
-                // Debug: Log FormData contents
-                for (let pair of formData.entries()) {
-                    console.log(pair[0] + ": " + pair[1]);
-                }
 
                 // Validate file was selected
                 const fileInput = document.getElementById("documentFile");
@@ -1044,21 +1025,18 @@
 
                 // Show loading state
                 const submitBtn = $(form).find("button[type=submit]");
-                submitBtn
-                    .prop("disabled", true)
-                    .html('<i class="ti-reload mr-1 spinning"></i> Uploading...');
-
-                console.log(formData);
+                submitBtn.prop("disabled", true).html('<i class="ti-reload mr-1 spinning"></i> Uploading...');
 
                 $.ajax({
-                    url: "upload_document.php",
+                    url: `/personal-tasks/${taskId}/documents/upload`,
                     type: "POST",
                     data: formData,
-                    processData: false, // Crucial for file uploads
-                    contentType: false, // Crucial for file uploads
-                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     success: function(response) {
-                        console.log("Upload response:", response);
                         if (response.success) {
                             displayDocuments(taskId);
                             form.reset();
@@ -1066,15 +1044,13 @@
                             alert(response.error || "Failed to upload document");
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error("Upload error:", status, error);
-                        alert("Upload failed: " + error);
+                    error: function(xhr) {
+                        console.error("Upload error:", xhr.responseText);
+                        alert("Upload failed: " + (xhr.responseJSON?.error || 'Unknown error'));
                     },
                     complete: function() {
-                        submitBtn
-                            .prop("disabled", false)
-                            .html('<i class="ti-upload mr-1"></i> Upload');
-                    },
+                        submitBtn.prop("disabled", false).html('<i class="ti-upload mr-1"></i> Upload');
+                    }
                 });
             });
 
@@ -1082,11 +1058,11 @@
                 const taskId = $("#task-id").val();
 
                 $.ajax({
-                    url: "delete_document.php",
-                    method: "POST",
+                    url: `/documents/${docId}`,
+                    method: "DELETE",
                     data: {
-                        doc_id: docId,
                         task_id: taskId,
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         if (response.success) {
@@ -1105,8 +1081,8 @@
                 const taskId = $("#task-id").val();
 
                 $.ajax({
-                    url: "update_document.php",
-                    method: "POST",
+                    url: `/documents/${formData.doc_id}`,
+                    method: "PUT",
                     data: formData,
                     success: function(response) {
                         if (response.success) {
@@ -1121,14 +1097,100 @@
                 });
             }
 
-            function getCategoryColor(category) {
-                const colors = {
-                    "Erp Task": "#3f51b5",
-                    Work: "#4caf50",
-                    Personal: "#ff9800",
-                };
-                return colors[category] || "#6c757d";
+            function loadTotalTimeSpent(taskId) {
+                $.ajax({
+                    url: `/personal-tasks/${taskId}/time`,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        if (data && data.total_minutes) {
+                            $("#total-time-spent").text(data.total_minutes);
+                        }
+                    },
+                    error: function() {
+                        console.error("Failed to load time spent");
+                    },
+                });
             }
+
+            // Edit task button
+            $(".edit-task").click(function() {
+                const taskId = $(this).data("id");
+
+                $.get(`/personal-tasks/${taskId}`, function(data) {
+                    $("#edit_task_id").val(data.id);
+                    $("#edit_title").val(data.title);
+                    $("#edit_description").val(data.description);
+                    $("#edit_okr").val(data.okr);
+                    $("#edit_category").val(data.category);
+
+                    if (data.due_date) {
+                        const dueDate = new Date(data.due_date);
+                        const formattedDate = dueDate.toISOString().slice(0, 16);
+                        $("#edit_due_date").val(formattedDate);
+                    }
+
+                    $("#edit_priority").val(data.priority);
+                    $("#edit_time_estimate").val(data.time_estimate);
+                    $("#edit_is_habit").prop("checked", data.is_habit);
+
+                    if (data.is_habit) {
+                        $(".edit-habit-frequency").show();
+                        $("#edit_habit_frequency").val(data.habit_frequency);
+                    } else {
+                        $(".edit-habit-frequency").hide();
+                    }
+
+                    $("#editTaskModal").modal("show");
+                });
+            });
+
+            // Delete task button
+            $(".delete-task").click(function() {
+                const taskId = $(this).data("id");
+                if (confirm("Are you sure you want to delete this task?")) {
+                    $.ajax({
+                        url: `/personal-tasks/${taskId}`,
+                        method: "DELETE",
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                window.location.reload();
+                            } else {
+                                alert(response.error || "Failed to delete task");
+                            }
+                        },
+                        error: function() {
+                            alert("Error deleting task");
+                        }
+                    });
+                }
+            });
+
+            // Category selection handler
+            $("#category, #edit_category").change(function() {
+                if ($(this).val() === "_new_category") {
+                    $(this).closest(".form-group").next(".new-category-group").show();
+                } else {
+                    $(this).closest(".form-group").next(".new-category-group").hide();
+                }
+            });
+
+            // Habit checkbox handler
+            $("#is_habit, #edit_is_habit").change(function() {
+                if ($(this).is(":checked")) {
+                    $(this).closest(".form-check").next(".habit-frequency, .edit-habit-frequency").show();
+                } else {
+                    $(this).closest(".form-check").next(".habit-frequency, .edit-habit-frequency").hide();
+                }
+            });
+
+            // Status change handler
+            $(".status-select").change(function() {
+                $(this).closest("form").submit();
+            });
         });
     </script>
 
