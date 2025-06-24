@@ -41,9 +41,11 @@ function initializeTaskForm(formId) {
         if (department) {
             $.ajax({
                 url: `/get-users-by-department/${department}`,
-                method: 'GET',
+                method: "GET",
                 success: function (response) {
-                    assignDropdown.html('<option value="">Select User</option>');
+                    assignDropdown.html(
+                        '<option value="">Select User</option>'
+                    );
 
                     if (response.length === 0) {
                         assignDropdown.append(
@@ -52,12 +54,16 @@ function initializeTaskForm(formId) {
                     }
 
                     response.forEach(function (user) {
-                        assignDropdown.append(`<option value="${user.employee_code} * ${user.employee_name}">${user.employee_code} - ${user.employee_name}</option>`);
+                        assignDropdown.append(
+                            `<option value="${user.employee_code} * ${user.employee_name}">${user.employee_code} - ${user.employee_name}</option>`
+                        );
                     });
                 },
                 error: function () {
-                    assignDropdown.html('<option value="">Error loading users</option>');
-                }
+                    assignDropdown.html(
+                        '<option value="">Error loading users</option>'
+                    );
+                },
             });
         } else {
             assignDropdown.html('<option value="">Select User</option>');
@@ -529,7 +535,7 @@ function initializeTaskForm(formId) {
     // Update reminders input
     function updateVisibilityInputs(formId) {
         const visibleTo = [];
-        $(`#${formId} input[visible_users[]"]:checked`).each(function () {
+        $(`#${formId} input[name="visible_users[]"]:checked`).each(function () {
             visibleTo.push($(this).val());
         });
         $(`#${formId} #visibleInput`).val(JSON.stringify(visibleTo));
@@ -576,150 +582,126 @@ function initializeTaskForm(formId) {
     });
 
     // Form submission handler
-    $(`#${formId} form`).on("submit", function (e) {
+    $(`#${formId}`).on("submit", function (e) {
         // Prevent default form submission
         e.preventDefault();
         console.log(formId);
-        
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Do you want to create this task?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#4cc9f0",
-            cancelButtonColor: "#f72585",
-            confirmButtonText: "Yes, submit it!",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Update all dynamic inputs
-                updatePriorityInput(formId);
-                updateTasksInput(formId);
-                updateLinksInput(formId);
-                updateRemindersInput(formId);
-                updateFrequencyDuration(formId);
-                updateVisibilityInputs(formId);
 
-                // Serialize form data including our hidden inputs
-                const formData = new FormData(this);
+        // Update all dynamic inputs
+        updatePriorityInput(formId);
+        updateTasksInput(formId);
+        updateLinksInput(formId);
+        updateRemindersInput(formId);
+        updateFrequencyDuration(formId);
+        if (formId !== "form1") {
+            updateVisibilityInputs(formId);
+        }
 
-                // Remove array versions
-                formData.delete("tasks[]");
-                formData.delete("reminders[]");
-                formData.delete("frequency_duration[]");
-                formData.delete("voice_notes"); // Remove the JSON version
+        // Serialize form data including our hidden inputs
+        const formData = new FormData(this);
 
-                for (const [index, note] of voiceNotes.entries()) {
-                    formData.append(
-                        `voice_notes[${index}]`,
-                        note.blob,
-                        `voice_note_${note.id}.wav`
-                    );
-                }
+        // Remove array versions
+        formData.delete("tasks[]");
+        formData.delete("reminders[]");
+        formData.delete("frequency_duration[]");
+        formData.delete("voice_notes"); // Remove the JSON version
 
-                // 🔽 ADD THIS block before AJAX call
-                let url = "";
-                if (formId === "form1") {
-                    url = "/add-task";
-                } else if (formId === "form2") {
-                    url = "/store-delegate-task";
-                }
+        for (const [index, note] of voiceNotes.entries()) {
+            formData.append(
+                `voice_notes[${index}]`,
+                note.blob,
+                `voice_note_${note.id}.wav`
+            );
+        }
 
-                // Submit the form via AJAX
-                try {
-                    $.ajax({
-                        url: "url",
-                        type: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        beforeSend: function () {
-                            // Show loading indicator
-                            $(`#${formId} #submitBtn`)
-                                .prop("disabled", true)
-                                .html(
-                                    '<i class="ti ti-loader me-2"></i>Processing...'
-                                );
-                        },
-                        success: function (response) {
-                            if (response.status) {
-                                Swal.fire({
-                                    title: "Task Created!",
-                                    text:
-                                        response.message ||
-                                        "A new task has been successfully created.",
-                                    icon: "success",
-                                    confirmButtonText: "Okay",
-                                    customClass: {
-                                        confirmButton: "btn btn-success",
-                                    },
-                                    buttonsStyling: false,
-                                }).then(() => {
-                                    if (response.redirect) {
-                                        window.location.href =
-                                            response.redirect;
-                                    } else {
-                                        // Use Bootstrap 5 compatible hide
-                                        let modalEl =
-                                            document.getElementById(formId);
-                                        let modalInstance =
-                                            bootstrap.Modal.getInstance(
-                                                modalEl
-                                            );
-                                        if (modalInstance) {
-                                            modalInstance.hide();
-                                        }
-                                    }
-                                });
+        // 🔽 ADD THIS block before AJAX call
+        let url = "";
+        if (formId === "form1") {
+            url = "/add-task";
+        } else if (formId === "form2") {
+            url = "/store-delegate-task";
+        }
+
+        // Submit the form via AJAX
+        try {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ),
+                },
+                beforeSend: function () {
+                    // Show loading indicator
+                    $(`#${formId} #submitBtn`)
+                        .prop("disabled", true)
+                        .html('<i class="ti ti-loader me-2"></i>Processing...');
+                },
+                success: function (response) {
+                    if (response.status) {
+                        Swal.fire({
+                            title: "Task Created!",
+                            text:
+                                response.message ||
+                                "A new task has been successfully created.",
+                            icon: "success",
+                            confirmButtonText: "Okay",
+                            customClass: {
+                                confirmButton: "btn btn-success",
+                            },
+                            buttonsStyling: false,
+                        }).then(() => {
+                            if (response.redirect) {
+                                window.location.href = response.redirect;
                             } else {
-                                toastr.error(
-                                    response.message || "An error occurred"
-                                );
+                                // Use Bootstrap 5 compatible hide
+                                let modalEl = document.getElementById(formId);
+                                let modalInstance =
+                                    bootstrap.Modal.getInstance(modalEl);
+                                if (modalInstance) {
+                                    modalInstance.hide();
+                                }
                             }
-                        },
-                        error: function (xhr) {
-                            let errorMessage = "An error occurred";
-                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                                errorMessage = xhr.responseJSON.message;
-                            } else if (
-                                xhr.responseJSON &&
-                                xhr.responseJSON.errors
-                            ) {
-                                // Handle validation errors
-                                const errors = xhr.responseJSON.errors;
-                                errorMessage = Object.values(errors)[0][0];
-                            }
-                            toastr.error(errorMessage);
-                        },
-                        complete: function () {
-                            // Re-enable submit button
-                            $(`#${formId} #submitBtn`)
-                                .prop("disabled", false)
-                                .html("Create Task");
-                        },
-                    });
-                } catch (error) {
+                        });
+                    } else {
+                        toastr.error(response.message || "An error occurred");
+                    }
+                },
+                error: function (xhr) {
                     let errorMessage = "An error occurred";
-                    if (error.responseJSON && error.responseJSON.message) {
-                        errorMessage = error.responseJSON.message;
-                    } else if (
-                        error.responseJSON &&
-                        error.responseJSON.errors
-                    ) {
-                        const errors = error.responseJSON.errors;
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        // Handle validation errors
+                        const errors = xhr.responseJSON.errors;
                         errorMessage = Object.values(errors)[0][0];
                     }
                     toastr.error(errorMessage);
-                } finally {
+                },
+                complete: function () {
+                    // Re-enable submit button
                     $(`#${formId} #submitBtn`)
                         .prop("disabled", false)
                         .html("Create Task");
-                }
+                },
+            });
+        } catch (error) {
+            let errorMessage = "An error occurred";
+            if (error.responseJSON && error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+            } else if (error.responseJSON && error.responseJSON.errors) {
+                const errors = error.responseJSON.errors;
+                errorMessage = Object.values(errors)[0][0];
             }
-        });
+            toastr.error(errorMessage);
+        } finally {
+            $(`#${formId} #submitBtn`)
+                .prop("disabled", false)
+                .html("Create Task");
+        }
     });
 }
