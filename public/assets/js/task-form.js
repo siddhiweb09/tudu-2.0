@@ -55,7 +55,7 @@ function initializeTaskForm(formId) {
 
                     response.forEach(function (user) {
                         assignDropdown.append(
-                            `<option value="${user.employee_code} * ${user.employee_name}">${user.employee_code} - ${user.employee_name}</option>`
+                            `<option value="${user.employee_code}*${user.employee_name}">${user.employee_code}*${user.employee_name}</option>`
                         );
                     });
                 },
@@ -183,83 +183,83 @@ function initializeTaskForm(formId) {
     $(`#${formId} #flexSwitchCheckDefault`).on("change", function () {
         if ($(this).is(":checked")) {
             $(`#${formId} #frequency_section`).removeClass("d-none");
-            $(`#${formId} #due_date_section_form1`).addClass("d-none");
-            $(`#${formId} #additional_fields_form1`).removeClass("d-none");
+            $(`#${formId} #due_date_section_${formId}`).addClass("d-none");
+            $(`#${formId} #additional_fields_${formId}`).removeClass("d-none");
         } else {
             $(`#${formId} #frequency_section`).addClass("d-none");
-            $(`#${formId} #due_date_section_form1`).removeClass("d-none");
-            $(`#${formId} #additional_fields_form1`).addClass("d-none");
+            $(`#${formId} #due_date_section_${formId}`).removeClass("d-none");
+            $(`#${formId} #additional_fields_${formId}`).addClass("d-none");
         }
         updateFrequencyDuration(formId);
     });
 
-    $(`#${formId} #frequency_form1`).on("change", function () {
+    $(`#${formId} #frequency_${formId}`).on("change", function () {
         var frequency = $(this).val();
-        $(`#${formId} #additional_fields_form1`).removeClass("d-none");
+        $(`#${formId} #additional_fields_${formId}`).removeClass("d-none");
 
         if (frequency === "Daily") {
-            $(`#${formId} #weekly_days_form1`).addClass("d-none");
-            $(`#${formId} #monthly_date_form1`).addClass("d-none");
-            $(`#${formId} #yearly_date_form1`).addClass("d-none");
-            $(`#${formId} #periodic_frequency_form1`).addClass("d-none");
-            $(`#${formId} #custom_frequency_form1`).addClass("d-none");
-            $(`#${formId} .note_form1`).text(
+            $(`#${formId} #weekly_days_${formId}`).addClass("d-none");
+            $(`#${formId} #monthly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #yearly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #periodic_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} #custom_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} .note_${formId}`).text(
                 "This task will be automatically reassigned on a daily basis until it is either closed or manually stopped."
             );
         } else if (frequency === "Weekly") {
-            $(`#${formId} #weekly_days_form1`).removeClass("d-none");
-            $(`#${formId} #monthly_date_form1`).addClass("d-none");
-            $(`#${formId} #yearly_date_form1`).addClass("d-none");
-            $(`#${formId} #periodic_frequency_form1`).addClass("d-none");
-            $(`#${formId} #custom_frequency_form1`).addClass("d-none");
-            $(`#${formId} .note_form1`).text(
+            $(`#${formId} #weekly_days_${formId}`).removeClass("d-none");
+            $(`#${formId} #monthly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #yearly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #periodic_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} #custom_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} .note_${formId}`).text(
                 "This task will be automatically reassigned on the selected days of each week."
             );
         } else if (frequency === "Monthly") {
-            $(`#${formId} #weekly_days_form1`).addClass("d-none");
-            $(`#${formId} #monthly_date_form1`).removeClass("d-none");
-            $(`#${formId} #yearly_date_form1`).addClass("d-none");
-            $(`#${formId} #periodic_frequency_form1`).addClass("d-none");
-            $(`#${formId} #custom_frequency_form1`).addClass("d-none");
-            $(`#${formId} .note_form1`).text(
+            $(`#${formId} #weekly_days_${formId}`).addClass("d-none");
+            $(`#${formId} #monthly_date_${formId}`).removeClass("d-none");
+            $(`#${formId} #yearly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #periodic_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} #custom_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} .note_${formId}`).text(
                 "This task will be automatically reassigned on the selected date each month."
             );
         } else if (frequency === "Yearly") {
-            $(`#${formId} #weekly_days_form1`).addClass("d-none");
-            $(`#${formId} #monthly_date_form1`).addClass("d-none");
-            $(`#${formId} #yearly_date_form1`).removeClass("d-none");
-            $(`#${formId} #periodic_frequency_form1`).addClass("d-none");
-            $(`#${formId} #custom_frequency_form1`).addClass("d-none");
-            $(`#${formId} .note_form1`).text(
+            $(`#${formId} #weekly_days_${formId}`).addClass("d-none");
+            $(`#${formId} #monthly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #yearly_date_${formId}`).removeClass("d-none");
+            $(`#${formId} #periodic_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} #custom_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} .note_${formId}`).text(
                 "This task will be automatically reassigned on the selected date each year."
             );
         } else if (frequency === "Periodic") {
-            $(`#${formId} #weekly_days_form1`).addClass("d-none");
-            $(`#${formId} #monthly_date_form1`).addClass("d-none");
-            $(`#${formId} #yearly_date_form1`).addClass("d-none");
-            $(`#${formId} #periodic_frequency_form1`).removeClass("d-none");
-            $(`#${formId} #custom_frequency_form1`).addClass("d-none");
-            $(`#${formId} .note_form1`).text(
+            $(`#${formId} #weekly_days_${formId}`).addClass("d-none");
+            $(`#${formId} #monthly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #yearly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #periodic_frequency_${formId}`).removeClass("d-none");
+            $(`#${formId} #custom_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} .note_${formId}`).text(
                 "This task will be automatically reassigned at the interval of days specified in the input"
             );
         } else if (frequency === "Custom") {
-            $(`#${formId} #weekly_days_form1`).addClass("d-none");
-            $(`#${formId} #monthly_date_form1`).addClass("d-none");
-            $(`#${formId} #yearly_date_form1`).addClass("d-none");
-            $(`#${formId} #periodic_frequency_form1`).addClass("d-none");
-            $(`#${formId} #custom_frequency_form1`).removeClass("d-none");
-            $(`#${formId} .note_form1`).text(
+            $(`#${formId} #weekly_days_${formId}`).addClass("d-none");
+            $(`#${formId} #monthly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #yearly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #periodic_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} #custom_frequency_${formId}`).removeClass("d-none");
+            $(`#${formId} .note_${formId}`).text(
                 "This task will be automatically reassigned at the interval of months or weeks you've specified in the input."
             );
         } else {
-            $(`#${formId} #weekly_days_form1`).addClass("d-none");
-            $(`#${formId} #monthly_date_form1`).addClass("d-none");
-            $(`#${formId} #yearly_date_form1`).addClass("d-none");
-            $(`#${formId} #periodic_frequency_form1`).addClass("d-none");
-            $(`#${formId} #custom_frequency_form1`).addClass("d-none");
+            $(`#${formId} #weekly_days_${formId}`).addClass("d-none");
+            $(`#${formId} #monthly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #yearly_date_${formId}`).addClass("d-none");
+            $(`#${formId} #periodic_frequency_${formId}`).addClass("d-none");
+            $(`#${formId} #custom_frequency_${formId}`).addClass("d-none");
 
-            $(`#${formId} #additional_fields_form1`).addClass("d-none");
-            $(`#${formId} .note_form1`).text("");
+            $(`#${formId} #additional_fields_${formId}`).addClass("d-none");
+            $(`#${formId} .note_${formId}`).text("");
         }
         updateFrequencyDuration(formId);
     });
@@ -267,7 +267,7 @@ function initializeTaskForm(formId) {
     // Update frequency duration when any related field changes
     $(document).on(
         "change",
-        `#${formId} .day-checkbox, #${formId} #monthly_day_form1, #${formId} #yearly_date_input_form1, #${formId} #periodic_interval_form1, #${formId} #custom_frequency_dropdown_form1, #${formId} #occurs_every_dropdown_form1`,
+        `#${formId} .day-checkbox, #${formId} #monthly_day_${formId}, #${formId} #yearly_date_input_${formId}, #${formId} #periodic_interval_${formId}, #${formId} #custom_frequency_dropdown_${formId}, #${formId} #occurs_every_dropdown_${formId}`,
         function () {
             updateFrequencyDuration(formId);
         }
@@ -472,7 +472,7 @@ function initializeTaskForm(formId) {
 
     // Add this new function to handle frequency duration
     function updateFrequencyDuration(formId) {
-        const frequency = $(`#${formId} #frequency_form1`).val();
+        const frequency = $(`#${formId} #frequency_${formId}`).val();
         let duration = [];
 
         if (frequency === "Weekly") {
@@ -482,17 +482,17 @@ function initializeTaskForm(formId) {
                 })
                 .get();
         } else if (frequency === "Monthly") {
-            const day = $(`#${formId} #monthly_day_form1`).val();
+            const day = $(`#${formId} #monthly_day_${formId}`).val();
             if (day) duration = [day];
         } else if (frequency === "Yearly") {
-            const date = $(`#${formId} #yearly_date_input_form1`).val();
+            const date = $(`#${formId} #yearly_date_input_${formId}`).val();
             if (date) duration = [date];
         } else if (frequency === "Periodic") {
-            const interval = $(`#${formId} #periodic_interval_form1`).val();
+            const interval = $(`#${formId} #periodic_interval_${formId}`).val();
             if (interval) duration = [interval];
         } else if (frequency === "Custom") {
-            const freq = $(`#${formId} #custom_frequency_dropdown_form1`).val();
-            const occurs = $(`#${formId} #occurs_every_dropdown_form1`).val();
+            const freq = $(`#${formId} #custom_frequency_dropdown_${formId}`).val();
+            const occurs = $(`#${formId} #occurs_every_dropdown_${formId}`).val();
             if (freq && occurs) duration = [freq, occurs];
         }
 

@@ -174,7 +174,7 @@ class TaskController extends Controller
         // Validate the main task data
         $validator = Validator::make($request->all(), [
             'task_id' => 'required|string',
-            'task_title' => 'required|string|max:255',
+            'delegate_task_title' => 'required|string|max:255',
             'task_description' => 'required|string',
             'category' => 'required|string|max:255',
             'assign_to' => 'required|string',
@@ -202,8 +202,8 @@ class TaskController extends Controller
 
         // Create the task
         $task = DelegatedTask::create([
-            'task_id' =>$request->task_id,
-            'title' => $request->task_title,
+            'task_id' => $request->task_id,
+            'title' => $request->delegate_task_title,
             'description' => $request->task_description,
             'department' => $request->category,
             'due_date' => $request->due_date,
@@ -309,28 +309,98 @@ class TaskController extends Controller
     {
         // Fetch the main task or throw 404 if not found
         $task = Task::where('task_id', $task_id)->firstOrFail();
-        $delegatedTaskId = DelegatedTask::where('task_id', $task_id)->pluck('delegate_task_id');
 
-        // Fetch task items related to this task
-        $taskItems = TaskList::where('task_id', $task_id)->orwhere('task_id', $task_id)->get();
+        // Fetch delegated tasks and their IDs
+        $delegatedTasks = DelegatedTask::where('task_id', $task_id)->get();
+        $delegatedTaskIds = $delegatedTasks->pluck('delegate_task_id')->toArray();
 
-        // Calculate total and completed tasks
+        // Combine main and delegated task IDs
+        $allTaskIds = array_unique(array_merge([$task->task_id], $delegatedTaskIds));
+
+        // Fetch task items related to all tasks
+        $taskItems = TaskList::whereIn('task_id', $allTaskIds)->get();
+        $taskComments = TaskComment::whereIn('task_id', $allTaskIds)->get();
+        $taskMedias = TaskMedia::whereIn('task_id', $allTaskIds)->get();
+
+        // Total stats (combined)
         $totalTasks = $taskItems->count();
         $completedTasks = $taskItems->where('status', 'Completed')->count();
         $progressPercentage = $totalTasks > 0
             ? round(($completedTasks / $totalTasks) * 100, 2)
             : 0;
 
+        // Individual stats for each task ID
+        $individualStats = [];
+
+        foreach ($allTaskIds as $id) {
+            $items = $taskItems->where('task_id', $id);
+            $total = $items->count();
+            $completed = $items->where('status', 'Completed')->count();
+            $progress = $total > 0 ? round(($completed / $total) * 100, 2) : 0;
+
+            $commentItems = $taskComments->where('task_id', $id);
+            $totalComments = $commentItems->count();
+
+            $mediaItems = $taskMedias->where('task_id', $id);
+            $totalMedias = $mediaItems->count();
+
+            // If it's the main task
+            if ($id == $task->task_id) {
+                $title = $task->title;
+                $priority = $task->priority;
+                $status = $task->status;
+                $assign_at = $task->created_at;
+                $assign_to_raw = [$task->assign_to]; // Make it an array for consistency
+            } else {
+                $delegated = $delegatedTasks->firstWhere('delegate_task_id', $id);
+                $title = optional($delegated)->title ?? 'Untitled';
+                $priority = optional($delegated)->priority ?? null;
+                $status = optional($delegated)->status ?? null;
+                $assign_at = optional($delegated)->created_at ?? null;
+                $assign_to_raw = optional($delegated)->assign_to
+                    ? [optional($delegated)->assign_to]
+                    : [];
+            }
+
+            // Extract employee codes
+            $employeeCodes = [];
+            foreach ($assign_to_raw as $entry) {
+                $parts = explode('*', $entry);
+                if (!empty($parts[0])) {
+                    $employeeCodes[] = $parts[0];
+                }
+            }
+
+            // Fetch team members' profile pictures
+            $teamMembers = User::whereIn('employee_code', $employeeCodes)
+                ->get(['employee_code', 'employee_name', 'profile_picture']);
+
+            // Push structured data
+            $individualStats[] = [
+                'task_id' => $id,
+                'title' => $title,
+                'priority' => $priority,
+                'status' => $status,
+                'assign_at' => $assign_at,
+                'assign_to' => $assign_to_raw,
+                'total' => $total,
+                'totalComments' => $totalComments,
+                'totalMedias' => $totalMedias,
+                'completed' => $completed,
+                'progress' => $progress,
+                'teamMembers' => $teamMembers,
+                'task_list_items' => $items,
+            ];
+        }
+        // dd($individualStats);
         // Extract owner employee_code
         $ownerParts = explode('*', $task->assign_to);
         $ownerId = $ownerParts[0];
 
         // Extract delegated task assignee employee_codes
-        $delegatedAssigneesRaw = DelegatedTask::where('task_id', $task_id)
-            ->pluck('assign_to')
-            ->toArray();
-
+        $delegatedAssigneesRaw = $delegatedTasks->pluck('assign_to')->toArray();
         $ids = [];
+
         foreach ($delegatedAssigneesRaw as $rawAssignTo) {
             $parts = explode('*', $rawAssignTo);
             if (isset($parts[0])) {
@@ -341,22 +411,69 @@ class TaskController extends Controller
         // Merge and deduplicate employee codes
         $empIds = array_unique(array_merge($ids, [$ownerId]));
 
-        // Fetch users' details
+        // Fetch user details
         $team = User::whereIn('employee_code', $empIds)
             ->get(['employee_code', 'employee_name', 'profile_picture']);
-
         $teamCount = $team->count();
 
-        $activities = TaskLog::where('task_id', $task_id)
+        // Fetch activity logs
+        $activities = TaskLog::whereIn('task_id', $allTaskIds)
             ->orderBy('id', 'DESC')
             ->get();
-
         $totalActivity = $activities->count();
-        $lastActivity = $activities->first(); // first() because it's already ordered DESC
+        $lastActivity = $activities->first();
 
-        // Pass all required data to the view
+        $userWiseStats = [];
+
+        // Combine assign_to values from main and delegated tasks
+        $allAssignments = [];
+
+        foreach ($individualStats as $taskData) {
+            foreach ($taskData['assign_to'] as $assignTo) {
+                [$empCode, $empName] = explode('*', $assignTo);
+
+                // Initialize if user not yet added
+                if (!isset($userWiseStats[$empCode])) {
+                    $userWiseStats[$empCode] = [
+                        'employee_code' => $empCode,
+                        'employee_name' => $empName ?? '',
+                        'tasks' => [],
+                        'total_tasks' => 0,
+                        'completed_tasks' => 0,
+                        'progress' => 0,
+                    ];
+                }
+
+                // Add task info to the user
+                $userWiseStats[$empCode]['tasks'][] = [
+                    'task_id' => $taskData['task_id'],
+                    'title' => $taskData['title'],
+                    'status' => $taskData['status'],
+                    'progress' => $taskData['progress'],
+                    'priority' => $taskData['priority'],
+                    'assign_at' => $taskData['assign_at'],
+                    'total' => $taskData['total'],
+                    'completed' => $taskData['completed'],
+                    'task_list_items' => $taskData['task_list_items'],
+                ];
+
+                // Update counts
+                $userWiseStats[$empCode]['total_tasks'] += $taskData['total'];
+                $userWiseStats[$empCode]['completed_tasks'] += $taskData['completed'];
+            }
+        }
+
+        // Calculate progress for each user
+        foreach ($userWiseStats as &$userStat) {
+            $userStat['progress'] = $userStat['total_tasks'] > 0
+                ? round(($userStat['completed_tasks'] / $userStat['total_tasks']) * 100, 2)
+                : 0;
+        }
+        // dd($userWiseStats);
+
         return view('tasks.taskDetails', compact(
             'task',
+            'delegatedTasks',
             'taskItems',
             'totalTasks',
             'completedTasks',
@@ -365,7 +482,9 @@ class TaskController extends Controller
             'team',
             'totalActivity',
             'lastActivity',
-            'activities'
+            'activities',
+            'userWiseStats',
+            'individualStats' // ← Include individual task stats
         ));
     }
 }

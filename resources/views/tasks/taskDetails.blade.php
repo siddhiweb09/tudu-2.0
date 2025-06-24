@@ -1,7 +1,7 @@
 @extends('layouts.innerframe')
 
 @section('main')
-<div class="bg-white">
+<div class="bg-white border-bottom">
     <div class="container-xxl p-4">
         <div class="row mb-5 m-0 justify-content-between">
             <div class="col-md-8">
@@ -22,9 +22,8 @@
             </div>
             <div class="col align-self-center">
                 <!-- Deadline Section -->
-                <h5 class="text-muted text-end mb-2"><i class="ti ti-calendar-event me-1"></i>Deadline: Nov 15, 2023</h5>
-                <p class="text-muted text-end small mb-0"><i class="ti ti-alarm me-1"></i>Started: Oct 1, 2023
-                </p>
+                <h5 class="text-muted text-end mb-2"><i class="ti ti-calendar-event me-1"></i>Deadline: {{$task->due_date}}</h5>
+                <p class="text-muted text-end small mb-0"><i class="ti ti-alarm me-1"></i>Started: {{$task->created_at}} </p>
             </div>
         </div>
 
@@ -43,11 +42,10 @@
                             </div>
                         </div>
                         <!-- Progress bar -->
-                        <div class="progress mt-3 rounded-pill" style="height: 20px;">
+                        <div class="progress mt-2 rounded-pill" style="height: 20px;">
                             <div class="progress-bar bg-success" role="progressbar"
                                 style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
                                 aria-valuemin="0" aria-valuemax="100">
-                                {{ $progressPercentage }}%
                             </div>
                         </div>
                     </div>
@@ -66,7 +64,7 @@
                 <div class="card h-100 bg-light border-0">
                     <div class="card-body">
                         <h6 class="text-muted">Team</h6>
-                        <div class="aspect-square-container">
+                        <div class="aspect-square-container mb-2">
                             @foreach ($team as $teamMember)
                             @if(!empty($teamMember->profile_picture))
                             <div class="aspect-square-box">
@@ -103,10 +101,10 @@
 <div class="container-xxl p-4">
     <nav>
         <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
+            <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
                 type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
                     class="ti ti-notes me-1"></i> Overview</button>
-            <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
+            <button class="nav-link active" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
                 role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
                 Tasks</button>
             <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
@@ -121,7 +119,7 @@
         </div>
     </nav>
     <div class="tab-content mt-4" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+        <div class="tab-pane fade" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
             <div class="row m-0">
                 <div class="col-md-6 col-lg-8 ps-0">
                     <div class="card bg-white">
@@ -169,45 +167,329 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
-            <div class="card bg-white">
-                <div class="card-body">
-                    <h4 class="card-title mb-3 text-decoration-underline">Task Description</h4>
-                    <div class="p-3">
-                        <!-- Create todo section -->
-                        <div class="row rounded shadow mx-0 mb-4">
-                            <div class="col">
-                                <input class="form-control form-control-lg border-0 add-todo-input bg-transparent rounded" type="text" placeholder="Add new ..">
-                            </div>
-                            <div class="col-auto px-0 mx-0 mr-2">
-                                <button type="button" class="btn btn-primary">Add</button>
-                            </div>
+        <div class="tab-pane fade show active" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
+            <div class="row row-cols-2 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Pending</h5>
                         </div>
-                        <ul class="list-group list-group-flush">
-                            @foreach ($taskItems as $taskItem)
-                            @if(!empty($taskItem->tasks) && $taskItem->status === "Completed")
-                            <li class="list-group-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
-                                    <label class="form-check-label" for="checkChecked">
-                                        <del>Checked checkbox</del>
-                                    </label>
+                        <div class="card-body">
+                            @foreach ($individualStats as $taskStat)
+                            @if ($taskStat['status'] === "Pending")
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto fw-medium p-0 m-0">
+                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                        </p>
+                                        <div class="col-auto p-0">
+                                            @if($taskStat['priority'] === "high")
+                                            <span class="badge badge-light-danger rounded">
+                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @elseif($taskStat['priority'] === "medium")
+                                            <span class="badge badge-light-warning rounded">
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-light-success rounded">
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                    </div>
+
+                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskStat['progress'] }}%;"
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-3 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
+                                    </div>
+
+                                    <div class="row mt-3 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @foreach ($taskStat['teamMembers'] as $member)
+                                            @if(!empty($member->profile_picture))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
+                                    </div>
                                 </div>
-                            </li>
-                            @elseif(!empty($taskItem->tasks) && $taskItem->status !== "Completed")
-                            <li class="list-group-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkDefault">
-                                    <label class="form-check-label" for="checkDefault">
-                                        {{$taskItem->tasks}}
-                                    </label>
-                                </div>
-                            </li>
-                            @else
-                            <li class="list-group-item">Task no available</li>
+                            </div>
                             @endif
                             @endforeach
-                        </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Progress</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach ($individualStats as $taskStat)
+                            @if ($taskStat['status'] === "In Progress")
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto fw-medium p-0 m-0">
+                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                        </p>
+                                        <div class="col-auto p-0">
+                                            @if($taskStat['priority'] === "high")
+                                            <span class="badge badge-light-danger rounded">
+                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @elseif($taskStat['priority'] === "medium")
+                                            <span class="badge badge-light-warning rounded">
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-light-success rounded">
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                    </div>
+
+                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskStat['progress'] }}%;"
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-3 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
+                                    </div>
+
+                                    <div class="row mt-3 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @foreach ($taskStat['teamMembers'] as $member)
+                                            @if(!empty($member->profile_picture))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            @endforeach
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Review</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach ($individualStats as $taskStat)
+                            @if ($taskStat['status'] === "In Review")
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto fw-medium p-0 m-0">
+                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                        </p>
+                                        <div class="col-auto p-0">
+                                            @if($taskStat['priority'] === "high")
+                                            <span class="badge badge-light-danger rounded">
+                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @elseif($taskStat['priority'] === "medium")
+                                            <span class="badge badge-light-warning rounded">
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-light-success rounded">
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                    </div>
+
+                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskStat['progress'] }}%;"
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-3 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
+                                    </div>
+
+                                    <div class="row mt-3 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @foreach ($taskStat['teamMembers'] as $member)
+                                            @if(!empty($member->profile_picture))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            @endforeach
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Completed</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach ($individualStats as $taskStat)
+                            @if ($taskStat['status'] === "Completed")
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto fw-medium p-0 m-0">
+                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                        </p>
+                                        <div class="col-auto p-0">
+                                            @if($taskStat['priority'] === "high")
+                                            <span class="badge badge-light-danger rounded">
+                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @elseif($taskStat['priority'] === "medium")
+                                            <span class="badge badge-light-warning rounded">
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-light-success rounded">
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                    </div>
+
+                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskStat['progress'] }}%;"
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-3 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
+                                    </div>
+
+                                    <div class="row mt-3 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @foreach ($taskStat['teamMembers'] as $member)
+                                            @if(!empty($member->profile_picture))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            @endforeach
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -215,43 +497,40 @@
         <div class="tab-pane fade" id="nav-team" role="tabpanel" aria-labelledby="nav-team-tab">
             <div class="card bg-white">
                 <div class="card-body">
-                    <h4 class="card-title mb-3 text-decoration-underline">Task Description</h4>
-                    <div class="p-3">
-                        <!-- Create todo section -->
-                        <div class="row rounded shadow mx-0 mb-4">
-                            <div class="col">
-                                <input class="form-control form-control-lg border-0 add-todo-input bg-transparent rounded" type="text" placeholder="Add new ..">
-                            </div>
-                            <div class="col-auto px-0 mx-0 mr-2">
-                                <button type="button" class="btn btn-primary">Add</button>
-                            </div>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            @foreach ($taskItems as $taskItem)
-                            @if(!empty($taskItem->tasks) && $taskItem->status === "Completed")
-                            <li class="list-group-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
-                                    <label class="form-check-label" for="checkChecked">
-                                        <del>Checked checkbox</del>
-                                    </label>
-                                </div>
-                            </li>
-                            @elseif(!empty($taskItem->tasks) && $taskItem->status !== "Completed")
-                            <li class="list-group-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkDefault">
-                                    <label class="form-check-label" for="checkDefault">
-                                        {{$taskItem->tasks}}
-                                    </label>
-                                </div>
-                            </li>
-                            @else
-                            <li class="list-group-item">Task no available</li>
-                            @endif
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Tasks</th>
+                                <th scope="col">Sub-Tasks</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            @foreach ($userWiseStats as $userStat)
+                            <tr>
+                                <td>{{$userStat['employee_code']}}*{{$userStat['employee_name']}}</td>
+                                <td>
+                                    @foreach($userStat['tasks'] as $usertask)
+                                    <span class="badge badge-outline-primary rounded">
+                                        {{$usertask['title']}}
+                                    </span>
+                                    @endforeach
+                                </td>
+                                <td><b>{{ $userStat['total_tasks'] }}</b> ({{ $userStat['completed_tasks'] }}/ completed)</td>
+                                <td>{{ $userStat['progress'] }}% </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                                        <button type="button" class="btn btn-transparent shadow-none"><i class="ti ti-message"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none"><i class="ti ti-edit"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none"><i class="ti ti-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
                             @endforeach
-                        </ul>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
