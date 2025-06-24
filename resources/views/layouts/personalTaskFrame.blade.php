@@ -155,6 +155,14 @@
     </script>
     <script>
         $(document).ready(function() {
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+
             //   personal task 
             // Step navigation
             const $nextButtons = $(".next-step");
@@ -554,9 +562,6 @@
                             );
                     },
                 });
-
-
-
             });
 
             function updateStatusBadge(status) {
@@ -627,31 +632,31 @@
                         }
 
                         html += `
-            <div class="note-item card mb-3" data-note-id="${note.id}">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <small class="text-muted">
-                            <i class="ti-time mr-1"></i>${note.timestamp}
-                        </small>
-                        <div class="note-actions">
-                            <button class="btn btn-sm btn-outline-primary edit-note mr-1" data-note-id="${
-                              note.id
-                            }">
-                                <i class="ti-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger delete-note" data-note-id="${
-                              note.id
-                            }">
-                                <i class="ti-trash"></i>
-                            </button>
+                    <div class="note-item card mb-3" data-note-id="${note.id}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <small class="text-muted">
+                                    <i class="ti-time mr-1"></i>${note.timestamp}
+                                </small>
+                                <div class="note-actions">
+                                    <button class="btn btn-sm btn-outline-primary edit-note mr-1" data-note-id="${
+                                    note.id
+                                    }">
+                                        <i class="ti-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-note" data-note-id="${
+                                    note.id
+                                    }">
+                                        <i class="ti-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="note-content mt-2">${note.content.replace(
+                            /\n/g,
+                            "<br>"
+                            )}</div>
                         </div>
-                    </div>
-                    <div class="note-content mt-2">${note.content.replace(
-                      /\n/g,
-                      "<br>"
-                    )}</div>
-                </div>
-            </div>`;
+                    </div>`;
                     });
                     html += "</div>";
                     notesContainer.html(html);
@@ -692,23 +697,23 @@
                         .replace(/<br\s*[\/]?>/gi, "\n");
 
                     noteItem.html(`
-            <div class="card-body">
-                <form class="edit-note-form">
-                    <div class="form-group">
-                        <textarea class="form-control" rows="3" name="note">${currentContent}</textarea>
-                    </div>
-                    <input type="hidden" name="note_id" value="${noteId}">
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-secondary mr-2 cancel-edit">
-                            <i class="ti-close mr-1"></i> Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti-save mr-1"></i> Save Changes
-                        </button>
-                    </div>
-                </form>
-            </div>
-        `);
+                        <div class="card-body">
+                            <form class="edit-note-form">
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="3" name="note">${currentContent}</textarea>
+                                </div>
+                                <input type="hidden" name="note_id" value="${noteId}">
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-secondary mr-2 cancel-edit">
+                                        <i class="ti-close mr-1"></i> Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="ti-save mr-1"></i> Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    `);
 
                     // Cancel edit handler
                     noteItem.find(".cancel-edit").click(function() {
@@ -741,7 +746,7 @@
 
             function addNote(taskId, content) {
                 $.ajax({
-                    url: "add_note.php",
+                    url: "/add-personal-tasks-notes",
                     method: "POST",
                     data: {
                         task_id: taskId,
@@ -765,7 +770,7 @@
                 const taskId = $("#task-id").val();
 
                 $.ajax({
-                    url: "update_note.php",
+                    url: "edit-personal-tasks-notes",
                     method: "POST",
                     data: {
                         task_id: taskId,
@@ -789,7 +794,7 @@
                 const taskId = $("#task-id").val();
 
                 $.ajax({
-                    url: "delete_note.php",
+                    url: "delete-personal-tasks-notes",
                     method: "POST",
                     data: {
                         task_id: taskId,
@@ -810,7 +815,7 @@
 
             function fetchTaskDetails(taskId) {
                 $.ajax({
-                    url: "get_personal_task_details.php?task_id=" + taskId,
+                    url: `/personal-tasks-show/${taskId}`,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
@@ -826,7 +831,7 @@
 
             function displayDocuments(taskId) {
                 $.ajax({
-                    url: "get_task_documents.php?task_id=" + taskId,
+                    url: `/personal-tasks/${taskId}/documents`,
                     type: "GET",
                     dataType: "json",
                     success: function(documents) {
@@ -842,44 +847,32 @@
 
                         let html = '<div class="document-list">';
                         documents.forEach((doc) => {
+                            const fileExt = doc.file_name.split('.').pop().toLowerCase();
                             html += `
-                <div class="document-item card mb-3" data-doc-id="${doc.id}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="mb-1">
-                                    ${getDocumentIcon(doc.file_type)} ${
-              doc.file_name
-            }
-                                </h6>
-                                <small class="text-muted">
-                                    ${formatFileSize(doc.file_size)} • 
-                                    ${new Date(doc.created_at).toLocaleString()}
-                                </small>
-                                ${
-                                  doc.description
-                                    ? `<p class="mt-2 mb-1">${doc.description}</p>`
-                                    : ""
-                                }
+                    <div class="document-item card mb-3" data-doc-id="${doc.id}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">
+                                        ${getDocumentIcon(fileExt)} ${doc.file_name}
+                                    </h6>
+                                    <small class="text-muted">
+                                        Uploaded by ${doc.created_by} • 
+                                        ${new Date(doc.created_at).toLocaleString()}
+                                    </small>
+                                    ${doc.description ? `<p class="mt-2 mb-1">${doc.description}</p>` : ""}
+                                </div>
+                                <div class="document-actions">
+                                    <button class="btn btn-sm btn-outline-danger delete-doc" data-doc-id="${doc.id}">
+                                        <i class="ti-trash"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="document-actions">
-                                <button class="btn btn-sm btn-outline-primary edit-doc mr-1" data-doc-id="${
-                                  doc.id
-                                }">
-                                    <i class="ti-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger delete-doc" data-doc-id="${
-                                  doc.id
-                                }">
-                                    <i class="ti-trash"></i>
-                                </button>
+                            <div class="document-preview mt-2">
+                                ${getDocumentPreview(doc, fileExt)}
                             </div>
                         </div>
-                        <div class="document-preview mt-2">
-                            ${getDocumentPreview(doc)}
-                        </div>
-                    </div>
-                </div>`;
+                    </div>`;
                         });
                         html += "</div>";
                         container.html(html);
@@ -892,197 +885,114 @@
                 });
             }
 
-            function getDocumentIcon(fileType) {
-                const type = fileType.split("/")[0];
-                const icons = {
-                    image: "ti-image",
-                    application: {
-                        pdf: "ti-file",
-                        msword: "ti-file",
-                        "vnd.openxmlformats-officedocument.wordprocessingml.document": "ti-file",
-                        "vnd.ms-excel": "ti-file",
-                        "vnd.openxmlformats-officedocument.spreadsheetml.sheet": "ti-file",
-                        "vnd.ms-powerpoint": "ti-file",
-                        "vnd.openxmlformats-officedocument.presentationml.presentation": "ti-file",
-                        zip: "ti-zip",
-                        "x-rar-compressed": "ti-zip",
-                        "x-7z-compressed": "ti-zip",
-                    },
-                    text: "ti-file",
-                    audio: "ti-music-alt",
-                    video: "ti-video-clapper",
+            function getDocumentIcon(fileExt) {
+                const iconMap = {
+                    // Images
+                    jpg: 'ti-image',
+                    jpeg: 'ti-image',
+                    png: 'ti-image',
+                    gif: 'ti-image',
+                    webp: 'ti-image',
+                    bmp: 'ti-image',
+
+                    // Documents
+                    pdf: 'ti-file',
+                    doc: 'ti-file',
+                    docx: 'ti-file',
+                    xls: 'ti-file',
+                    xlsx: 'ti-file',
+                    ppt: 'ti-file',
+                    pptx: 'ti-file',
+                    txt: 'ti-file',
+
+                    // Archives
+                    zip: 'ti-zip',
+                    rar: 'ti-zip',
+                    '7z': 'ti-zip',
+                    tar: 'ti-zip',
+                    gz: 'ti-zip',
+
+                    // Audio/Video
+                    mp3: 'ti-music-alt',
+                    wav: 'ti-music-alt',
+                    mp4: 'ti-video-clapper',
+                    mov: 'ti-video-clapper',
+                    avi: 'ti-video-clapper',
+
+                    // Code
+                    js: 'ti-settings',
+                    html: 'ti-settings',
+                    css: 'ti-settings',
+                    php: 'ti-settings',
+                    json: 'ti-settings',
                 };
 
-                if (type === "application") {
-                    const subtype = fileType.split("/")[1];
-                    return `<i class="${
-          icons.application[subtype] || "ti-file"
-        } mr-2"></i>`;
-                }
-                return `<i class="${icons[type] || "ti-file"} mr-2"></i>`;
+                return `<i class="${iconMap[fileExt] || 'ti-file'} mr-2"></i>`;
             }
 
-            function formatFileSize(bytes) {
-                if (bytes === 0) return "0 Bytes";
-                const k = 1024;
-                const sizes = ["Bytes", "KB", "MB", "GB"];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-            }
+            function getDocumentPreview(doc, fileExt) {
+                const fileUrl = "assets/uploads/" + doc.file_name;
+                const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+                const pdfExts = ['pdf'];
+                const videoExts = ['mp4', 'mov', 'avi'];
+                const audioExts = ['mp3', 'wav'];
 
-            function getDocumentPreview(doc) {
-                const type = doc.file_type.split("/")[0];
-                const fileUrl = "uploads/" + doc.file_path;
-
-                if (type === "image") {
+                if (imageExts.includes(fileExt)) {
                     return `<img src="${fileUrl}" class="img-thumbnail" style="max-height: 200px;">`;
                 }
 
-                if (doc.file_type === "application/pdf") {
+                if (pdfExts.includes(fileExt)) {
                     return `
-        <div class="pdf-preview">
-            <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
-                <i class="ti-eye mr-1"></i> View PDF
-            </a>
-            <embed src="${fileUrl}#toolbar=0&navpanes=0" width="100%" height="300px" type="application/pdf">
-        </div>`;
+            <div class="pdf-preview">
+                <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="ti-eye mr-1"></i> View PDF
+                </a>
+                <embed src="${fileUrl}#toolbar=0&navpanes=0" width="100%" height="300px" type="application/pdf">
+            </div>`;
+                }
+
+                if (videoExts.includes(fileExt)) {
+                    return `
+            <div class="video-preview">
+                <video controls width="100%" style="max-height: 300px;">
+                    <source src="${fileUrl}" type="video/${fileExt}">
+                    Your browser does not support the video tag.
+                </video>
+            </div>`;
+                }
+
+                if (audioExts.includes(fileExt)) {
+                    return `
+            <div class="audio-preview">
+                <audio controls style="width: 100%">
+                    <source src="${fileUrl}" type="audio/${fileExt === 'mp3' ? 'mpeg' : fileExt}">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>`;
                 }
 
                 return `
-    <div class="file-preview">
-        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
-            <i class="ti-download mr-1"></i> Download File
-        </a>
-    </div>`;
+        <div class="file-preview">
+            <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                <i class="ti-download mr-1"></i> Download File
+            </a>
+        </div>`;
             }
 
             function initDocumentActionHandlers() {
-                // Delete document handler
                 $(".delete-doc").click(function() {
                     const docId = $(this).data("doc-id");
                     if (confirm("Are you sure you want to delete this document?")) {
                         deleteDocument(docId);
                     }
                 });
-
-                // Edit document handler
-                $(".edit-doc").click(function() {
-                    const docId = $(this).data("doc-id");
-                    const docItem = $(this).closest(".document-item");
-
-                    $.ajax({
-                        url: "get_document_details.php?doc_id=" + docId,
-                        type: "GET",
-                        dataType: "json",
-                        success: function(doc) {
-                            docItem.html(`
-                    <div class="card-body">
-                        <form class="edit-document-form">
-                            <div class="form-group">
-                                <label>File Name</label>
-                                <input type="text" class="form-control" name="file_name" value="${
-                                  doc.file_name
-                                }">
-                            </div>
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea class="form-control" name="description">${
-                                  doc.description || ""
-                                }</textarea>
-                            </div>
-                            <input type="hidden" name="doc_id" value="${docId}">
-                            <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-secondary mr-2 cancel-edit-doc">
-                                    <i class="ti-close mr-1"></i> Cancel
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="ti-save mr-1"></i> Save Changes
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                `);
-
-                            // Cancel edit handler
-                            docItem.find(".cancel-edit-doc").click(function() {
-                                displayDocuments($("#task-id").val());
-                            });
-
-                            // Submit edit handler
-                            docItem.find(".edit-document-form").submit(function(e) {
-                                e.preventDefault();
-                                const formData = $(this).serialize();
-                                updateDocument(formData);
-                            });
-                        },
-                        error: function() {
-                            alert("Failed to load document details");
-                        },
-                    });
-                });
             }
-
-            $("#uploadDocumentForm").on("submit", function(e) {
-                e.preventDefault();
-                e.stopPropagation(); // Add this to prevent any parent form handlers
-
-                const form = this;
-                const formData = new FormData(form);
-                const taskId = $("#task-id").val();
-
-                // Debug: Log FormData contents
-                for (let pair of formData.entries()) {
-                    console.log(pair[0] + ": " + pair[1]);
-                }
-
-                // Validate file was selected
-                const fileInput = document.getElementById("documentFile");
-                if (fileInput.files.length === 0) {
-                    alert("Please select a file to upload");
-                    return;
-                }
-
-                // Show loading state
-                const submitBtn = $(form).find("button[type=submit]");
-                submitBtn
-                    .prop("disabled", true)
-                    .html('<i class="ti-reload mr-1 spinning"></i> Uploading...');
-
-                console.log(formData);
-
-                $.ajax({
-                    url: "upload_document.php",
-                    type: "POST",
-                    data: formData,
-                    processData: false, // Crucial for file uploads
-                    contentType: false, // Crucial for file uploads
-                    cache: false,
-                    success: function(response) {
-                        console.log("Upload response:", response);
-                        if (response.success) {
-                            displayDocuments(taskId);
-                            form.reset();
-                        } else {
-                            alert(response.error || "Failed to upload document");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Upload error:", status, error);
-                        alert("Upload failed: " + error);
-                    },
-                    complete: function() {
-                        submitBtn
-                            .prop("disabled", false)
-                            .html('<i class="ti-upload mr-1"></i> Upload');
-                    },
-                });
-            });
 
             function deleteDocument(docId) {
                 const taskId = $("#task-id").val();
 
                 $.ajax({
-                    url: "delete_document.php",
+                    url: "personal-tasks-delete-document",
                     method: "POST",
                     data: {
                         doc_id: docId,
@@ -1101,25 +1011,49 @@
                 });
             }
 
-            function updateDocument(formData) {
+            $("#uploadDocumentForm").off('submit').on("submit", function(e) {
+                e.preventDefault();
+                const form = this;
+                const formData = new FormData(form);
                 const taskId = $("#task-id").val();
 
+                // Validate file was selected
+                const fileInput = document.getElementById("documentFile");
+                if (fileInput.files.length === 0) {
+                    alert("Please select a file to upload");
+                    return;
+                }
+
+                // Show loading state
+                const submitBtn = $(form).find("button[type=submit]");
+                submitBtn.prop("disabled", true).html('<i class="ti-reload mr-1 spinning"></i> Uploading...');
+
                 $.ajax({
-                    url: "update_document.php",
-                    method: "POST",
+                    url: `/personal-tasks/${taskId}/documents/upload`,
+                    type: "POST",
                     data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     success: function(response) {
                         if (response.success) {
                             displayDocuments(taskId);
+                            form.reset();
                         } else {
-                            alert(response.error || "Failed to update document");
+                            alert(response.error || "Failed to upload document");
                         }
                     },
-                    error: function() {
-                        alert("Error updating document");
+                    error: function(xhr) {
+                        console.error("Upload error:", xhr.responseText);
+                        alert("Upload failed: " + (xhr.responseJSON?.error || 'Unknown error'));
                     },
+                    complete: function() {
+                        submitBtn.prop("disabled", false).html('<i class="ti-upload mr-1"></i> Upload');
+                    }
                 });
-            }
+            });
 
             function getCategoryColor(category) {
                 const colors = {

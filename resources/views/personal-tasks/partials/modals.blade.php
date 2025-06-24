@@ -83,10 +83,6 @@
                                         <input type="file" class="form-control" id="documentFile" name="document" required>
                                         <div class="form-text">Max 10MB (images, PDF, docs)</div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="documentDescription" class="form-label">Description:</label>
-                                        <input type="text" class="form-control" id="documentDescription" name="description" placeholder="Optional description">
-                                    </div>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="ti-upload me-1"></i> Upload Document
                                     </button>
@@ -143,10 +139,6 @@
                                 <textarea class="form-control" id="edit_description" name="description" rows="3"></textarea>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="edit_okr" class="form-label">Linked Objective/OKR (Optional)</label>
-                                <input type="text" class="form-control" id="edit_okr" name="okr">
-                            </div>
                         </div>
 
                         <div class="col-md-4">
