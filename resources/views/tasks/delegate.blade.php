@@ -23,16 +23,90 @@
                                 </div>
                             </div>
 
-                            <div class="card-body p-4">
-                                <div class="container-fluid">
-                                    <div class="row justify-content-center">
-                                        <!-- Progress Bar -->
-                                        <div class="pb-3 border-bottom">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <div class="step flex-grow-1 text-center position-relative" data-step="1">
-                                                    <div class="step-number mx-auto rounded-circle d-flex align-items-center justify-content-center fw-semibold bg-primary text-white"
-                                                        style="width: 32px; height: 32px;">1</div>
-                                                    <div class="step-title mt-2 small fw-medium">Task Info</div>
+                            <!-- Form Sections -->
+                            <form id="form2" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
+                                @csrf
+
+                                <!-- Step 1: Task Info -->
+                                <div class="form-step active" data-step="1">
+                                    <h2 class="h5 fw-semibold mb-4">Task Information</h2>
+
+                                    <div class="form-floating mb-4">
+                                        <input name="task_title" type="text" class="form-control floating-input"
+                                            id="taskTitleInput" placeholder=" " required>
+                                        <label for="taskTitleInput" class="floating-label">
+                                            <i class="ti ti-heading me-2"></i>Task Title
+                                        </label>
+                                        <div class="focus-line"></div>
+                                    </div>
+
+                                    <div class="form-floating mb-4">
+                                        <textarea name="task_description" class="form-control floating-input"
+                                            id="taskDescInput" placeholder=" " style="height: 100px" required></textarea>
+                                        <label for="taskDescInput" class="floating-label">
+                                            <i class="ti ti-file-description me-2"></i>Task Description
+                                        </label>
+                                        <div class="focus-line"></div>
+                                    </div>
+
+                                    <div class="task-container">
+                                        <!-- Initial Task Field -->
+                                        <div class="task-item mb-3" data-task-id="1">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control task-input me-3" name="tasks[]"
+                                                    placeholder="Enter task" required>
+                                                <button type="button"
+                                                    class="btn btn-inverse-primary rounded-circle add-task-btn">
+                                                    <i class="ti ti-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Priority Pills -->
+                                    <div class="mb-4">
+                                        <label class="d-block text-uppercase small fw-bold text-muted mb-3">
+                                            <i class="ti ti-bolt me-2"></i>Priority Level
+                                        </label>
+                                        <div class="priority-pills">
+                                            <div class="btn-group" role="group">
+                                                <input type="radio" class="btn-check" name="btnradio" id="high" value="high"
+                                                    autocomplete="off" checked>
+                                                <label class="btn btn-check-inverse btn-inverse-danger" for="high">
+                                                    <i class="ti ti-flame me-1"></i>High
+                                                </label>
+
+                                                <input type="radio" class="btn-check" name="btnradio" id="medium"
+                                                    value="medium" autocomplete="off">
+                                                <label class="btn btn-check-inverse btn-inverse-warning" for="medium">
+                                                    <i class="ti ti-sun-high me-1"></i>Medium
+                                                </label>
+
+                                                <input type="radio" class="btn-check" name="btnradio" id="low" value="low"
+                                                    autocomplete="off">
+                                                <label class="btn btn-check-inverse btn-inverse-success" for="low">
+                                                    <i class="ti ti-leaf me-1"></i>Low
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="button" class="next-step btn btn-primary">
+                                            Next: Assignment
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Assignment & Repetition -->
+                                <div class="form-step hidden" data-step="2">
+                                    <h2 class="h5 fw-semibold mb-4">Assignment & Repetition</h2>
+
+                                    <div class="row mb-4">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="select-card active-on-hover">
+                                                <div class="select-card-header">
+                                                    <i class="ti ti-tag me-2"></i>Category
                                                 </div>
                                                 <div class="step flex-grow-1 text-center position-relative" data-step="2">
                                                     <div class="step-number mx-auto rounded-circle d-flex align-items-center justify-content-center fw-semibold bg-primary-light text-secondary"
@@ -45,97 +119,73 @@
                                                     <div class="step-title mt-2 small fw-medium text-muted">Attachments
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Form Sections -->
-
-                                        <!-- Step 1: Task Info -->
-                                        <div class="pt-3 px-0">
-                                            <div class="form-step active" data-step="1">
-                                                <h2 class="h5 fw-semibold mb-4">Task Information</h2>
-
-                                                <div class="form-floating mb-4">
-                                                    <input name="delegate_task_title" type="text"
-                                                        class="form-control floating-input" id="taskTitleInput"
-                                                        placeholder=" " required>
-                                                    <label for="taskTitleInput" class="floating-label">
-                                                        <i class="ti ti-heading me-2"></i>Task Title
-                                                    </label>
-                                                    <div class="focus-line"></div>
-                                                </div>
-
-                                                <div class="form-floating mb-4">
-                                                    <textarea name="task_description" class="form-control floating-input"
-                                                        id="taskDescInput" placeholder=" " style="height: 100px"
-                                                        required></textarea>
-                                                    <label for="taskDescInput" class="floating-label">
-                                                        <i class="ti ti-file-description me-2"></i>Task Description
-                                                    </label>
-                                                    <div class="focus-line"></div>
-                                                </div>
-
-                                                <div class="task-container">
-                                                    <!-- Initial Task Field -->
-                                                    <div class="task-item mb-3" data-task-id="1">
+                                                <div id="frequency_section_form" class="p-3">
+                                                    <div class="datetime-picker-container" id="due_date_section_form2">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control task-input me-3"
-                                                                name="tasks[]" placeholder="Enter task" required>
-                                                            <button type="button"
-                                                                class="btn btn-inverse-primary rounded-circle add-task-btn">
-                                                                <i class="ti ti-plus"></i>
-                                                            </button>
+                                                            <span class="input-group-text bg-transparent border-end-0">
+                                                                <i class="ti ti-calendar-time"></i>
+                                                            </span>
+                                                            <input type="datetime-local" class="form-control border-start-0"
+                                                                id="due_date_form2" name="due_date"
+                                                                placeholder="Select Date & Time">
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <!-- Priority Pills -->
-                                                <div class="mb-4">
-                                                    <label class="d-block text-uppercase small fw-bold text-muted mb-3">
-                                                        <i class="ti ti-bolt me-2"></i>Priority Level
-                                                    </label>
-                                                    <div class="priority-pills">
-                                                        <div class="btn-group" role="group">
-                                                            <input type="radio" class="btn-check" name="btnradio" id="high"
-                                                                value="high" autocomplete="off" checked>
-                                                            <label class="btn btn-check-inverse btn-inverse-danger"
-                                                                for="high">
-                                                                <i class="ti ti-flame me-1"></i>High
-                                                            </label>
-
-                                                            <input type="radio" class="btn-check" name="btnradio"
-                                                                id="medium" value="medium" autocomplete="off">
-                                                            <label class="btn btn-check-inverse btn-inverse-warning"
-                                                                for="medium">
-                                                                <i class="ti ti-sun-high me-1"></i>Medium
-                                                            </label>
-
-                                                            <input type="radio" class="btn-check" name="btnradio" id="low"
-                                                                value="low" autocomplete="off">
-                                                            <label class="btn btn-check-inverse btn-inverse-success"
-                                                                for="low">
-                                                                <i class="ti ti-leaf me-1"></i>Low
-                                                            </label>
-                                                        </div>
+                                                    <div id="frequency_section" class="d-none">
+                                                        <select class="form-control border-bottom" id="frequency_form2"
+                                                            name="frequency">
+                                                            <option value="">Select Frequency</option>
+                                                            <option value="Daily">Daily</option>
+                                                            <option value="Weekly">Weekly</option>
+                                                            <option value="Monthly">Monthly</option>
+                                                            <option value="Yearly">Yearly</option>
+                                                            <option value="Periodic">Periodic</option>
+                                                            <option value="Custom">Custom</option>
+                                                        </select>
                                                     </div>
                                                 </div>
 
-                                                <div class="d-flex justify-content-end mt-4">
-                                                    <button type="button" class="next-step btn btn-primary">
-                                                        Next: Assignment
-                                                    </button>
-                                                </div>
-                                            </div>
+                                                    <!-- Recurrence Options (Hidden) -->
+                                                    <div id="additional_fields_form2"
+                                                        class="p-4 bg-light border-top d-none">
+                                                        <div id="weekly_days_form2" class="frequency-option mb-3 d-none">
+                                                            <label class="small text-muted">Weekly on:</label>
+                                                            <div class="day-picker">
+                                                                <input type="checkbox" id="sunday_form2"
+                                                                    name="frequency_duration[]" value="Sunday"
+                                                                    class="day-checkbox">
+                                                                <label for="sunday_form2" class="day-label">S</label>
 
-                                            <!-- Step 2: Assignment & Repetition -->
-                                            <div class="form-step hidden" data-step="2">
-                                                <h2 class="h5 fw-semibold mb-4">Assignment & Repetition</h2>
+                                                                <input type="checkbox" id="monday_form2"
+                                                                    name="frequency_duration[]" value="Monday"
+                                                                    class="day-checkbox">
+                                                                <label for="monday_form2" class="day-label">M</label>
 
-                                                <div class="row mb-4">
-                                                    <div class="col-md-6 mb-3">
-                                                        <div class="select-card active-on-hover">
-                                                            <div class="select-card-header">
-                                                                <i class="ti ti-tag me-2"></i>Category
+                                                                <input type="checkbox" id="tuesday_form2"
+                                                                    name="frequency_duration[]" value="Tuesday"
+                                                                    class="day-checkbox">
+                                                                <label for="tuesday_form2" class="day-label">T</label>
+
+                                                                <input type="checkbox" id="wednesday_form2"
+                                                                    name="frequency_duration[]" value="Wednesday"
+                                                                    class="day-checkbox">
+                                                                <label for="wednesday_form2" class="day-label">W</label>
+
+                                                                <input type="checkbox" id="thursday_form2"
+                                                                    name="frequency_duration[]" value="Thursday"
+                                                                    class="day-checkbox">
+                                                                <label for="thursday_form2" class="day-label">T</label>
+
+                                                                <input type="checkbox" id="friday_form2"
+                                                                    name="frequency_duration[]" value="Friday"
+                                                                    class="day-checkbox">
+                                                                <label for="friday_form2" class="day-label">F</label>
+
+                                                                <input type="checkbox" id="saturday_form2"
+                                                                    name="frequency_duration[]" value="Saturday"
+                                                                    class="day-checkbox">
+                                                                <label for="saturday_form2" class="day-label">S</label>
                                                             </div>
                                                             <select id="department" name="category" class="form-control"
                                                                 required>
@@ -144,54 +194,37 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-6 mb-3">
-                                                        <div class="select-card active-on-hover">
-                                                            <div class="select-card-header">
-                                                                <i class="ti ti-users me-2"></i>Assign To
-                                                            </div>
-                                                            <select id="assign_to" name="assign_to" class="form-control"
-                                                                required>
-                                                                <option value="">Select User</option>
-                                                            </select>
+                                                        <div id="monthly_date_form2" class="frequency-option d-none">
+                                                            <label for="monthly_day_form2">Enter Day of Month:</label>
+                                                            <input type="number" class="form-control" id="monthly_day_form2"
+                                                                name="frequency_duration[]" min="1" max="31"
+                                                                placeholder="31">
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-12 mb-3">
-                                                        <div class="select-card active-on-hover">
-                                                            <div class="select-card-header">
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <i class="ti ti-clock me-2"></i>Due Date
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-check form-switch float-end">
-                                                                            <input class="form-check-input" type="checkbox"
-                                                                                name="is_recurring" role="switch"
-                                                                                id="flexSwitchCheckDefault">
-                                                                            <label class="form-check-label"
-                                                                                for="flexSwitchCheckDefault">Recurrence</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div id="frequency_section_form" class="p-3">
-                                                                <div class="datetime-picker-container"
-                                                                    id="due_date_section_form1">
-                                                                    <div class="input-group">
-                                                                        <span
-                                                                            class="input-group-text bg-transparent border-end-0">
-                                                                            <i class="ti ti-calendar-time"></i>
-                                                                        </span>
-                                                                        <input type="datetime-local"
-                                                                            class="form-control border-start-0"
-                                                                            id="due_date_form1" name="due_date"
-                                                                            placeholder="Select Date & Time">
-                                                                    </div>
-                                                                </div>
+                                                        <div id="yearly_date_form2" class="frequency-option d-none">
+                                                            <label for="yearly_date_input_form2">Select Date:</label>
+                                                            <input type="date" class="form-control"
+                                                                id="yearly_date_input_form2" name="frequency_duration[]"
+                                                                placeholder="Select Date">
+                                                        </div>
 
-                                                                <div id="frequency_section" class="d-none">
-                                                                    <select class="form-control border-bottom"
-                                                                        id="frequency_form1" name="frequency">
+                                                        <div id="periodic_frequency_form2" class="frequency-option d-none">
+                                                            <label for="periodic_interval_form2">Interval (in
+                                                                frequency_duration):</label>
+                                                            <input type="number" class="form-control"
+                                                                id="periodic_interval_form2" name="frequency_duration[]"
+                                                                min="1" placeholder="Interval Count of Days">
+                                                        </div>
+
+                                                        <div id="custom_frequency_form2" class="frequency-option d-none">
+                                                            <div class="row">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label
+                                                                        for="custom_frequency_dropdown_form2">Frequency:</label>
+                                                                    <select class="form-control"
+                                                                        id="custom_frequency_dropdown_form2"
+                                                                        name="custom_frequency_dropdown">
                                                                         <option value="">Select Frequency</option>
                                                                         <option value="Daily">Daily</option>
                                                                         <option value="Weekly">Weekly</option>
@@ -201,118 +234,13 @@
                                                                         <option value="Custom">Custom</option>
                                                                     </select>
                                                                 </div>
-
-                                                                <!-- Recurrence Options (Hidden) -->
-                                                                <div id="additional_fields_form1"
-                                                                    class="p-4 bg-light border-top d-none">
-                                                                    <div id="weekly_days_form1"
-                                                                        class="frequency-option mb-3 d-none">
-                                                                        <label class="small text-muted">Weekly on:</label>
-                                                                        <div class="day-picker">
-                                                                            <input type="checkbox" id="sunday_form1"
-                                                                                name="frequency_duration[]" value="Sunday"
-                                                                                class="day-checkbox">
-                                                                            <label for="sunday_form1"
-                                                                                class="day-label">S</label>
-
-                                                                            <input type="checkbox" id="monday_form1"
-                                                                                name="frequency_duration[]" value="Monday"
-                                                                                class="day-checkbox">
-                                                                            <label for="monday_form1"
-                                                                                class="day-label">M</label>
-
-                                                                            <input type="checkbox" id="tuesday_form1"
-                                                                                name="frequency_duration[]" value="Tuesday"
-                                                                                class="day-checkbox">
-                                                                            <label for="tuesday_form1"
-                                                                                class="day-label">T</label>
-
-                                                                            <input type="checkbox" id="wednesday_form1"
-                                                                                name="frequency_duration[]"
-                                                                                value="Wednesday" class="day-checkbox">
-                                                                            <label for="wednesday_form1"
-                                                                                class="day-label">W</label>
-
-                                                                            <input type="checkbox" id="thursday_form1"
-                                                                                name="frequency_duration[]" value="Thursday"
-                                                                                class="day-checkbox">
-                                                                            <label for="thursday_form1"
-                                                                                class="day-label">T</label>
-
-                                                                            <input type="checkbox" id="friday_form1"
-                                                                                name="frequency_duration[]" value="Friday"
-                                                                                class="day-checkbox">
-                                                                            <label for="friday_form1"
-                                                                                class="day-label">F</label>
-
-                                                                            <input type="checkbox" id="saturday_form1"
-                                                                                name="frequency_duration[]" value="Saturday"
-                                                                                class="day-checkbox">
-                                                                            <label for="saturday_form1"
-                                                                                class="day-label">S</label>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div id="monthly_date_form1"
-                                                                        class="frequency-option d-none">
-                                                                        <label for="monthly_day_form1">Enter Day of
-                                                                            Month:</label>
-                                                                        <input type="number" class="form-control"
-                                                                            id="monthly_day_form1"
-                                                                            name="frequency_duration[]" min="1" max="31"
-                                                                            placeholder="31">
-                                                                    </div>
-
-                                                                    <div id="yearly_date_form1"
-                                                                        class="frequency-option d-none">
-                                                                        <label for="yearly_date_input_form1">Select
-                                                                            Date:</label>
-                                                                        <input type="date" class="form-control"
-                                                                            id="yearly_date_input_form1"
-                                                                            name="frequency_duration[]"
-                                                                            placeholder="Select Date">
-                                                                    </div>
-
-                                                                    <div id="periodic_frequency_form1"
-                                                                        class="frequency-option d-none">
-                                                                        <label for="periodic_interval_form1">Interval (in
-                                                                            frequency_duration):</label>
-                                                                        <input type="number" class="form-control"
-                                                                            id="periodic_interval_form1"
-                                                                            name="frequency_duration[]" min="1"
-                                                                            placeholder="Interval Count of Days">
-                                                                    </div>
-
-                                                                    <div id="custom_frequency_form1"
-                                                                        class="frequency-option d-none">
-                                                                        <div class="row">
-                                                                            <div class="col-md-6 mb-3">
-                                                                                <label
-                                                                                    for="custom_frequency_dropdown_form1">Frequency:</label>
-                                                                                <select class="form-control"
-                                                                                    id="custom_frequency_dropdown_form1"
-                                                                                    name="custom_frequency_dropdown">
-                                                                                    <option value="">Select Frequency
-                                                                                    </option>
-                                                                                    <option value="Month">Month</option>
-                                                                                    <option value="Week">Week</option>
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="col-md-6 mb-3">
-                                                                                <label
-                                                                                    for="occurs_every_dropdown_form1">Occurs
-                                                                                    Every:</label>
-                                                                                <input type="number" class="form-control"
-                                                                                    id="occurs_every_dropdown_form1"
-                                                                                    name="frequency_duration[]" min="1"
-                                                                                    placeholder="Interval Count of Week/Month">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <p class="m-0 small mt-3"><b>Note: </b><span
-                                                                            class="note"></span>
-                                                                    </p>
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label for="occurs_every_dropdown_form2">Occurs
+                                                                        Every:</label>
+                                                                    <input type="number" class="form-control"
+                                                                        id="occurs_every_dropdown_form2"
+                                                                        name="frequency_duration[]" min="1"
+                                                                        placeholder="Interval Count of Week/Month">
                                                                 </div>
                                                             </div>
                                                         </div>

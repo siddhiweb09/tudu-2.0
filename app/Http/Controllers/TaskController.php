@@ -189,12 +189,17 @@ class TaskController extends Controller
         $completedTasks = $taskItems->where('status', 'Completed')->count(); // adjust 'completed' as needed
 
         $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
-
-        $delegatedTasks = DelegatedTask::where('task_id', $task_id)->get();
-        foreach($delegatedTasks as $delegatedTask)
-
         $owner = $task->assign_to;
 
-        return view('tasks.taskDetails', compact('task', 'totalTasks', 'completedTasks', 'progressPercentage'));
+        $team = array();
+
+        $delegatedTasks = DelegatedTask::where('task_id', $task_id)->get();
+        foreach ($delegatedTasks as $delegatedTask) {
+            $delegatedOwner = $delegatedTask->assign_to;
+            array_push($team, $delegatedOwner);
+        }
+        array_push($team, $owner);
+
+        return view('tasks.taskDetails', compact('task', 'totalTasks', 'completedTasks', 'progressPercentage', 'team'));
     }
 }

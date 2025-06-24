@@ -1,4 +1,4 @@
-<div class="modal fade" id="assign_task" tabindex="-1" aria-labelledby="assignTaskModalLabel" aria-hidden="true">
+<div class="modal fade" id="add-task" tabindex="-1" aria-labelledby="assignTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-5">
             <div class="modal-header bg-animated-gradient text-white py-4">
@@ -36,7 +36,7 @@
                         </div>
 
                         <!-- Form Sections -->
-                        <form id="taskForm" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
+                        <form id="form1" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
                             @csrf
 
                             <!-- Step 1: Task Info -->
@@ -227,7 +227,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <p class="m-0 small mt-3"><b>Note: </b><span class="note"></span></p>
+                                                    <p class="m-0 small mt-3"><b>Note: </b><span class="note_form1"></span></p>
                                                 </div>
                                             </div>
                                         </div>

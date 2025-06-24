@@ -607,7 +607,7 @@ $(document).ready(function () {
                         if (response.redirect) {
                             window.location.href = response.redirect;
                         } else {
-                            $("#assign_task").modal("hide");
+                            $("#add-task").modal("hide");
                         }
                     } else {
                         toastr.error(response.message || "An error occurred");
