@@ -165,6 +165,131 @@ class TaskController extends Controller
         return view('tasks.delegate', ['taskId' => $id]);
     }
 
+    public function storeDelegateForm(Request $request)
+    {
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
+
+        // Validate the main task data
+        $validator = Validator::make($request->all(), [
+            'task_id' => 'required|string',
+            'task_title' => 'required|string|max:255',
+            'task_description' => 'required|string',
+            'category' => 'required|string|max:255',
+            'assign_to' => 'required|string',
+            'due_date' => 'nullable|string',
+            'priority' => 'required|in:high,medium,low',
+            'tasks_json' => 'json',
+            // 'voice_notes' => 'json',
+            'voice_notes' => 'nullable|array',
+            'voice_notes.*' => 'file|max:10240',
+            'documents' => 'nullable|array',
+            'documents.*' => 'file|max:10240', // 10MB max
+            'links_json' => 'json',
+            'reminders_json' => 'json',
+            'frequency' => 'required_if:recurring,on',
+            'frequency_duration_json' => 'json',
+            'visible_json' => 'json',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => $validator->errors()
+            ], 422);
+        }
+
+        // Create the task
+        $task = DelegatedTask::create([
+            'task_id' =>$request->task_id,
+            'title' => $request->task_title,
+            'description' => $request->task_description,
+            'department' => $request->category,
+            'due_date' => $request->due_date,
+            'priority' => $request->priority,
+            'is_recurring' => $request->has('recurring') ? true : false,
+            'frequency' => $request->frequency,
+            'frequency_duration' => $request->frequency_duration_json,
+            'reminders' => $request->reminders_json,
+            'links' => $request->links_json,
+            'assign_to' => $request->assign_to,
+            'status' => 'Pending',
+            'final_status' => 'Pending',
+            'visible_to' => $request->visible_json,
+            'assign_by' => $activeUser,
+        ]);
+
+        // Log task creation
+        TaskLog::create([
+            'task_id' => $task->delegate_task_id,
+            'log_description' => 'Task delegated',
+            'added_by' => $activeUser
+        ]);
+
+        // Handle file uploads
+        if ($request->hasFile('documents')) {
+            foreach ($request->file('documents') as $document) {
+                $fileName = $this->storeFile($document);
+
+                TaskMedia::create([
+                    'task_id' => $task->delegate_task_id,
+                    'category' => 'document',
+                    'file_name' => $fileName,
+                    'created_by' => $activeUser
+                ]);
+            }
+        }
+
+        // Handle voice notes from JSON
+        if ($request->hasFile('voice_notes')) {
+            foreach ($request->file('voice_notes') as $voiceNote) {
+                if ($voiceNote->isValid()) {
+                    $fileName = 'voice_note_' . time() . '_' . uniqid() . '.wav';
+                    $voiceNote->move(public_path('assets/uploads'), $fileName);
+                    // ... create record ...
+                    TaskMedia::create([
+                        'task_id' => $task->delegate_task_id,
+                        'category' => 'voice_note',
+                        'file_name' => $fileName,
+                        'created_by' => $activeUser
+                    ]);
+                }
+            }
+        }
+        // Handle links
+        $links = json_decode($request->links_json, true) ?? [];
+        foreach ($links as $link) {
+            if (!empty($link)) {
+                TaskMedia::create([
+                    'task_id' => $task->delegate_task_id,
+                    'category' => 'link',
+                    'file_name' => $link,
+                    'created_by' => $activeUser
+                ]);
+            }
+        }
+
+        // Handle Tasks
+        $task_list = json_decode($request->tasks_json, true) ?? [];
+        foreach ($task_list as $taskItem) {
+            if (!empty($taskItem)) {
+                TaskList::create([
+                    'task_id' => $task->delegate_task_id,
+                    'tasks' => $taskItem,
+                    'assign_to' => $request->assign_to,
+                    'assign_by' => $activeUser,
+                    'updated_by' => $activeUser
+                ]);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Task delegated successfully!',
+            'task_id' => $task->delegate_task_id
+        ]);
+    }
+
     public function getTaskById($id)
     {
         $task = Task::where('task_id', $id)->first();
@@ -174,7 +299,7 @@ class TaskController extends Controller
         }
 
         return response()->json([
-            'id' => $task->id,
+            'id' => $task->task_id,
             'title' => $task->title,
         ]);
     }

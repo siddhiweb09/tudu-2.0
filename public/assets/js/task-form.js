@@ -41,11 +41,9 @@ function initializeTaskForm(formId) {
         if (department) {
             $.ajax({
                 url: `/get-users-by-department/${department}`,
-                method: "GET",
+                method: 'GET',
                 success: function (response) {
-                    assignDropdown.html(
-                        '<option value="">Select User</option>'
-                    );
+                    assignDropdown.html('<option value="">Select User</option>');
 
                     if (response.length === 0) {
                         assignDropdown.append(
@@ -54,16 +52,12 @@ function initializeTaskForm(formId) {
                     }
 
                     response.forEach(function (user) {
-                        assignDropdown.append(
-                            `<option value="${user.employee_code} * ${user.employee_name}">${user.employee_code} - ${user.employee_name}</option>`
-                        );
+                        assignDropdown.append(`<option value="${user.employee_code} * ${user.employee_name}">${user.employee_code} - ${user.employee_name}</option>`);
                     });
                 },
                 error: function () {
-                    assignDropdown.html(
-                        '<option value="">Error loading users</option>'
-                    );
-                },
+                    assignDropdown.html('<option value="">Error loading users</option>');
+                }
             });
         } else {
             assignDropdown.html('<option value="">Select User</option>');
@@ -532,6 +526,15 @@ function initializeTaskForm(formId) {
         $(`#${formId} #remindersInput`).val(JSON.stringify(reminders));
     }
 
+    // Update reminders input
+    function updateVisibilityInputs(formId) {
+        const visibleTo = [];
+        $(`#${formId} input[visible_users[]"]:checked`).each(function () {
+            visibleTo.push($(this).val());
+        });
+        $(`#${formId} #visibleInput`).val(JSON.stringify(visibleTo));
+    }
+
     // Initialize form elements
     function initializeForm(formId) {
         // Add hidden inputs if they don't exist
@@ -555,7 +558,11 @@ function initializeTaskForm(formId) {
                 '<input type="hidden" name="priority">'
             );
         }
-
+        if ($(`#${formId} #visibleInput`).length === 0) {
+            $(`#${formId} form`).append(
+                '<input type="hidden" name="visible_json" id="visibleInput">'
+            );
+        }
         // Initialize priority from radio buttons
         updatePriorityInput(formId);
     }
@@ -572,7 +579,8 @@ function initializeTaskForm(formId) {
     $(`#${formId} form`).on("submit", function (e) {
         // Prevent default form submission
         e.preventDefault();
-
+        console.log(formId);
+        
         Swal.fire({
             title: "Are you sure?",
             text: "Do you want to create this task?",
@@ -589,6 +597,7 @@ function initializeTaskForm(formId) {
                 updateLinksInput(formId);
                 updateRemindersInput(formId);
                 updateFrequencyDuration(formId);
+                updateVisibilityInputs(formId);
 
                 // Serialize form data including our hidden inputs
                 const formData = new FormData(this);
@@ -607,10 +616,18 @@ function initializeTaskForm(formId) {
                     );
                 }
 
+                // 🔽 ADD THIS block before AJAX call
+                let url = "";
+                if (formId === "form1") {
+                    url = "/add-task";
+                } else if (formId === "form2") {
+                    url = "/store-delegate-task";
+                }
+
                 // Submit the form via AJAX
                 try {
                     $.ajax({
-                        url: "/add-task",
+                        url: "url",
                         type: "POST",
                         data: formData,
                         processData: false,
