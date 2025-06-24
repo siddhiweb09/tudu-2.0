@@ -27,6 +27,8 @@ class DelegatedTask extends Model
         'final_status',
         'remarks',
         'ratings',
+        'is_recurring',
+        'links',
         'due_date',
         'visible_to'
     ];
