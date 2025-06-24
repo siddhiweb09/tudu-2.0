@@ -89,6 +89,10 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/get-departments', [UserController::class, 'getDepartments']);
     Route::get('/get-users-by-department/{department}', [UserController::class, 'getUsersByDepartment']);
     Route::get('/get-task-visibility/{task_id}', [UserController::class, 'getTaskVisibilityUsers']);
+
+
+    // Personal Tasks Fetch Functions
+    Route::get('/fetch-personal-tasks', [PersonalTaskController::class, 'fetchTasks'])->name('tasks.fetch');
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');

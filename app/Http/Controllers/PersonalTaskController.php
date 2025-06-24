@@ -19,7 +19,8 @@ class PersonalTaskController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $tasks = PersonalTask::where('assign_by', $user->id)
+        $assignBy = $user->employee_code . '*' . $user->employee_name;
+        $tasks = PersonalTask::where('assign_by', $assignBy)
             ->orderBy('due_date', 'asc')
             ->get();
 
@@ -27,21 +28,18 @@ class PersonalTaskController extends Controller
     }
 
     // Kanban view
-    public function kanban(Request $request)
+    public function kanban()
     {
-        $user = Auth::user();
-        $tasks = PersonalTask::where('assign_by', $user->id)
-            ->orderBy('due_date', 'asc')
-            ->get();
-
-        return view('personal-tasks.kanban', compact('tasks'));
+        return view('personal-tasks.kanban');
     }
 
     // Matrix view
     public function matrix(Request $request)
     {
         $user = Auth::user();
-        $tasks = PersonalTask::where('assign_by', $user->id)
+        $assignBy = $user->employee_code . '*' . $user->employee_name;
+
+        $tasks = PersonalTask::where('assign_by', $assignBy)
             ->where('status', '!=', 'completed')
             ->orderBy('due_date', 'asc')
             ->get();
@@ -54,10 +52,11 @@ class PersonalTaskController extends Controller
     public function calendar(Request $request)
     {
         $user = Auth::user();
+        $assignBy = $user->employee_code . '*' . $user->employee_name;
         $month = $request->query('month', date('n'));
         $year = $request->query('year', date('Y'));
 
-        $tasks = PersonalTask::where('assign_by', $user->id)
+        $tasks = PersonalTask::where('assign_by',  $assignBy)
             ->where(function ($query) use ($month, $year) {
                 $query->whereMonth('due_date', $month)
                     ->whereYear('due_date', $year);
@@ -236,5 +235,17 @@ class PersonalTaskController extends Controller
         }
 
         return response()->json(['success' => false, 'error' => 'No file uploaded']);
+    }
+
+    public function fetchTasks(Request $request)
+    {
+        $user = Auth::user();
+
+
+        $assignBy = $user->employee_code . '*' . $user->employee_name;
+
+        $tasks = PersonalTask::where('assign_by', $assignBy)->get();
+
+        return response()->json(['status' => 'success', 'tasks' => $tasks]);
     }
 }
