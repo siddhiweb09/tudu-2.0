@@ -35,7 +35,7 @@ class PersonalTask extends Model
 
     public static function generateTaskId()
     {
-        $prefix = 'TASK-';
+        $prefix = 'PERTASK-';
         $datePart = now()->format('Ymd');
         $randomPart = Str::upper(Str::random(4));
 

@@ -45,7 +45,6 @@ class PersonalTaskController extends Controller
             ->orderBy('due_date', 'asc')
             ->get();
 
-
         return view('personal-tasks.matrix', compact('tasks'));
     }
 
@@ -254,6 +253,8 @@ class PersonalTaskController extends Controller
 
     public function addNote(Request $request)
     {
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
         // Validate input
         $validator = Validator::make($request->all(), [
             'task_id' => 'required',
@@ -271,12 +272,11 @@ class PersonalTaskController extends Controller
         try {
             $taskId = $request->input('task_id');
             $newNote = trim($request->input('note'));
-            $assign_by = Auth::id();
 
             // Get existing notes
             $task = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by', $assign_by)
+                ->where('assign_by', $activeUser)
                 ->first(['notes']);
 
             if (!$task) {
@@ -299,7 +299,7 @@ class PersonalTaskController extends Controller
             // Update database with JSON encoded notes
             $updated = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by', $assign_by)
+                ->where('assign_by', $activeUser)
                 ->update(['notes' => json_encode($notesArray)]);
 
             return response()->json([
@@ -317,6 +317,8 @@ class PersonalTaskController extends Controller
 
     public function editNote(Request $request)
     {
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
         // Validate input
         $validator = Validator::make($request->all(), [
             'task_id' => 'required',
@@ -336,12 +338,11 @@ class PersonalTaskController extends Controller
             $taskId = $request->input('task_id');
             $noteId = $request->input('note_id');
             $newContent = trim($request->input('note'));
-            $assign_by = Auth::id();
 
             // Get the task with notes
             $task = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by', $assign_by)
+                ->where('assign_by', $activeUser)
                 ->first(['notes']);
 
             if (!$task) {
@@ -374,7 +375,7 @@ class PersonalTaskController extends Controller
             // Update the task with modified notes
             $rowsAffected = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by', $assign_by)
+                ->where('assign_by', $activeUser)
                 ->update(['notes' => json_encode($notesArray)]);
 
             return response()->json([
@@ -392,6 +393,8 @@ class PersonalTaskController extends Controller
 
     public function deleteNote(Request $request)
     {
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
         // Validate input
         $validator = Validator::make($request->all(), [
             'task_id' => 'required',
@@ -409,12 +412,12 @@ class PersonalTaskController extends Controller
         try {
             $taskId = $request->input('task_id');
             $noteId = $request->input('note_id');
-            $assign_by = Auth::id();
+
 
             // Get the task with notes
             $task = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by', $assign_by)
+                ->where('assign_by',  $activeUser)
                 ->first(['notes']);
 
             if (!$task) {
@@ -446,7 +449,7 @@ class PersonalTaskController extends Controller
             // Re-index array and update database
             $rowsAffected = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by', $assign_by)
+                ->where('assign_by',  $activeUser)
                 ->update(['notes' => json_encode(array_values($updatedNotes))]);
 
             return response()->json([
@@ -586,4 +589,6 @@ class PersonalTaskController extends Controller
 
         return ($groups[$oldStatus] ?? null) !== ($groups[$newStatus] ?? null);
     }
+
+   
 }
