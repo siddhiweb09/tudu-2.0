@@ -3,7 +3,7 @@
 @section('main')
 <div class="bg-white border-bottom">
     <div class="container-xxl p-4">
-        <div class="row mb-5 m-0 justify-content-between">
+        <div class="row mb-4 m-0 justify-content-between">
             <div class="col-md-8">
                 <!-- Header Section -->
                 <h2 class="mb-2">{{$task->title}}</h2>
@@ -101,10 +101,10 @@
 <div class="container-xxl p-4">
     <nav>
         <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
-            <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
+            <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
                 type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
                     class="ti ti-notes me-1"></i> Overview</button>
-            <button class="nav-link active" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
+            <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
                 role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
                 Tasks</button>
             <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
@@ -119,7 +119,7 @@
         </div>
     </nav>
     <div class="tab-content mt-4" id="nav-tabContent">
-        <div class="tab-pane fade" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
             <div class="row m-0">
                 <div class="col-md-6 col-lg-8 ps-0">
                     <div class="card bg-white">
@@ -167,7 +167,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade show active" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
+        <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
             <div class="row row-cols-2 row-cols-md-3 g-4">
                 <div class="col">
                     <div class="card h-100">
@@ -177,7 +177,7 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "Pending")
-                            <div class="card mb-3">
+                            <div class="card mb-3 task-card">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -208,7 +208,7 @@
                                         <div class="col-auto">{{ $taskStat['progress'] }}%</div>
                                     </div>
 
-                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
                                             aria-valuenow="{{ $taskStat['progress'] }}"
@@ -217,14 +217,14 @@
                                     </div>
 
                                     {{-- Optional Description or Action --}}
-                                    <div class="row mt-3 m-0">
+                                    <div class="row mt-2 m-0">
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
-                                    <div class="row mt-3 m-0 justify-content-between">
+                                    <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
                                             @foreach ($taskStat['teamMembers'] as $member)
                                             @if(!empty($member->profile_picture))
@@ -257,7 +257,7 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "In Progress")
-                            <div class="card mb-3">
+                            <div class="card mb-3 task-card">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -288,7 +288,7 @@
                                         <div class="col-auto">{{ $taskStat['progress'] }}%</div>
                                     </div>
 
-                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
                                             aria-valuenow="{{ $taskStat['progress'] }}"
@@ -297,14 +297,14 @@
                                     </div>
 
                                     {{-- Optional Description or Action --}}
-                                    <div class="row mt-3 m-0">
+                                    <div class="row mt-2 m-0">
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
-                                    <div class="row mt-3 m-0 justify-content-between">
+                                    <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
                                             @foreach ($taskStat['teamMembers'] as $member)
                                             @if(!empty($member->profile_picture))
@@ -338,7 +338,7 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "In Review")
-                            <div class="card mb-3">
+                            <div class="card mb-3 task-card">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -369,7 +369,7 @@
                                         <div class="col-auto">{{ $taskStat['progress'] }}%</div>
                                     </div>
 
-                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
                                             aria-valuenow="{{ $taskStat['progress'] }}"
@@ -378,14 +378,14 @@
                                     </div>
 
                                     {{-- Optional Description or Action --}}
-                                    <div class="row mt-3 m-0">
+                                    <div class="row mt-2 m-0">
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
-                                    <div class="row mt-3 m-0 justify-content-between">
+                                    <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
                                             @foreach ($taskStat['teamMembers'] as $member)
                                             @if(!empty($member->profile_picture))
@@ -419,7 +419,7 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "Completed")
-                            <div class="card mb-3">
+                            <div class="card mb-3 task-card">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -450,7 +450,7 @@
                                         <div class="col-auto">{{ $taskStat['progress'] }}%</div>
                                     </div>
 
-                                    <div class="progress mt-2 rounded-pill" style="height: 10px;">
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
                                             aria-valuenow="{{ $taskStat['progress'] }}"
@@ -459,14 +459,14 @@
                                     </div>
 
                                     {{-- Optional Description or Action --}}
-                                    <div class="row mt-3 m-0">
+                                    <div class="row mt-2 m-0">
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
-                                    <div class="row mt-3 m-0 justify-content-between">
+                                    <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
                                             @foreach ($taskStat['teamMembers'] as $member)
                                             @if(!empty($member->profile_picture))
@@ -504,7 +504,7 @@
                                 <th scope="col">Tasks</th>
                                 <th scope="col">Sub-Tasks</th>
                                 <th scope="col">Status</th>
-                                <th scope="col">Actions</th>
+                                <th scope="col" class="text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
@@ -513,18 +513,20 @@
                                 <td>{{$userStat['employee_code']}}*{{$userStat['employee_name']}}</td>
                                 <td>
                                     @foreach($userStat['tasks'] as $usertask)
-                                    <span class="badge badge-outline-primary rounded">
-                                        {{$usertask['title']}}
-                                    </span>
+                                    <a href="/task/{{$usertask['task_id']}}">
+                                        <span class="badge badge-outline-primary rounded">
+                                            {{$usertask['title']}}
+                                        </span>
+                                    </a>
                                     @endforeach
                                 </td>
                                 <td><b>{{ $userStat['total_tasks'] }}</b> ({{ $userStat['completed_tasks'] }}/ completed)</td>
                                 <td>{{ $userStat['progress'] }}% </td>
-                                <td>
+                                <td class="text-end">
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                                        <button type="button" class="btn btn-transparent shadow-none"><i class="ti ti-message"></i></button>
-                                        <button type="button" class="btn btn-transparent shadow-none"><i class="ti ti-edit"></i></button>
-                                        <button type="button" class="btn btn-transparent shadow-none"><i class="ti ti-trash"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i class="ti ti-message"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i class="ti ti-edit"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i class="ti ti-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>

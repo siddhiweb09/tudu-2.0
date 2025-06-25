@@ -247,6 +247,8 @@
                 return isValid;
             }
 
+          
+
             $("#flexSwitchCheckDefault").on("change", function() {
                 if ($(this).is(":checked")) {
                     $("#frequency_section").removeClass("d-none");
@@ -424,6 +426,7 @@
                 $("#priorityInput").val(priority.replace("btnradio", "").toLowerCase());
             }
 
+    
             // Update tasks input
 
             // Add this new function to handle frequency duration

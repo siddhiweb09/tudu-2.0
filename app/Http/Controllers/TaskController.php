@@ -307,6 +307,11 @@ class TaskController extends Controller
 
     public function taskDetails($task_id)
     {
+        // $task_id_parts = explode('', $task_id);
+        // if ($task_id_parts[0] === "DELTASK") {
+        // } else {
+        // }
+
         // Fetch the main task or throw 404 if not found
         $task = Task::where('task_id', $task_id)->firstOrFail();
 
@@ -469,6 +474,7 @@ class TaskController extends Controller
                 ? round(($userStat['completed_tasks'] / $userStat['total_tasks']) * 100, 2)
                 : 0;
         }
+
         // dd($userWiseStats);
 
         return view('tasks.taskDetails', compact(

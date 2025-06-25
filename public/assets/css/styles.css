@@ -21,6 +21,14 @@
     --color-three: #4cc9f0;
 }
 
+.table>tbody {
+    vertical-align: middle !important;
+}
+
+.card {
+    --bs-card-border-color: #e5e7eb !important;
+}
+
 .page-wrapper {
     background-color: rgb(249 250 251/1) !important;
 }
@@ -1623,6 +1631,15 @@ img.aspect-square {
 
 .b-primary {
     border-color: var(--primary-color) !important;
+}
+
+.task-card p,
+.task-card span {
+    font-size: 14px !important;
+}
+
+.task-card:hover {
+    box-shadow: var(--bs-box-shadow) !important;
 }
 
 /* task details end */

@@ -82,6 +82,9 @@ Route::middleware(['auth:web'])->group(function () {
 
     // Personal Tasks Fetch Functions
     Route::get('/fetch-personal-tasks', [PersonalTaskController::class, 'fetchTasks'])->name('tasks.fetch');
+
+    // Kanban Cards Status Change in Personal
+    Route::put('/update-status/{id}', [PersonalTaskController::class, 'updateKanbanStatus']);
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');
