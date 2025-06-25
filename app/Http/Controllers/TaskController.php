@@ -534,7 +534,7 @@ class TaskController extends Controller
         // Total stats (combined)
         $totalTasks = $taskItems->count();
         $completedTasks = $taskItems->where('status', 'Completed')->count();
-        $inProcess = $taskItems->where('status','In Progress')->count();
+        $inProcess = $taskItems->where('status', 'In Progress')->count();
         $progressPercentage = $totalTasks > 0
             ? round(($completedTasks / $totalTasks) * 100, 2)
             : 0;
@@ -751,6 +751,33 @@ class TaskController extends Controller
 
     public function addComment(Request $request)
     {
-        dd($request);
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
+
+        // Validate the main task data
+        $validator = Validator::make($request->all(), [
+            'task_id' => 'required|string|max:255',
+            'comment' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => $validator->errors()
+            ], 422);
+        }
+
+        $comment = TaskComment::create([
+            'task_id' => $request->task_id,
+            'comment' => $request->comment,
+            'added_by' => $activeUser
+        ]);
+
+        if ($comment) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Comment added successfully!',
+            ]);
+        }
     }
 }
