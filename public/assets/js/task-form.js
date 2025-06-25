@@ -203,17 +203,25 @@ function initializeTaskForm(formId) {
         }
     });
 
+    // Run on checkbox toggle
     $(`#${formId} #createProjectSwitch`).on("change", function () {
-        const $dropdown = $(`#${formId} #projectSelectWrapper`);
-        const $textInput = $(`#${formId} #projectInputWrapper`);
+        const isChecked = $(this).is(":checked");
 
-        if ($(this).is(":checked")) {
-            $dropdown.addClass('d-none');
-            $textInput.removeClass('d-none');
+        // Toggle input vs select
+        if (isChecked) {
+            $(`#${formId} #projectSelectWrapper`).addClass('d-none');
+            $(`#${formId} #projectInputWrapper`).removeClass('d-none');
         } else {
-            $dropdown.removeClass('d-none');
-            $textInput.addClass('d-none');
+            $(`#${formId} #projectSelectWrapper`).removeClass('d-none');
+            $(`#${formId} #projectInputWrapper`).addClass('d-none');
         }
+
+        updateFinalProjectName(formId);
+    });
+
+    // Update hidden input on any change
+    $(`#${formId} #newProjectInput, #${formId} #projectSelect`).on("input change", function () {
+        updateFinalProjectName(formId);
     });
 
     $(`#${formId} #frequency_${formId}`).on("change", function () {
@@ -564,6 +572,18 @@ function initializeTaskForm(formId) {
         $(`#${formId} #visibleInput`).val(JSON.stringify(visibleTo));
     }
 
+    function updateFinalProjectName(formId) {
+        const isNew = $(`#${formId} #createProjectSwitch`).is(":checked");
+
+        if (isNew) {
+            const newProject = $(`#${formId} #newProjectInput`).val().trim();
+            $(`#${formId} #finalProjectName`).val(newProject);
+        } else {
+            const selectedProjectText = $(`#${formId} #projectSelect option:selected`).text().trim();
+            $(`#${formId} #finalProjectName`).val(selectedProjectText);
+        }
+    }
+
     // Initialize form elements
     function initializeForm(formId) {
         // Add hidden inputs if they don't exist
@@ -616,6 +636,7 @@ function initializeTaskForm(formId) {
         updateLinksInput(formId);
         updateRemindersInput(formId);
         updateFrequencyDuration(formId);
+        updateFinalProjectName(formId);
         if (formId !== "form1") {
             updateVisibilityInputs(formId);
         }
