@@ -665,98 +665,144 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade show active" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
+        <div class="tab-pane fade" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4">
                 <div>
                     <h2 class="h5 fw-bold mb-1">Discussions</h2>
                     <p class="text-muted mb-0">Project discussions and comments</p>
                 </div>
+                <button class="btn btn-primary d-inline-flex align-items-center">
+                    <i class="ti ti-message-circle me-2"></i> New Discussion
+                </button>
             </div>
 
-            <div class="d-flex align-items-start">
-                <div class="tab-content col-lg-8" id="v-pills-tabContent">
-                    @foreach ($individualStats as $stat)
-                    @foreach ($stat['comment_list_items'] as $index => $comment)
-                    @php
-                    $tabId = 'tab-comment-' . $comment->id;
-                    @endphp
-                    <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel" aria-labelledby="{{ $tabId }}-tab" tabindex="0">
-                        <div class="card">
-                            <div class="card-body d-flex flex-column">
-                                <div class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="card-title mb-3 text-decoration-underline">{{ $comment->task_title ?? 'Timeline' }}</h4>
-                                            <small class="text-muted">Started by {{ $comment->added_by ?? 'Unknown' }} • {{ $comment->created_at->diffForHumans() ?? '' }}</small>
-                                        </div>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <!-- Fixed Header -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title mb-1">Design System Components</h5>
+                                        <small class="text-muted">Started by Jessica Chen • 3 days ago</small>
                                     </div>
-                                    <hr>
+                                    <span class="badge text-bg-success">Active</span>
                                 </div>
-                                <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
-                                    <div class="d-flex mb-4">
-                                        <img src="../assets/images/profile_picture/{{ $comment->added_by_picture }}" alt="{{ $comment->added_by }}" class="rounded-circle me-3" width="40" height="40">
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex align-items-center mb-1">
-                                                <strong>{{ $comment->added_by }}</strong>
-                                                <span class="mx-2 text-muted">•</span>
-                                                <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
-                                            </div>
-                                            <p>{{ $comment->comment }}</p>
-                                            <div class="mt-2">
-                                                <button class="btn btn-sm btn-outline-secondary me-2">
-                                                    <i class="bi bi-reply me-1"></i> Reply
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-secondary">
-                                                    <i class="bi bi-link-45deg me-1"></i> Copy Link
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex">
-                                    <img src="{{ asset('assets/images/profile_picture/' . ($activeUser->profile_picture ?? 'user.png')) }}" alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                <hr>
+                            </div>
+
+                            <!-- Scrollable Comment Section -->
+                            <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
+                                <div class="d-flex mb-4">
+                                    <img src="/avatars/jessica-chen.png" alt="Jessica Chen" class="rounded-circle me-3" width="40" height="40">
                                     <div class="flex-grow-1">
-                                        <textarea class="form-control mb-2" placeholder="Write a reply..." rows="3"></textarea>
-                                        <div class="text-end">
-                                            <button class="btn btn-primary">Post Reply</button>
+                                        <div class="d-flex align-items-center mb-1">
+                                            <strong>Jessica Chen</strong>
+                                            <span class="mx-2 text-muted">•</span>
+                                            <small class="text-muted">3 days ago</small>
                                         </div>
+                                        <p>I've updated the design files with the latest component changes. Please review when you get a chance.</p>
+                                        <p>Also, I'm thinking we should standardize our color palette a bit more.</p>
+                                        <div class="mt-2">
+                                            <button class="btn btn-sm btn-outline-secondary me-2">
+                                                <i class="bi bi-reply me-1"></i> Reply
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-link-45deg me-1"></i> Copy Link
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-4">
+                                    <img src="/avatars/alex-morgan.png" alt="Alex Morgan" class="rounded-circle me-3" width="40" height="40">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <strong>Alex Morgan</strong>
+                                            <span class="mx-2 text-muted">•</span>
+                                            <small class="text-muted">2 days ago</small>
+                                        </div>
+                                        <p>Thanks for the update, Jessica! I've reviewed the changes and they look great.</p>
+                                        <div class="mt-2">
+                                            <button class="btn btn-sm btn-outline-secondary me-2">
+                                                <i class="bi bi-reply me-1"></i> Reply
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-link-45deg me-1"></i> Copy Link
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex">
+                                <img src="/avatars/alex-morgan.png" alt="Alex Morgan" class="rounded-circle me-3" width="40" height="40">
+                                <div class="flex-grow-1">
+                                    <textarea class="form-control mb-2" placeholder="Write a reply..." rows="3"></textarea>
+                                    <div class="text-end">
+                                        <button class="btn btn-primary">Post Reply</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @endforeach
-                    @endforeach
                 </div>
-                <div class="nav flex-column nav-pills col-lg-4 ps-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <div class="card p-3">
-                        <h4 class="card-title mb-3 text-decoration-underline">Recent Discussions</h4>
-                        @foreach ($individualStats as $stat)
-                        @foreach ($stat['comment_list_items'] as $index => $comment)
-                        @php
-                        $tabId = 'tab-comment-' . $comment->id;
-                        @endphp
-                        <button class="nav-link bg-light text-start text-muted"
-                            id="{{ $tabId }}-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#{{ $tabId }}"
-                            type="button"
-                            role="tab"
-                            aria-controls="{{ $tabId }}"
-                            aria-selected="false">
-                            <h6 class="card-title mb-3 text-decoration-underline text-dark">{{ $comment->task_title ?? 'Untitled' }}</h6>
-                            <div class="d-flex mb-2 small">
-                                <p>Started by {{ $comment->added_by ?? 'Unknown' }}</p>
-                                <p class="mx-2">•</p>
-                                <p>{{ $comment->created_at->diffForHumans() ?? 'N/A' }}</p>
-                            </div>
-                            <div class="d-flex small">
-                                <p>{{ $stat['totalComments'] ?? 0 }} replies</p>
-                            </div>
-                        </button>
-                        @endforeach
-                        @endforeach
 
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Recent Discussions</h5>
+                            <div class="list-group list-group-flush">
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <h6 class="mb-1">Design System Components</h6>
+                                    <small class="text-muted">Started by Jessica Chen • 3 days ago</small><br>
+                                    <span class="badge bg-success me-2">Active</span>
+                                    <small class="text-muted">3 replies</small>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <h6 class="mb-1">API Integration Issues</h6>
+                                    <small class="text-muted">Started by David Kim • 5 days ago</small><br>
+                                    <span class="badge bg-warning text-dark me-2">Needs Input</span>
+                                    <small class="text-muted">7 replies</small>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <h6 class="mb-1">Project Timeline Updates</h6>
+                                    <small class="text-muted">Started by Alex Morgan • 1 week ago</small><br>
+                                    <span class="badge bg-info text-dark me-2">Resolved</span>
+                                    <small class="text-muted">12 replies</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Team Activity</h5>
+                            <ul class="list-unstyled">
+                                <li class="d-flex align-items-start mb-3">
+                                    <img src="/avatars/jessica-chen.png" alt="Jessica Chen" class="rounded-circle me-2" width="32" height="32">
+                                    <div>
+                                        <p class="mb-1 small"><strong>Jessica Chen</strong> started a new discussion <span class="text-primary">Design System Components</span></p>
+                                        <small class="text-muted">3 days ago</small>
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-start mb-3">
+                                    <img src="/avatars/alex-morgan.png" alt="Alex Morgan" class="rounded-circle me-2" width="32" height="32">
+                                    <div>
+                                        <p class="mb-1 small"><strong>Alex Morgan</strong> replied to <span class="text-primary">API Integration Issues</span></p>
+                                        <small class="text-muted">4 days ago</small>
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-start">
+                                    <img src="/avatars/ryan-park.png" alt="Ryan Park" class="rounded-circle me-2" width="32" height="32">
+                                    <div>
+                                        <p class="mb-1 small"><strong>Ryan Park</strong> closed discussion <span class="text-primary">Project Timeline Updates</span></p>
+                                        <small class="text-muted">1 week ago</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -768,9 +814,9 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Task Completion Trend</h5>
-                            <p class="text-muted">Weekly task completion rate</p>
+                            <p class="text-muted">task completion rate</p>
                             <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 320px;">
-                                <canvas id="myDoughnutChart" width="600" height="300"></canvas>
+                                <canvas id="myDoughnutChart" width="600" height="300" style="padding: 20px;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -798,16 +844,17 @@
 @section('customJs')
 
 <script>
-    const totalTasks = {{ json_encode($totalTasks) }};
-    const completedTasks = {{ json_encode($completedTasks) }};
+    const totalTasks = {{json_encode($totalTasks)}};
+    const completedTasks = {{json_encode($completedTasks)}};
+    const inProcess = {{json_encode($inProcess)}};
     const remainingTasks = totalTasks - completedTasks;
 
     const data = {
-        labels: ['Completed', 'Remaining'],
+        labels: ['Completed', 'Remaining', 'Processing'],
         datasets: [{
             label: 'Task Completion',
-            data: [completedTasks, remainingTasks],
-            backgroundColor: ['rgb(16, 185, 129)', 'rgb(255, 68, 68)'],
+            data: [completedTasks, remainingTasks, inProcess],
+            backgroundColor: ['rgb(16, 185, 129)', 'rgb(255, 68, 68)', 'rgb(255, 180, 68)'],
             hoverOffset: 10
         }]
     };
@@ -860,18 +907,17 @@
         config
     );
 
-        const ctx = document.getElementById('userTaskChart').getContext('2d');
+    const ctx = document.getElementById('userTaskChart').getContext('2d');
 
-    const userLabels = {!! json_encode(array_column($userWiseStats, 'employee_name')) !!};
-    const totalTasksData = {!! json_encode(array_column($userWiseStats, 'total_tasks')) !!};
-    const completedTasksData = {!! json_encode(array_column($userWiseStats, 'completed_tasks')) !!};
+    const userLabels = {!!json_encode(array_column($userWiseStats, 'employee_name')) !!};
+    const totalTasksData = {!!json_encode(array_column($userWiseStats, 'total_tasks')) !!};
+    const completedTasksData = {!!json_encode(array_column($userWiseStats, 'completed_tasks')) !!};
 
     const userChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: userLabels,
-            datasets: [
-                {
+            datasets: [{
                     label: 'Total Tasks',
                     data: totalTasksData,
                     backgroundColor: 'rgba(54, 162, 235, 0.7)',
