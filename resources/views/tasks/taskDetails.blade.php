@@ -682,17 +682,17 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="d-flex">
-                                        <img src="/avatars/alex-morgan.png" alt="Alex Morgan" class="rounded-circle me-3" width="40" height="40">
-                                        <div class="flex-grow-1">
-                                            <textarea class="form-control mb-2" placeholder="Write a reply..." rows="3"></textarea>
-                                            <div class="text-end">
-                                                <button class="btn btn-primary">Post Reply</button>
-                                            </div>
+                                <div class="d-flex">
+                                    <img src="/avatars/alex-morgan.png" alt="Alex Morgan" class="rounded-circle me-3" width="40" height="40">
+                                    <div class="flex-grow-1">
+                                        <textarea class="form-control mb-2" placeholder="Write a reply..." rows="3"></textarea>
+                                        <div class="text-end">
+                                            <button class="btn btn-primary">Post Reply</button>
                                         </div>
                                     </div>
-                                </div> <!-- End of scrollable area -->
+                                </div>
                             </div>
                         </div>
                     </div>
