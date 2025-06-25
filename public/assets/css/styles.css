@@ -1,12 +1,15 @@
 :root {
-    --secondary-color: hsl(229, 83%, 60%);
+    --secondary-color: #4361ee;
     --primary-color: #1520a6;
     --primary-color-two: #3f37c9;
-    --success-color: #4cc9f0;
+    --success-color: #01796f;
+    --info-color: #4cc9f0;
     --warning-color: #ff9f1c;
     --danger-color: #f5385a;
-    --light-color: #f8f9fa;
+    /* --light-color: #e5e7eb; */
     --dark-color: #212529;
+    /* --light-color: #f8f9fa; */
+    --light-color: #eff2f6;
     --border-radius: 8px;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
@@ -23,6 +26,11 @@
 
 p {
     margin: 0 !important;
+}
+
+a {
+    text-decoration: none !important;
+    color: unset;
 }
 
 .table>tbody {
