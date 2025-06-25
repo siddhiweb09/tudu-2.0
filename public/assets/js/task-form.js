@@ -193,6 +193,29 @@ function initializeTaskForm(formId) {
         updateFrequencyDuration(formId);
     });
 
+    $(`#${formId} #projectSwitchUncheckDefault`).on("change", function () {
+        if ($(this).is(":checked")) {
+            $(`#${formId} #project_dropdown`).removeClass("d-none");
+            $(`#${formId} #default_note`).addClass("d-none");
+        } else {
+            $(`#${formId} #project_dropdown`).addClass("d-none");
+            $(`#${formId} #default_note`).removeClass("d-none");
+        }
+    });
+
+    $(`#${formId} #createProjectSwitch`).on("change", function () {
+        const $dropdown = $(`#${formId} #projectSelectWrapper`);
+        const $textInput = $(`#${formId} #projectInputWrapper`);
+
+        if ($(this).is(":checked")) {
+            $dropdown.addClass('d-none');
+            $textInput.removeClass('d-none');
+        } else {
+            $dropdown.removeClass('d-none');
+            $textInput.addClass('d-none');
+        }
+    });
+
     $(`#${formId} #frequency_${formId}`).on("change", function () {
         var frequency = $(this).val();
         $(`#${formId} #additional_fields_${formId}`).removeClass("d-none");

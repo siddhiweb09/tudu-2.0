@@ -1409,6 +1409,10 @@ ul.dropdown-menu li:last-child {
     border-bottom: 1px solid #dee2e6 !important;
 }
 
+.select-card select.border-all {
+    border: 1px solid #dee2e6 !important;
+}
+
 /* Fix for dropdown positioning */
 .dropdown-menu {
     position: absolute !important;
@@ -1645,6 +1649,7 @@ img.aspect-square {
     border-color: var(--primary-color) !important;
 }
 
+/* task details end */
 .task-card p,
 .task-card span {
     font-size: 14px !important;
