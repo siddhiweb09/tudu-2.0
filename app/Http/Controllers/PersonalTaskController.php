@@ -542,7 +542,48 @@ class PersonalTaskController extends Controller
         return response()->json([
             'status' => 'success',
             'tasks' => $tasks,
-            'assign_by' => $assignBy, // optional: for debugging
         ]);
+    }
+
+    public function updateKanbanStatus(Request $request, $id)
+    {
+
+        $user = Auth::user();
+        $activeUser = $user->employee_code . '*' . $user->employee_name;
+
+        $validated = $request->validate([
+            'status' => 'required|in:Pending,in-progress,completed,overdue'
+        ]);
+
+        $task = PersonalTask::where('task_id', $id)->firstOrFail();
+        $oldStatus = $task->status;
+        $task->status = $validated['status'];
+
+        $task->save();
+
+        // Log task creation
+        TaskLog::create([
+            'task_id' => $id,
+            'log_description' => 'Task Status Updated to ' . $validated['status'],
+            'added_by' => $activeUser
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'refresh' => $this->shouldRefresh($oldStatus, $task->status)
+        ]);
+    }
+
+    protected function shouldRefresh($oldStatus, $newStatus)
+    {
+        // Only require refresh if moving between major status groups
+        $groups = [
+            'Pending' => 'todo',
+            'in-progress' => 'active',
+            'completed' => 'done',
+            'overdue' => 'done'
+        ];
+
+        return ($groups[$oldStatus] ?? null) !== ($groups[$newStatus] ?? null);
     }
 }
