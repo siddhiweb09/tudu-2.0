@@ -193,6 +193,37 @@ function initializeTaskForm(formId) {
         updateFrequencyDuration(formId);
     });
 
+    $(`#${formId} #projectSwitchUncheckDefault`).on("change", function () {
+        if ($(this).is(":checked")) {
+            $(`#${formId} #project_dropdown`).removeClass("d-none");
+            $(`#${formId} #default_note`).addClass("d-none");
+        } else {
+            $(`#${formId} #project_dropdown`).addClass("d-none");
+            $(`#${formId} #default_note`).removeClass("d-none");
+        }
+    });
+
+    // Run on checkbox toggle
+    $(`#${formId} #createProjectSwitch`).on("change", function () {
+        const isChecked = $(this).is(":checked");
+
+        // Toggle input vs select
+        if (isChecked) {
+            $(`#${formId} #projectSelectWrapper`).addClass('d-none');
+            $(`#${formId} #projectInputWrapper`).removeClass('d-none');
+        } else {
+            $(`#${formId} #projectSelectWrapper`).removeClass('d-none');
+            $(`#${formId} #projectInputWrapper`).addClass('d-none');
+        }
+
+        updateFinalProjectName(formId);
+    });
+
+    // Update hidden input on any change
+    $(`#${formId} #newProjectInput, #${formId} #projectSelect`).on("input change", function () {
+        updateFinalProjectName(formId);
+    });
+
     $(`#${formId} #frequency_${formId}`).on("change", function () {
         var frequency = $(this).val();
         $(`#${formId} #additional_fields_${formId}`).removeClass("d-none");
@@ -541,6 +572,18 @@ function initializeTaskForm(formId) {
         $(`#${formId} #visibleInput`).val(JSON.stringify(visibleTo));
     }
 
+    function updateFinalProjectName(formId) {
+        const isNew = $(`#${formId} #createProjectSwitch`).is(":checked");
+
+        if (isNew) {
+            const newProject = $(`#${formId} #newProjectInput`).val().trim();
+            $(`#${formId} #finalProjectName`).val(newProject);
+        } else {
+            const selectedProjectText = $(`#${formId} #projectSelect option:selected`).text().trim();
+            $(`#${formId} #finalProjectName`).val(selectedProjectText);
+        }
+    }
+
     // Initialize form elements
     function initializeForm(formId) {
         // Add hidden inputs if they don't exist
@@ -593,6 +636,7 @@ function initializeTaskForm(formId) {
         updateLinksInput(formId);
         updateRemindersInput(formId);
         updateFrequencyDuration(formId);
+        updateFinalProjectName(formId);
         if (formId !== "form1") {
             updateVisibilityInputs(formId);
         }

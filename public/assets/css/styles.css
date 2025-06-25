@@ -1,12 +1,15 @@
 :root {
-    --secondary-color: hsl(229, 83%, 60%);
+    --secondary-color: #4361ee;
     --primary-color: #1520a6;
     --primary-color-two: #3f37c9;
-    --success-color: #4cc9f0;
+    --success-color: #01796f;
+    --info-color: #4cc9f0;
     --warning-color: #ff9f1c;
     --danger-color: #f5385a;
-    --light-color: #f8f9fa;
+    /* --light-color: #e5e7eb; */
     --dark-color: #212529;
+    /* --light-color: #f8f9fa; */
+    --light-color: #eff2f6;
     --border-radius: 8px;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
@@ -19,6 +22,23 @@
     --color-one: #3a0ca3;
     --color-two: #4361ee;
     --color-three: #4cc9f0;
+}
+
+p {
+    margin: 0 !important;
+}
+
+a {
+    text-decoration: none !important;
+    color: unset;
+}
+
+.table>tbody {
+    vertical-align: middle !important;
+}
+
+.card {
+    --bs-card-border-color: #e5e7eb !important;
 }
 
 .page-wrapper {
@@ -1389,6 +1409,10 @@ ul.dropdown-menu li:last-child {
     border-bottom: 1px solid #dee2e6 !important;
 }
 
+.select-card select.border-all {
+    border: 1px solid #dee2e6 !important;
+}
+
 /* Fix for dropdown positioning */
 .dropdown-menu {
     position: absolute !important;
@@ -1625,4 +1649,80 @@ img.aspect-square {
     border-color: var(--primary-color) !important;
 }
 
+.task-card p,
+.task-card span {
+    font-size: 14px !important;
+}
+
+.task-card:hover {
+    box-shadow: var(--bs-box-shadow) !important;
+}
+
+.badge {
+    height: 20px;
+}
+
+.document-box {
+    margin-bottom: 1rem;
+}
+
+.document-box:last-child {
+    margin-bottom: 0;
+}
+
 /* task details end */
+
+/* task details modal Start */
+
+#taskDetailModal .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+#taskDetailModal .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Custom scrollbar */
+#taskDetailModal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#taskDetailModal .modal-body::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 3px;
+}
+
+/* Subtask checkboxes */
+#taskDetailModal .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Assignee badges */
+#taskDetailModal .badge.bg-light {
+    padding: 0.75rem 0.35rem;
+    border: 1px solid #dee2e6;
+}
+
+/* Comment section */
+#taskDetailModal .comment-avatar {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+.modal-dialog-centered {
+    max-width: 650px; 
+    width: 90%;
+}
+
+.primary-gradient-effect {
+    background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    min-height: 80px;
+    padding: 1.5rem;
+}
+
+/* task details modal end */

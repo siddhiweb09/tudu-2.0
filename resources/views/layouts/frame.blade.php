@@ -77,7 +77,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mb-2 mb-lg-0 d-flex justify-content-between w-100">
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
+                                <a class="nav-link" href="../../">
                                     <i class="ti ti-home-2 menu-icon"></i>
                                     <span class="menu-title">Dashboard</span>
                                 </a>
@@ -153,7 +153,7 @@
     <!-- include summernote css/js -->
     <link href="assets/summernote/summernote.min.css" rel="stylesheet">
     <script src="assets/summernote/summernote.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/task-form.js">
     </script>
 
