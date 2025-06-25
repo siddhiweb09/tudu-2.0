@@ -481,6 +481,8 @@ class TaskController extends Controller
             'task',
             'delegatedTasks',
             'taskItems',
+            'taskMedias',
+            'taskComments',
             'totalTasks',
             'completedTasks',
             'progressPercentage',

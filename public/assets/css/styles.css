@@ -1,12 +1,15 @@
 :root {
-    --secondary-color: hsl(229, 83%, 60%);
+    --secondary-color: #4361ee;
     --primary-color: #1520a6;
     --primary-color-two: #3f37c9;
-    --success-color: #4cc9f0;
+    --success-color: #01796f;
+    --info-color: #4cc9f0;
     --warning-color: #ff9f1c;
     --danger-color: #f5385a;
-    --light-color: #f8f9fa;
+    /* --light-color: #e5e7eb; */
     --dark-color: #212529;
+    /* --light-color: #f8f9fa; */
+    --light-color: #eff2f6;
     --border-radius: 8px;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
@@ -23,6 +26,11 @@
 
 p {
     margin: 0 !important;
+}
+
+a {
+    text-decoration: none !important;
+    color: unset;
 }
 
 .table>tbody {
@@ -1401,6 +1409,10 @@ ul.dropdown-menu li:last-child {
     border-bottom: 1px solid #dee2e6 !important;
 }
 
+.select-card select.border-all {
+    border: 1px solid #dee2e6 !important;
+}
+
 /* Fix for dropdown positioning */
 .dropdown-menu {
     position: absolute !important;
@@ -1637,6 +1649,7 @@ img.aspect-square {
     border-color: var(--primary-color) !important;
 }
 
+/* task details end */
 .task-card p,
 .task-card span {
     font-size: 14px !important;
@@ -1646,8 +1659,16 @@ img.aspect-square {
     box-shadow: var(--bs-box-shadow) !important;
 }
 
-.badge{
+.badge {
     height: 20px;
+}
+
+.document-box {
+    margin-bottom: 1rem;
+}
+
+.document-box:last-child {
+    margin-bottom: 0;
 }
 
 /* task details end */
