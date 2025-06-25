@@ -26,6 +26,7 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'task_title' => 'required|string|max:255',
             'task_description' => 'required|string',
+            'final_project_name'=> 'required|string',
             'category' => 'required|string|max:255',
             'assign_to' => 'required|string',
             'due_date' => 'nullable|string',
@@ -53,6 +54,7 @@ class TaskController extends Controller
         $task = Task::create([
             'title' => $request->task_title,
             'description' => $request->task_description,
+            'project_name' => $request->final_project_name,
             'task_list' => $request->tasks_json,
             'department' => $request->category,
             'due_date' => $request->due_date,
