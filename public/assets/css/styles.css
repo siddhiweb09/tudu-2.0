@@ -21,6 +21,10 @@
     --color-three: #4cc9f0;
 }
 
+p {
+    margin: 0 !important;
+}
+
 .table>tbody {
     vertical-align: middle !important;
 }

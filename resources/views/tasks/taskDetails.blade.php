@@ -32,11 +32,11 @@
                 <div class="card h-100 bg-light border-0">
                     <div class="card-body">
                         <h6 class="text-muted">Progress</h6>
-                        <div class="row">
-                            <div class="col-auto">
+                        <div class="row m-0 justify-content-between">
+                            <div class="col-auto p-0">
                                 <h5 class="card-title">{{$progressPercentage}} %</h5>
                             </div>
-                            <div class="col p-0">
+                            <div class="col-auto p-0">
                                 <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
                                         completed)</small></p>
                             </div>
@@ -159,9 +159,66 @@
                 <div class="col-md-6 col-lg-4 pe-0">
                     <div class="card bg-white">
                         <div class="card-body">
-                            <h6 class="text-muted">Assigned by</h6>
-                            <h5 class="card-title">{{$task->assign_by}}</h5>
-                            <p class="card-text text-muted"><small>Final status: {{$task->final_status}}</small></p>
+                            <h4 class="card-title mb-3 text-decoration-underline">Task Details</h4>
+                            <div class="row m-0 justify-content-between">
+                                <div class="col-auto p-0">
+                                    <p class="card-title fw-bold text-muted">Reminders: </p>
+                                </div>
+                                <div class="col-auto p-0">
+                                    @php
+                                    $reminders = json_decode($task->reminders, true);
+                                    @endphp
+                                    @foreach ($reminders as $reminder)
+                                    @if($reminder === "Email")
+                                    <span class="bg-danger-light px-2 py-1 rounded small text-danger"><i class="ti ti-mail-opened me-1"></i>{{ $reminder }}</span>
+                                    @elseif($reminder === "WhatsApp")
+                                    <span class="bg-success-light px-2 py-1 rounded small text-success"><i class="ti ti-brand-whatsapp me-1"></i>{{ $reminder }}</span>
+                                    @elseif($reminder === "Telegram")
+                                    <span class="bg-primary-light px-2 py-1 rounded small text-primary"><i class="ti ti-brand-telegram me-1"></i>{{ $reminder }}</span>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="row m-0 mt-3 justify-content-between">
+                                <div class="col-auto p-0">
+                                    <p class="card-title fw-bold text-muted">Frequency: </p>
+                                </div>
+                                <div class="col-auto p-0">
+                                    <p class="card-title text-muted">{{$task->frequency}}</p>
+                                </div>
+                            </div>
+                            <div class="row m-0 mt-3 justify-content-between">
+                                @php
+                                $frequencies = json_decode($task->frequency_duration, true);
+                                $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success', 'bg-warning-light text-warning', 'bg-light text-danger', 'bg-secondary-light text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
+                                @endphp
+
+                                @foreach ($frequencies as $index => $frequency)
+                                @php
+                                $colorClass = $badgeColors[$index % count($badgeColors)];
+                                @endphp
+                                <span class="{{ $colorClass }} px-2 py-1 rounded small me-1 mb-2 fw-medium w-auto">{{ $frequency }}</span>
+                                @endforeach
+                            </div>
+                            <div class="row m-0 mt-3 justify-content-between">
+                                <div class="col-auto p-0">
+                                    <p class="card-title fw-bold text-muted">Frequency: </p>
+                                </div>
+                                <div class="col-auto p-0">
+                                    @php
+                                    $frequencies = json_decode($task->frequency_duration, true);
+                                    $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success', 'bg-warning-light text-warning', 'bg-light text-danger', 'bg-secondary-light text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
+                                    @endphp
+
+                                    @foreach ($frequencies as $index => $frequency)
+                                    @php
+                                    $colorClass = $badgeColors[$index % count($badgeColors)];
+                                    @endphp
+                                    @for ($frequencies as $index => $frequency)
+                                    <i class="ti ti-star me-1"></i>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
