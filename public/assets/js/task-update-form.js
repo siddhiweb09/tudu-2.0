@@ -55,6 +55,6 @@ $(`#comment-form`).on("submit", function (e) {
         }
         toastr.error(errorMessage);
     } finally {
-        $(`#${formId} #submitBtn`).prop("disabled", false).html("Create Task");
+        $(`#comment-form #submitBtn`).prop("disabled", false).html("Create Task");
     }
 });
