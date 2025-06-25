@@ -373,7 +373,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             @endif
                             @endforeach
                         </div>
