@@ -534,6 +534,7 @@ class TaskController extends Controller
         // Total stats (combined)
         $totalTasks = $taskItems->count();
         $completedTasks = $taskItems->where('status', 'Completed')->count();
+        $inProcess = $taskItems->where('status','In Progress')->count();
         $progressPercentage = $totalTasks > 0
             ? round(($completedTasks / $totalTasks) * 100, 2)
             : 0;
@@ -743,7 +744,8 @@ class TaskController extends Controller
             'activities',
             'userWiseStats',
             'activeUser',
-            'individualStats' // ← Include individual task stats
+            'individualStats',
+            'inProcess' // ← Include individual task stats
         ));
     }
 
