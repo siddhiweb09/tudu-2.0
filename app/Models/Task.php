@@ -11,6 +11,7 @@ class Task extends Model
         'task_id',
         'title',
         'description',
+        'project_name',
         'task_list',
         'department',
         'priority',
