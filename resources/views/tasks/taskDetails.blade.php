@@ -1,4 +1,5 @@
 @extends('layouts.innerframe')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @section('main')
     <div class="bg-white border-bottom">
         <div class="container-xxl p-4">
@@ -1072,10 +1073,37 @@
                 </div>
             </div>
         </div>
-    </div>
-@endsection
+        <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">
+            <div class="row g-4">
+                <!-- Task Completion Trend Card -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Task Completion Trend</h5>
+                            <p class="text-muted">Weekly task completion rate</p>
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 320px;">
+                                <canvas id="myDoughnutChart" width="600" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-@section('customJs')
+                <!-- Team Productivity Card -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Team Productivity</h5>
+                            <p class="text-muted">Tasks completed by team member</p>
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 320px;">
+                                <canvas id="userTaskChart" height="120"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -1192,5 +1220,9 @@ const remainingTasks = totalTasks - completedTasks;
         }
     });
 </script>
+
+@endsection
+
+@section('customJs')
 
 @endsection
