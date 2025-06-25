@@ -57,7 +57,7 @@ class PersonalTaskController extends Controller
         $month = $request->query('month', date('n'));
         $year = $request->query('year', date('Y'));
 
-        $tasks = PersonalTask::where('assign_by',  $assignBy)
+        $tasks = PersonalTask::where('assign_by', $assignBy)
             ->where(function ($query) use ($month, $year) {
                 $query->whereMonth('due_date', $month)
                     ->whereYear('due_date', $year);
@@ -116,13 +116,13 @@ class PersonalTaskController extends Controller
             'reminders' => $request->reminders_json,
             'links' => $request->links_json,
             'status' => 'Pending',
-            'assign_by' =>  $activeUser,
+            'assign_by' => $activeUser,
         ]);
         // Log task creation
         TaskLog::create([
             'task_id' => $task->task_id,
             'log_description' => 'Task created',
-            'added_by' =>  $activeUser,
+            'added_by' => $activeUser,
         ]);
         // Handle file uploads
         if ($request->hasFile('documents')) {
@@ -133,14 +133,14 @@ class PersonalTaskController extends Controller
                     'task_id' => $task->task_id,
                     'category' => 'document',
                     'file_name' => $fileName,
-                    'created_by' =>  $activeUser,
+                    'created_by' => $activeUser,
                 ]);
 
                 // Log document upload
                 TaskLog::create([
                     'task_id' => $task->task_id,
                     'log_description' => 'Document uploaded: ' . $fileName,
-                    'added_by' =>  $activeUser,
+                    'added_by' => $activeUser,
                 ]);
             }
         }
@@ -223,7 +223,7 @@ class PersonalTaskController extends Controller
 
         // Handle file uploads
         if ($request->hasFile('document')) {
-            $file =  $request->file('document');
+            $file = $request->file('document');
             $uploadPath = public_path('assets/uploads');
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
@@ -237,14 +237,14 @@ class PersonalTaskController extends Controller
                 'task_id' => $taskId,
                 'file_name' => $fileName,
                 'category' => 'document',
-                'created_by' =>  $activeUser,
+                'created_by' => $activeUser,
             ]);
 
             // Log document upload
             TaskLog::create([
                 'task_id' => $taskId,
                 'log_description' => 'Document uploaded: ' . $request->file('document')->getClientOriginalName(),
-                'added_by' =>  $activeUser,
+                'added_by' => $activeUser,
             ]);
 
             return response()->json(['success' => true, 'document' => $document]);
@@ -303,7 +303,7 @@ class PersonalTaskController extends Controller
                 ->update(['notes' => json_encode($notesArray)]);
 
             return response()->json([
-                'success' => (bool)$updated,
+                'success' => (bool) $updated,
                 'data' => $updated ? null : ['error' => 'Update failed']
             ]);
         } catch (\Exception $e) {
@@ -530,5 +530,19 @@ class PersonalTaskController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+    public function fetchTasks(Request $request)
+    {
+        $user = Auth::user();
+
+        $assignBy = $user->employee_code . '*' . $user->employee_name;
+
+        $tasks = PersonalTask::where('assign_by', $assignBy)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'tasks' => $tasks,
+            'assign_by' => $assignBy, // optional: for debugging
+        ]);
     }
 }
