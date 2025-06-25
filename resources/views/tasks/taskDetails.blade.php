@@ -1,5 +1,5 @@
 @extends('layouts.innerframe')
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @section('main')
 <div class="bg-white border-bottom">
     <div class="container-xxl p-4">
@@ -101,7 +101,7 @@
 <div class="container-xxl p-4">
     <nav>
         <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
-            <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
+            <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
                 type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
                     class="ti ti-notes me-1"></i> Overview</button>
             <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
@@ -110,7 +110,7 @@
             <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
                 role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
                 Team</button>
-            <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab" data-bs-target="#nav-discussion"
+            <button class="nav-link" id="nav-discussion-tab" data-bs-toggle="tab" data-bs-target="#nav-discussion"
                 type="button" role="tab" aria-controls="nav-discussion" aria-selected="false"><i
                     class="ti ti-message me-1"></i> Discussion</button>
             <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
@@ -119,7 +119,7 @@
         </div>
     </nav>
     <div class="tab-content mt-4" id="nav-tabContent">
-        <div class="tab-pane fade" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
             <div class="row m-0">
                 <div class="col-md-6 col-lg-8 ps-0">
                     <div class="card bg-white">
@@ -232,59 +232,6 @@
                                                 <span class="small">{{ $taskMedia->file_name }}</span>
                                             </div>
                                             <a href="../assets/uploads/{{ $taskMedia->file_name }}" class="ti ti-download border-0 bg-transparent ps-3" download></a>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card bg-white mt-4">
-                        <div class="card-body">
-                            <h4 class="card-title mb-3 text-decoration-underline">Links</h4>
-                            <div class="row m-0 justify-content-between">
-                                <div class="col p-0">
-                                    @php
-                                    $grouped = $taskMedias->where('category', 'link')->groupBy('task_id');
-                                    @endphp
-
-                                    @foreach ($grouped as $taskId => $docs)
-                                    <p class="card-title my-3 fw-medium">{{ $taskId }}</p>
-
-                                    <div class="border p-3">
-                                        @foreach ($docs as $taskMedia)
-                                        <div class="d-flex align-items-center bg-light px-1 py-2 rounded document-box">
-                                            <i class="ti ti-link me-2 text-secondary"></i>
-                                            <a href="{{ $taskMedia->file_name }}" class="small text-break text-decoration-underline">{{ $taskMedia->file_name }}</a>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card bg-white mt-4">
-                        <div class="card-body">
-                            <h4 class="card-title mb-3 text-decoration-underline">Voice Notes</h4>
-                            <div class="row m-0 justify-content-between">
-                                <div class="col p-0">
-                                    @php
-                                    $grouped = $taskMedias->where('category', 'voice_note')->groupBy('task_id');
-                                    @endphp
-
-                                    @foreach ($grouped as $taskId => $docs)
-                                    <p class="card-title my-3 fw-medium">{{ $taskId }}</p>
-
-                                    <div class="border p-3">
-                                        @foreach ($docs as $taskMedia)
-                                        <div class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
-                                            <div class="d-flex align-items-center">
-                                                <i class="ti ti-speakerphone me-1 text-secondary"></i>
-                                                <span class="small">{{ $taskMedia->file_name }}</span>
-                                            </div>
-                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}" class="ti ti-circle-caret-right border-0 bg-transparent ps-3" download></a>
                                         </div>
                                         @endforeach
                                     </div>
@@ -809,9 +756,154 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">...</div>
+        <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">
+            <div class="row g-4">
+                <!-- Task Completion Trend Card -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Task Completion Trend</h5>
+                            <p class="text-muted">Weekly task completion rate</p>
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 320px;">
+                                <canvas id="myDoughnutChart" width="600" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Productivity Card -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Team Productivity</h5>
+                            <p class="text-muted">Tasks completed by team member</p>
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 320px;">
+                                <canvas id="userTaskChart" height="120"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const totalTasks = {{$totalTasks}};
+const completedTasks = {{$completedTasks}};
+const remainingTasks = totalTasks - completedTasks;
+
+    const data = {
+        labels: ['Completed', 'Remaining'],
+        datasets: [{
+            label: 'Task Completion',
+            data: [completedTasks, remainingTasks],
+            backgroundColor: ['rgb(16, 185, 129)', 'rgb(255, 68, 68)'],
+            hoverOffset: 10
+        }]
+    };
+
+    // ✅ Plugin to show text in center
+    const centerTextPlugin = {
+        id: 'centerText',
+        beforeDraw(chart) {
+            const {
+                width
+            } = chart;
+            const {
+                height
+            } = chart;
+            const {
+                ctx
+            } = chart;
+
+            ctx.restore();
+            const fontSize = (height / 150).toFixed(2);
+            ctx.font = `${fontSize}em sans-serif`;
+            ctx.textBaseline = "middle";
+
+            const text = `${totalTasks}`;
+            const textX = Math.round((width - ctx.measureText(text).width) / 2);
+            const textY = height / 2;
+
+            ctx.fillStyle = '#111827'; // dark text
+            ctx.fillText(text, textX, textY);
+            ctx.save();
+        }
+    };
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        },
+        plugins: [centerTextPlugin] // 👈 Plugin added here
+    };
+
+    new Chart(
+        document.getElementById('myDoughnutChart'),
+        config
+    );
+
+        const ctx = document.getElementById('userTaskChart').getContext('2d');
+
+    const userLabels = {!! json_encode(array_column($userWiseStats, 'employee_name')) !!};
+    const totalTasksData = {!! json_encode(array_column($userWiseStats, 'total_tasks')) !!};
+    const completedTasksData = {!! json_encode(array_column($userWiseStats, 'completed_tasks')) !!};
+
+    const userChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: userLabels,
+            datasets: [
+                {
+                    label: 'Total Tasks',
+                    data: totalTasksData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Completed Tasks',
+                    data: completedTasksData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Task Count'
+                    }
+                }
+            }
+        }
+    });
+</script>
 
 @endsection
 
