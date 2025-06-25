@@ -715,12 +715,14 @@
                                 </div>
                                 <div class="d-flex">
                                     <img src="{{ asset('assets/images/profile_picture/' . ($activeUser->profile_picture ?? 'user.png')) }}" alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                                    <div class="flex-grow-1">
-                                        <textarea class="form-control mb-2" placeholder="Write a reply..." rows="3"></textarea>
+
+                                    <form class="flex-grow-1" method="POST" id="comment-form">
+                                        <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
+                                        <input hidden type="text" value="$comment->task_id" />
                                         <div class="text-end">
                                             <button class="btn btn-primary">Post Reply</button>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -789,6 +791,11 @@
                     </div>
                 </div>
             </div>
+            <input hidden id="totalTasks" value="{{$totalTasks}}" />
+            <input hidden id="completedTasks" value="{{$completedTasks}}" />
+            <input type="hidden" id="userLabels" value='{!! json_encode(array_column($userWiseStats, "employee_name")) !!}' />
+            <input hidden id="totalTasksData" value="{!!json_encode(array_column($userWiseStats, 'total_tasks')) !!}" />
+            <input hidden id="completedTasksData" value="{!!json_encode(array_column($userWiseStats, 'completed_tasks')) !!}" />
         </div>
     </div>
 </div>
@@ -796,10 +803,9 @@
 @endsection
 
 @section('customJs')
-
 <script>
-    const totalTasks = {{ json_encode($totalTasks) }};
-    const completedTasks = {{ json_encode($completedTasks) }};
+    const totalTasks = document.getElementById('totalTasks').value;
+    const completedTasks = document.getElementById('completedTasks').value;
     const remainingTasks = totalTasks - completedTasks;
 
     const data = {
@@ -860,18 +866,17 @@
         config
     );
 
-        const ctx = document.getElementById('userTaskChart').getContext('2d');
+    const ctx = document.getElementById('userTaskChart').getContext('2d');
 
-    const userLabels = {!! json_encode(array_column($userWiseStats, 'employee_name')) !!};
-    const totalTasksData = {!! json_encode(array_column($userWiseStats, 'total_tasks')) !!};
-    const completedTasksData = {!! json_encode(array_column($userWiseStats, 'completed_tasks')) !!};
+    const userLabels = JSON.parse(document.getElementById('userLabels').value);
+    const totalTasksData = JSON.parse(document.getElementById('totalTasksData').value);
+    const completedTasksData = JSON.parse(document.getElementById('completedTasksData').value);
 
     const userChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: userLabels,
-            datasets: [
-                {
+            datasets: [{
                     label: 'Total Tasks',
                     data: totalTasksData,
                     backgroundColor: 'rgba(54, 162, 235, 0.7)',

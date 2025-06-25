@@ -40,7 +40,7 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'task_title' => 'required|string|max:255',
             'task_description' => 'required|string',
-            'final_project_name'=> 'required|string',
+            'final_project_name' => 'required|string',
             'category' => 'required|string|max:255',
             'assign_to' => 'required|string',
             'due_date' => 'nullable|string',
@@ -745,5 +745,10 @@ class TaskController extends Controller
             'activeUser',
             'individualStats' // ← Include individual task stats
         ));
+    }
+
+    public function addComment(Request $request)
+    {
+        dd($request);
     }
 }
