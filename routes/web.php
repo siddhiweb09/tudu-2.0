@@ -29,6 +29,7 @@ Route::middleware(['auth:web'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
     Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
+    Route::match(['get', 'post'], '/pending-tasks', [TaskController::class, 'pendingTask'])->name('tasks.pendingTasks');
 
     // Tasks
     Route::get('/tasks-calender', function () {
@@ -69,9 +70,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/personal-tasks/{task}/documents/upload', [PersonalTaskController::class, 'uploadDocument'])->name('personal-tasks.upload-document');
     Route::post('/personal-tasks-delete-document', [PersonalTaskController::class, 'deleteDocument'])->name('personal-tasks.delete-document');
 
-    Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
-    Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
-    Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
+    // Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
+    // Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
+    // Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
 
     //fetch Functions
     Route::get('/get-task-details/{id}', [TaskController::class, 'getTaskById']);
