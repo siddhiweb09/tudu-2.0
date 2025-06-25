@@ -1649,7 +1649,6 @@ img.aspect-square {
     border-color: var(--primary-color) !important;
 }
 
-/* task details end */
 .task-card p,
 .task-card span {
     font-size: 14px !important;
@@ -1657,6 +1656,18 @@ img.aspect-square {
 
 .task-card:hover {
     box-shadow: var(--bs-box-shadow) !important;
+}
+
+.badge {
+    height: 20px;
+}
+
+.document-box {
+    margin-bottom: 1rem;
+}
+
+.document-box:last-child {
+    margin-bottom: 0;
 }
 
 /* task details end */
