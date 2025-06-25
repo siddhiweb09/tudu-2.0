@@ -634,6 +634,7 @@ class TaskController extends Controller
         // Total stats (combined)
         $totalTasks = $taskItems->count();
         $completedTasks = $taskItems->where('status', 'Completed')->count();
+        $inProcess = $taskItems->where('status','In Progress')->count();
         $progressPercentage = $totalTasks > 0
             ? round(($completedTasks / $totalTasks) * 100, 2)
             : 0;
@@ -650,8 +651,52 @@ class TaskController extends Controller
             $commentItems = $taskComments->where('task_id', $id);
             $totalComments = $commentItems->count();
 
+            foreach ($commentItems as $commentItem) {
+                // Set task title
+                if (!empty($commentItem->task_id)) {
+                    $parts = explode('-', $commentItem->task_id);
+                    if ($parts[0] === "DELTASK") {
+                        $commentItem->task_title = DelegatedTask::where('delegate_task_id', $commentItem->task_id)->value('title');
+                    } else {
+                        $commentItem->task_title = Task::where('task_id', $commentItem->task_id)->value('title');
+                    }
+                } else {
+                    $commentItem->task_title = 'Untitled';
+                }
+
+                // Set user profile
+                if (!empty($commentItem->added_by)) {
+                    $added_by_parts = explode('*', $commentItem->added_by);
+                    $user = User::where('employee_code', $added_by_parts[0])->first(['employee_name', 'profile_picture']);
+                    $commentItem->added_by_name = optional($user)->employee_name ?? 'Unknown';
+                    $commentItem->added_by_picture = optional($user)->profile_picture ?? 'user.png';
+                } else {
+                    $commentItem->added_by_name = 'Unknown';
+                    $commentItem->added_by_picture = 'user.png';
+                }
+            }
+
+
             $mediaItems = $taskMedias->where('task_id', $id);
             $totalMedias = $mediaItems->count();
+
+            foreach ($mediaItems as $mediaItem) {
+                // Check if it's a delegated task based on task_id format
+                if (!empty($mediaItem->task_id)) {
+                    $totalMediasParts = explode('-', $mediaItem->task_id);
+
+                    if ($totalMediasParts[0] === "DELTASK") {
+                        $taskTitle = DelegatedTask::where('delegate_task_id', $mediaItem->task_id)->value('title');
+                    } else {
+                        $taskTitle = Task::where('task_id', $mediaItem->task_id)->value('title');
+                    }
+
+                    // Attach the title dynamically
+                    $mediaItem->task_title = $taskTitle;
+                } else {
+                    $mediaItem->task_title = 'Untitled';
+                }
+            }
 
             // If it's the main task
             if ($id == $task->task_id) {
@@ -699,6 +744,7 @@ class TaskController extends Controller
                 'progress' => $progress,
                 'teamMembers' => $teamMembers,
                 'task_list_items' => $items,
+                'comment_list_items' => $commentItems,
             ];
         }
         // dd($individualStats);
@@ -778,6 +824,7 @@ class TaskController extends Controller
                 ? round(($userStat['completed_tasks'] / $userStat['total_tasks']) * 100, 2)
                 : 0;
         }
+        $activeUser = Auth::user();
 
         // dd($userWiseStats);
 
@@ -796,7 +843,14 @@ class TaskController extends Controller
             'lastActivity',
             'activities',
             'userWiseStats',
-            'individualStats' // ← Include individual task stats
+            'activeUser',
+            'individualStats',
+            'inProcess' // ← Include individual task stats
         ));
+    }
+
+    public function addComment(Request $request)
+    {
+        dd($request);
     }
 }

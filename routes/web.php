@@ -37,11 +37,12 @@ Route::middleware(['auth:web'])->group(function () {
     })->name('tasks.calender');
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
     Route::match(['get', 'post'], '/task/{task_id}', [TaskController::class, 'taskDetails'])->name('tasks.taskDetails');
+    Route::match(['get', 'post'], '/add-comment', [TaskController::class, 'addComment'])->name('addComment');
 
 
     // Delegated Tasks
     Route::match(['get', 'post'], '/delegate-tasks/{id}', [TaskController::class, 'delegateTask'])->name('tasks.delegate');
-    Route::post('/store-delegate-task', [TaskController::class,'storeDelegateForm'])->name('storeDelegateForm');
+    Route::post('/store-delegate-task', [TaskController::class, 'storeDelegateForm'])->name('storeDelegateForm');
 
     // Support
     Route::match(['get', 'post'], '/support', [TaskController::class, 'helpAndSupport'])->name('helpAndSupport');
@@ -50,9 +51,8 @@ Route::middleware(['auth:web'])->group(function () {
         return view('helpAndSupport');
     })->name('helpAndSupport');
     Route::post('/store-support-ticket', [SupportController::class, 'storeSupportForm'])->name('storeSupportForm');
+
     // Personal Tasks
-
-
     Route::get('/personal-tasks', [PersonalTaskController::class, 'index'])->name('personal-tasks.index');
     Route::get('/personal-tasks-kanban', [PersonalTaskController::class, 'kanban'])->name('personal-tasks.kanban');
     Route::get('/personal-tasks-calendar', [PersonalTaskController::class, 'calendar'])->name('personal-tasks.calendar');

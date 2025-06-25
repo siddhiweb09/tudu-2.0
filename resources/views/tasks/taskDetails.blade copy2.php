@@ -22,11 +22,8 @@
             </div>
             <div class="col align-self-center">
                 <!-- Deadline Section -->
-                <h5 class="text-muted text-end mb-2"><i class="ti ti-calendar-event me-1"></i>Deadline:
-                    {{$task->due_date}}
-                </h5>
-                <p class="text-muted text-end small mb-0"><i class="ti ti-alarm me-1"></i>Started: {{$task->created_at}}
-                </p>
+                <h5 class="text-muted text-end mb-2"><i class="ti ti-calendar-event me-1"></i>Deadline: {{$task->due_date}}</h5>
+                <p class="text-muted text-end small mb-0"><i class="ti ti-alarm me-1"></i>Started: {{$task->created_at}} </p>
             </div>
         </div>
 
@@ -113,9 +110,9 @@
             <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
                 role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
                 Team</button>
-            <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab"
-                data-bs-target="#nav-discussion" type="button" role="tab" aria-controls="nav-discussion"
-                aria-selected="false"><i class="ti ti-message me-1"></i> Discussion</button>
+            <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab" data-bs-target="#nav-discussion"
+                type="button" role="tab" aria-controls="nav-discussion" aria-selected="false"><i
+                    class="ti ti-message me-1"></i> Discussion</button>
             <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
                 type="button" role="tab" aria-controls="nav-analytics" aria-selected="false"><i
                     class="ti ti-chart-bar me-1"></i> Analytics</button>
@@ -141,8 +138,7 @@
                                     <div class="tl-dot b-primary"></div>
                                     <div class="tl-content">
                                         <h6 class="">{{$activity->log_description}}</h6>
-                                        <div class="tl-date text-muted mt-1">{{$activity->created_at}} |
-                                            {{$activity->added_by}}
+                                        <div class="tl-date text-muted mt-1">{{$activity->created_at}} | {{$activity->added_by}}
                                         </div>
                                     </div>
                                 </div>
@@ -174,14 +170,11 @@
                                     @endphp
                                     @foreach ($reminders as $reminder)
                                     @if($reminder === "Email")
-                                    <span class="bg-danger-light px-2 py-1 rounded small text-danger"><i
-                                            class="ti ti-mail-opened me-1"></i>{{ $reminder }}</span>
+                                    <span class="bg-danger-light px-2 py-1 rounded small text-danger"><i class="ti ti-mail-opened me-1"></i>{{ $reminder }}</span>
                                     @elseif($reminder === "WhatsApp")
-                                    <span class="bg-success-light px-2 py-1 rounded small text-success"><i
-                                            class="ti ti-brand-whatsapp me-1"></i>{{ $reminder }}</span>
+                                    <span class="bg-success-light px-2 py-1 rounded small text-success"><i class="ti ti-brand-whatsapp me-1"></i>{{ $reminder }}</span>
                                     @elseif($reminder === "Telegram")
-                                    <span class="bg-primary-light px-2 py-1 rounded small text-primary"><i
-                                            class="ti ti-brand-telegram me-1"></i>{{ $reminder }}</span>
+                                    <span class="bg-primary-light px-2 py-1 rounded small text-primary"><i class="ti ti-brand-telegram me-1"></i>{{ $reminder }}</span>
                                     @endif
                                     @endforeach
                                 </div>
@@ -197,17 +190,14 @@
                             <div class="row m-0 mt-4 justify-content-between">
                                 @php
                                 $frequencies = json_decode($task->frequency_duration, true);
-                                $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success',
-                                'bg-warning-light text-warning', 'bg-danger-light text-danger', 'bg-secondary-light
-                                text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
+                                $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success', 'bg-warning-light text-warning', 'bg-danger-light text-danger', 'bg-secondary-light text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
                                 @endphp
 
                                 @foreach ($frequencies as $index => $frequency)
                                 @php
                                 $colorClass = $badgeColors[$index % count($badgeColors)];
                                 @endphp
-                                <span
-                                    class="{{ $colorClass }} px-2 py-1 rounded small me-1 mb-2 fw-medium w-auto">{{ $frequency }}</span>
+                                <span class="{{ $colorClass }} px-2 py-1 rounded small me-1 mb-2 fw-medium w-auto">{{ $frequency }}</span>
                                 @endforeach
                             </div>
                             <div class="row m-0 mt-4 justify-content-between">
@@ -215,9 +205,8 @@
                                     <p class="card-title fw-bold text-muted">Rating: </p>
                                 </div>
                                 <div class="col-auto p-0">
-                                    @for ($i = 1; $i <= 5; $i++) <i
-                                        class="ti ti-star-filled{{ $i <= $task->ratings ? ' text-warning' : ' text-muted' }} me-1">
-                                        </i>
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <i class="ti ti-star-filled{{ $i <= $task->ratings ? ' text-warning' : ' text-muted' }} me-1"></i>
                                         @endfor
                                 </div>
                             </div>
@@ -237,14 +226,12 @@
 
                                     <div class="border p-3">
                                         @foreach ($docs as $taskMedia)
-                                        <div
-                                            class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
+                                        <div class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
                                             <div class="d-flex align-items-center">
                                                 <i class="ti ti-file-text me-1 text-secondary"></i>
                                                 <span class="small">{{ $taskMedia->file_name }}</span>
                                             </div>
-                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}"
-                                                class="ti ti-download border-0 bg-transparent ps-3" download></a>
+                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}" class="ti ti-download border-0 bg-transparent ps-3" download></a>
                                         </div>
                                         @endforeach
                                     </div>
@@ -269,8 +256,7 @@
                                         @foreach ($docs as $taskMedia)
                                         <div class="d-flex align-items-center bg-light px-1 py-2 rounded document-box">
                                             <i class="ti ti-link me-2 text-secondary"></i>
-                                            <a href="{{ $taskMedia->file_name }}"
-                                                class="small text-break text-decoration-underline">{{ $taskMedia->file_name }}</a>
+                                            <a href="{{ $taskMedia->file_name }}" class="small text-break text-decoration-underline">{{ $taskMedia->file_name }}</a>
                                         </div>
                                         @endforeach
                                     </div>
@@ -293,15 +279,12 @@
 
                                     <div class="border p-3">
                                         @foreach ($docs as $taskMedia)
-                                        <div
-                                            class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
+                                        <div class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
                                             <div class="d-flex align-items-center">
                                                 <i class="ti ti-speakerphone me-1 text-secondary"></i>
                                                 <span class="small">{{ $taskMedia->file_name }}</span>
                                             </div>
-                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}"
-                                                class="ti ti-circle-caret-right border-0 bg-transparent ps-3"
-                                                download></a>
+                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}" class="ti ti-circle-caret-right border-0 bg-transparent ps-3" download></a>
                                         </div>
                                         @endforeach
                                     </div>
@@ -357,22 +340,17 @@
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
-                                            aria-valuemax="100">
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
-                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
@@ -391,8 +369,7 @@
                                             @endif
                                             @endforeach
                                         </div>
-                                        <button class="w-auto bg-transparent border-0"><i
-                                                class="ti ti-dots-vertical"></i></button>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -443,22 +420,17 @@
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
-                                            aria-valuemax="100">
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
-                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
@@ -477,8 +449,7 @@
                                             @endif
                                             @endforeach
                                         </div>
-                                        <button class="w-auto bg-transparent border-0"><i
-                                                class="ti ti-dots-vertical"></i></button>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -530,22 +501,17 @@
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
-                                            aria-valuemax="100">
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
-                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
@@ -564,8 +530,7 @@
                                             @endif
                                             @endforeach
                                         </div>
-                                        <button class="w-auto bg-transparent border-0"><i
-                                                class="ti ti-dots-vertical"></i></button>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -617,22 +582,17 @@
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
                                             style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
-                                            aria-valuemax="100">
+                                            aria-valuenow="{{ $taskStat['progress'] }}"
+                                            aria-valuemin="0" aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
-                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}</p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
@@ -651,8 +611,7 @@
                                             @endif
                                             @endforeach
                                         </div>
-                                        <button class="w-auto bg-transparent border-0"><i
-                                                class="ti ti-dots-vertical"></i></button>
+                                        <button class="w-auto bg-transparent border-0"><i class="ti ti-dots-vertical"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -690,17 +649,13 @@
                                     </a>
                                     @endforeach
                                 </td>
-                                <td><b>{{ $userStat['total_tasks'] }}</b> ({{ $userStat['completed_tasks'] }}/
-                                    completed)</td>
+                                <td><b>{{ $userStat['total_tasks'] }}</b> ({{ $userStat['completed_tasks'] }}/ completed)</td>
                                 <td>{{ $userStat['progress'] }}% </td>
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i
-                                                class="ti ti-message"></i></button>
-                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i
-                                                class="ti ti-edit"></i></button>
-                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i
-                                                class="ti ti-trash"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i class="ti ti-message"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i class="ti ti-edit"></i></button>
+                                        <button type="button" class="btn btn-transparent shadow-none py-0"><i class="ti ti-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -710,15 +665,12 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
+        <div class="tab-pane fade show active" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4">
                 <div>
                     <h2 class="h5 fw-bold mb-1">Discussions</h2>
                     <p class="text-muted mb-0">Project discussions and comments</p>
                 </div>
-                <button class="btn btn-primary d-inline-flex align-items-center">
-                    <i class="ti ti-message-circle me-2"></i> New Discussion
-                </button>
             </div>
 
             <div class="d-flex align-items-start">
@@ -728,56 +680,47 @@
                     @php
                     $tabId = 'tab-comment-' . $comment->id;
                     @endphp
-                    <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel"
-                        aria-labelledby="{{ $tabId }}-tab" tabindex="0">
+                    <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel" aria-labelledby="{{ $tabId }}-tab" tabindex="0">
                         <div class="card">
                             <div class="card-body d-flex flex-column">
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            <h4 class="card-title mb-3 text-decoration-underline">
-                                                {{ $comment->task_title ?? 'Timeline' }}
-                                            </h4>
-                                            <small class="text-muted">Started by {{ $comment->added_by ?? 'Unknown' }} •
-                                                {{ $comment->created_at->diffForHumans() ?? '' }}</small>
+                                            <h4 class="card-title mb-3 text-decoration-underline">{{ $comment->task_title ?? 'Timeline' }}</h4>
+                                            <small class="text-muted">Started by {{ $comment->added_by ?? 'Unknown' }} • {{ $comment->created_at->diffForHumans() ?? '' }}</small>
                                         </div>
                                     </div>
                                     <hr>
                                 </div>
                                 <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
                                     <div class="d-flex mb-4">
-                                        <img src="../assets/images/profile_picture/{{ $comment->added_by_picture }}"
-                                            alt="{{ $comment->added_by }}" class="rounded-circle me-3" width="40"
-                                            height="40">
+                                        <img src="../assets/images/profile_picture/{{ $comment->added_by_picture }}" alt="{{ $comment->added_by }}" class="rounded-circle me-3" width="40" height="40">
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center mb-1">
                                                 <strong>{{ $comment->added_by }}</strong>
                                                 <span class="mx-2 text-muted">•</span>
-                                                <small
-                                                    class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+                                                <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                             </div>
                                             <p>{{ $comment->comment }}</p>
-                                            <!-- <div class="mt-2">
+                                            <div class="mt-2">
                                                 <button class="btn btn-sm btn-outline-secondary me-2">
                                                     <i class="bi bi-reply me-1"></i> Reply
                                                 </button>
                                                 <button class="btn btn-sm btn-outline-secondary">
                                                     <i class="bi bi-link-45deg me-1"></i> Copy Link
                                                 </button>
-                                            </div> -->
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-flex">
-                                    <img src="{{ asset('assets/images/profile_picture/' . ($activeUser->profile_picture ?? 'user.png')) }}"
-                                        alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                                    <form class="flex-grow-1" method="POST" id="comment-form">
-                                        <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
-                                        <input hidden type="text" value="$comment->task_id" />
+                                    <img src="{{ asset('assets/images/profile_picture/' . ($activeUser->profile_picture ?? 'user.png')) }}" alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                    <div class="flex-grow-1">
+                                        <textarea class="form-control mb-2" placeholder="Write a reply..." rows="3"></textarea>
                                         <div class="text-end">
                                             <button class="btn btn-primary">Post Reply</button>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -785,8 +728,7 @@
                     @endforeach
                     @endforeach
                 </div>
-                <div class="nav flex-column nav-pills col-lg-4 ps-3" id="v-pills-tab" role="tablist"
-                    aria-orientation="vertical">
+                <div class="nav flex-column nav-pills col-lg-4 ps-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <div class="card p-3">
                         <h4 class="card-title mb-3 text-decoration-underline">Recent Discussions</h4>
                         @foreach ($individualStats as $stat)
@@ -794,12 +736,15 @@
                         @php
                         $tabId = 'tab-comment-' . $comment->id;
                         @endphp
-                        <button class="nav-link bg-light text-start text-muted" id="{{ $tabId }}-tab"
-                            data-bs-toggle="pill" data-bs-target="#{{ $tabId }}" type="button" role="tab"
-                            aria-controls="{{ $tabId }}" aria-selected="false">
-                            <h6 class="card-title mb-3 text-decoration-underline text-dark">
-                                {{ $comment->task_title ?? 'Untitled' }}
-                            </h6>
+                        <button class="nav-link bg-light text-start text-muted"
+                            id="{{ $tabId }}-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#{{ $tabId }}"
+                            type="button"
+                            role="tab"
+                            aria-controls="{{ $tabId }}"
+                            aria-selected="false">
+                            <h6 class="card-title mb-3 text-decoration-underline text-dark">{{ $comment->task_title ?? 'Untitled' }}</h6>
                             <div class="d-flex mb-2 small">
                                 <p>Started by {{ $comment->added_by ?? 'Unknown' }}</p>
                                 <p class="mx-2">•</p>
@@ -816,161 +761,12 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">
-            <div class="row g-4">
-                <!-- Task Completion Trend Card -->
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Task Completion Trend</h5>
-                            <p class="text-muted">task completion rate</p>
-                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                                style="height: 320px;">
-                                <canvas id="myDoughnutChart" width="600" height="300" style="padding: 20px;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Team Productivity Card -->
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Team Productivity</h5>
-                            <p class="text-muted">Tasks completed by team member</p>
-                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                                style="height: 320px;">
-                                <canvas id="userTaskChart" height="120"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <input hidden id="totalTasks" value="{{$totalTasks}}" />
-            <input hidden id="completedTasks" value="{{$completedTasks}}" />
-            <input hidden id="inProcessTasks" value="{{$inProcess}}" />
-            <input hidden id="userLabels" value='{!! json_encode(array_column($userWiseStats, "employee_name")) !!}' />
-            <input hidden id="totalTasksData" value="{!!json_encode(array_column($userWiseStats, 'total_tasks')) !!}" />
-            <input hidden id="completedTasksData"
-                value="{!!json_encode(array_column($userWiseStats, 'completed_tasks')) !!}" />
-        </div>
+        <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">...</div>
     </div>
 </div>
 
 @endsection
 
 @section('customJs')
-<script>
-    const totalTasks = document.getElementById('totalTasks').value;
-    const completedTasks = document.getElementById('completedTasks').value;
-    const inProcessTasks = document.getElementById('inProcessTasks').value;
-    const remainingTasks = totalTasks - completedTasks;
 
-    const data = {
-        labels: ['Completed', 'Remaining', 'Processing'],
-        datasets: [{
-            label: 'Task Completion',
-            data: [completedTasks, remainingTasks, inProcessTasks],
-            backgroundColor: ['rgb(16, 185, 129)', 'rgb(255, 68, 68)', 'rgb(255, 180, 68)'],
-            hoverOffset: 10
-        }]
-    };
-
-    // ✅ Plugin to show text in center
-    const centerTextPlugin = {
-        id: 'centerText',
-        beforeDraw(chart) {
-            const {
-                width
-            } = chart;
-            const {
-                height
-            } = chart;
-            const {
-                ctx
-            } = chart;
-
-            ctx.restore();
-            const fontSize = (height / 150).toFixed(2);
-            ctx.font = `${fontSize}em sans-serif`;
-            ctx.textBaseline = "middle";
-
-            const text = `${totalTasks}`;
-            const textX = Math.round((width - ctx.measureText(text).width) / 2);
-            const textY = height / 2;
-
-            ctx.fillStyle = '#111827'; // dark text
-            ctx.fillText(text, textX, textY);
-            ctx.save();
-        }
-    };
-
-    const config = {
-        type: 'doughnut',
-        data: data,
-        options: {
-            cutout: '70%',
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        },
-        plugins: [centerTextPlugin] // 👈 Plugin added here
-    };
-
-    new Chart(
-        document.getElementById('myDoughnutChart'),
-        config
-    );
-
-    const ctx = document.getElementById('userTaskChart').getContext('2d');
-
-    const userLabels = JSON.parse(document.getElementById('userLabels').value);
-    const totalTasksData = JSON.parse(document.getElementById('totalTasksData').value);
-    const completedTasksData = JSON.parse(document.getElementById('completedTasksData').value);
-
-    const userChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: userLabels,
-            datasets: [{
-                    label: 'Total Tasks',
-                    data: totalTasksData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Completed Tasks',
-                    data: completedTasksData,
-                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Task Count'
-                    }
-                }
-            }
-        }
-    });
-</script>
 @endsection
