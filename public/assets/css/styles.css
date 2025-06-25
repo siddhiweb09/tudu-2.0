@@ -1649,7 +1649,6 @@ img.aspect-square {
     border-color: var(--primary-color) !important;
 }
 
-/* task details end */
 .task-card p,
 .task-card span {
     font-size: 14px !important;

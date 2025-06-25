@@ -101,7 +101,7 @@
 <div class="container-xxl p-4">
     <nav>
         <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
+            <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
                 type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
                     class="ti ti-notes me-1"></i> Overview</button>
             <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
@@ -110,7 +110,7 @@
             <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
                 role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
                 Team</button>
-            <button class="nav-link" id="nav-discussion-tab" data-bs-toggle="tab" data-bs-target="#nav-discussion"
+            <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab" data-bs-target="#nav-discussion"
                 type="button" role="tab" aria-controls="nav-discussion" aria-selected="false"><i
                     class="ti ti-message me-1"></i> Discussion</button>
             <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
@@ -119,7 +119,7 @@
         </div>
     </nav>
     <div class="tab-content mt-4" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+        <div class="tab-pane fade" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
             <div class="row m-0">
                 <div class="col-md-6 col-lg-8 ps-0">
                     <div class="card bg-white">
@@ -232,6 +232,59 @@
                                                 <span class="small">{{ $taskMedia->file_name }}</span>
                                             </div>
                                             <a href="../assets/uploads/{{ $taskMedia->file_name }}" class="ti ti-download border-0 bg-transparent ps-3" download></a>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card bg-white mt-4">
+                        <div class="card-body">
+                            <h4 class="card-title mb-3 text-decoration-underline">Links</h4>
+                            <div class="row m-0 justify-content-between">
+                                <div class="col p-0">
+                                    @php
+                                    $grouped = $taskMedias->where('category', 'link')->groupBy('task_id');
+                                    @endphp
+
+                                    @foreach ($grouped as $taskId => $docs)
+                                    <p class="card-title my-3 fw-medium">{{ $taskId }}</p>
+
+                                    <div class="border p-3">
+                                        @foreach ($docs as $taskMedia)
+                                        <div class="d-flex align-items-center bg-light px-1 py-2 rounded document-box">
+                                            <i class="ti ti-link me-2 text-secondary"></i>
+                                            <a href="{{ $taskMedia->file_name }}" class="small text-break text-decoration-underline">{{ $taskMedia->file_name }}</a>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card bg-white mt-4">
+                        <div class="card-body">
+                            <h4 class="card-title mb-3 text-decoration-underline">Voice Notes</h4>
+                            <div class="row m-0 justify-content-between">
+                                <div class="col p-0">
+                                    @php
+                                    $grouped = $taskMedias->where('category', 'voice_note')->groupBy('task_id');
+                                    @endphp
+
+                                    @foreach ($grouped as $taskId => $docs)
+                                    <p class="card-title my-3 fw-medium">{{ $taskId }}</p>
+
+                                    <div class="border p-3">
+                                        @foreach ($docs as $taskMedia)
+                                        <div class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
+                                            <div class="d-flex align-items-center">
+                                                <i class="ti ti-speakerphone me-1 text-secondary"></i>
+                                                <span class="small">{{ $taskMedia->file_name }}</span>
+                                            </div>
+                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}" class="ti ti-circle-caret-right border-0 bg-transparent ps-3" download></a>
                                         </div>
                                         @endforeach
                                     </div>
@@ -612,7 +665,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">...</div>
+        <div class="tab-pane fade show active" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab"></div>
         <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">...</div>
     </div>
 </div>
