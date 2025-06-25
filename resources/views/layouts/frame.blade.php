@@ -153,7 +153,7 @@
     <!-- include summernote css/js -->
     <link href="assets/summernote/summernote.min.css" rel="stylesheet">
     <script src="assets/summernote/summernote.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/task-form.js">
     </script>
 
