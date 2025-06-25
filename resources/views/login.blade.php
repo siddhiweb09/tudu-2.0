@@ -32,9 +32,24 @@
               </div>
             </div>
 
+            <div class="mb-3 position-relative" id="chat_id_field" style="display: none;">
+              <label for="chat_id" class="form-label">
+                Scan the QR code and send a message to the bot. You will receive a Chat ID—enter it below.
+              </label>
+              <div class="d-flex align-items-center">
+                <input type="text" id="chat_id" name="telegram_chat_id"
+                  class="form-control @error('chat_id') is-invalid @enderror"
+                  placeholder="Enter your Chat ID" value="{{ old('chat_id') }}">
+                <a href="https://t.me/ISBMU_OFFICIALBOT?start=login" target="_blank" class="ms-2">
+                  <img id="telegram-qr" src="" alt="Scan QR" width="50" height="50"
+                    class="rounded border border-primary p-1">
+                </a>
+              </div>
+            </div>
+
             <!-- Sign-in Button -->
             <div class="d-grid mb-3 spacing-margin">
-              <button type="submit" class="btn btn-warning fw-bold">Sign In</button>
+              <button type="submit" id="submit-btn" class="btn btn-warning fw-bold">Sign In</button>
             </div>
 
           </form>
@@ -109,7 +124,22 @@
           if (response.status === 'success') {
             setTimeout(() => {
               window.location.href = response.redirect_url ?? "{{ route('dashboard') }}";
-            }, 1000); // optional delay before redirect
+            }, 1000);
+          } else if (response.status === 'need_chat_id') {
+            $('#chat_id_field').slideDown();
+            $('#employee_code').prop('readonly', true);
+            $('#password').prop('readonly', true);
+
+            const qrLink = "https://t.me/ISBMU_OFFICIALBOT?start=login";
+            $('#telegram-qr').attr('src', `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrLink)}`);
+
+            // Prevent form submit again without chat ID
+            $('#submit-btn').off('click').on('click', function(event) {
+              if ($('#chat_id').val().trim() === '') {
+                alert("Please enter your Chat ID before signing in.");
+                event.preventDefault();
+              }
+            });
           } else {
             alert("Error: " + (response.message || "Something went wrong."));
           }
@@ -131,6 +161,36 @@
       });
     });
 
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    let showChatId = "{{ session('show_chat_id', 0) }}" == "1";
+    let chatField = document.getElementById('chat_id_field');
+    let employeeCode = document.getElementById('employee_code');
+    let password = document.getElementById('password');
+    let chatIdInput = document.getElementById('chat_id');
+    let qrImage = document.getElementById('telegram-qr');
+    let telegramBotLink = "https://t.me/TASKTREKBOT?start=login";
+    let submitBtn = document.getElementById('submit-btn');
+
+    if (showChatId) {
+      chatField.style.display = 'block';
+
+      // Use 'readonly' instead of 'disabled' so values are retained
+      employeeCode.readOnly = true;
+      password.readOnly = true;
+
+      // Generate QR Code
+      qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(telegramBotLink)}`;
+
+      // Prevent form submission if Chat ID is empty
+      submitBtn.addEventListener("click", function(event) {
+        if (chatIdInput.value.trim() === "") {
+          alert("Please enter your Chat ID before signing in.");
+          event.preventDefault(); // Stop form submission
+        }
+      });
+    }
   });
 </script>
 @endsection
