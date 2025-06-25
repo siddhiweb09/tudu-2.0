@@ -179,18 +179,18 @@
                                     @endforeach
                                 </div>
                             </div>
-                            <div class="row m-0 mt-3 justify-content-between">
+                            <div class="row m-0 mt-4 justify-content-between">
                                 <div class="col-auto p-0">
                                     <p class="card-title fw-bold text-muted">Frequency: </p>
                                 </div>
                                 <div class="col-auto p-0">
-                                    <p class="card-title text-muted">{{$task->frequency}}</p>
+                                    <p class="card-title fw-medium text-muted">{{$task->frequency}}</p>
                                 </div>
                             </div>
-                            <div class="row m-0 mt-3 justify-content-between">
+                            <div class="row m-0 mt-4 justify-content-between">
                                 @php
                                 $frequencies = json_decode($task->frequency_duration, true);
-                                $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success', 'bg-warning-light text-warning', 'bg-light text-danger', 'bg-secondary-light text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
+                                $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success', 'bg-warning-light text-warning', 'bg-danger-light text-danger', 'bg-secondary-light text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
                                 @endphp
 
                                 @foreach ($frequencies as $index => $frequency)
@@ -200,22 +200,31 @@
                                 <span class="{{ $colorClass }} px-2 py-1 rounded small me-1 mb-2 fw-medium w-auto">{{ $frequency }}</span>
                                 @endforeach
                             </div>
-                            <div class="row m-0 mt-3 justify-content-between">
+                            <div class="row m-0 mt-4 justify-content-between">
                                 <div class="col-auto p-0">
-                                    <p class="card-title fw-bold text-muted">Frequency: </p>
+                                    <p class="card-title fw-bold text-muted">Rating: </p>
                                 </div>
                                 <div class="col-auto p-0">
-                                    @php
-                                    $frequencies = json_decode($task->frequency_duration, true);
-                                    $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success', 'bg-warning-light text-warning', 'bg-light text-danger', 'bg-secondary-light text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
-                                    @endphp
-
-                                    @foreach ($frequencies as $index => $frequency)
-                                    @php
-                                    $colorClass = $badgeColors[$index % count($badgeColors)];
-                                    @endphp
-                                    @for ($frequencies as $index => $frequency)
-                                    <i class="ti ti-star me-1"></i>
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <i class="ti ti-star-filled{{ $i <= $task->ratings ? ' text-warning' : ' text-muted' }} me-1"></i>
+                                        @endfor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card bg-white mt-4">
+                        <div class="card-body">
+                            <h4 class="card-title mb-3 text-decoration-underline">Attachments</h4>
+                            <div class="row m-0 justify-content-between">
+                                <div class="col p-0">
+                                    @foreach ($taskMedias as $taskMedia)
+                                    @if($taskMedia->category === "document")
+                                    <p class="card-title mb-3 text-decoration-underline">{{$taskMedia->task_id}}</p>
+                                    <div class="d-flex justify-content-between align-items-center bg-light mb-3 px-1 py-2 rounded">
+                                        <div class="d-flex align-items-center"><i class="ti ti-file-text me-1 text-secondary"></i><span class="text-sm">{{$taskMedia->file_name}}</span></div>
+                                        <a href="../assets/uploads/{{$taskMedia->file_name}}" class="ti ti-download border-0 bg-transparent ps-3" download></a>
+                                    </div>
+                                    @endif
                                     @endforeach
                                 </div>
                             </div>
