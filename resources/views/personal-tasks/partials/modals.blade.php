@@ -1,4 +1,3 @@
-
 <!-- Task Detail Modal -->
 <div class="modal fade" id="taskDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -264,6 +263,7 @@
                                     <div class="focus-line"></div>
                                 </div>
 
+
                                 <!-- Priority Pills -->
                                 <div class="mb-4">
                                     <label class="d-block text-uppercase small fw-bold text-muted mb-3">
@@ -301,7 +301,7 @@
                                 <h2 class="h5 fw-semibold mb-4">Assignment & Repetition</h2>
 
                                 <div class="row mb-4">
-                                    
+
                                     <div class="col-md-12 mb-3">
                                         <div class="select-card active-on-hover">
                                             <div class="select-card-header">
@@ -420,7 +420,7 @@
                             <div class="form-step hidden" data-step="3">
                                 <h2 class="h5 fw-semibold mb-4">Attachments & Links</h2>
 
-                               
+
 
                                 <!-- Document Upload Section -->
                                 <div class="card mb-4">
@@ -498,4 +498,3 @@
         </div>
     </div>
 </div>
-
