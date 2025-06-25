@@ -1671,3 +1671,58 @@ img.aspect-square {
 }
 
 /* task details end */
+
+/* task details modal Start */
+
+#taskDetailModal .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+#taskDetailModal .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Custom scrollbar */
+#taskDetailModal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#taskDetailModal .modal-body::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 3px;
+}
+
+/* Subtask checkboxes */
+#taskDetailModal .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Assignee badges */
+#taskDetailModal .badge.bg-light {
+    padding: 0.75rem 0.35rem;
+    border: 1px solid #dee2e6;
+}
+
+/* Comment section */
+#taskDetailModal .comment-avatar {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+.modal-dialog-centered {
+    max-width: 650px; 
+    width: 90%;
+}
+
+.primary-gradient-effect {
+    background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    min-height: 80px;
+    padding: 1.5rem;
+}
+
+/* task details modal end */
