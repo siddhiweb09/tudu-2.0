@@ -1646,4 +1646,8 @@ img.aspect-square {
     box-shadow: var(--bs-box-shadow) !important;
 }
 
+.badge{
+    height: 20px;
+}
+
 /* task details end */
