@@ -153,9 +153,11 @@
     <!-- include summernote css/js -->
     <link href="assets/summernote/summernote.min.css" rel="stylesheet">
     <script src="assets/summernote/summernote.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets/js/task-form.js">
-    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    @yield('customJs')
+    <script src="assets/js/task-form.js"></script>
 
     <script>
         window.addEventListener('load', function() {
@@ -172,7 +174,6 @@
             });
         });
     </script>
-    @yield('customJs')
 </body>
 
 </html>
