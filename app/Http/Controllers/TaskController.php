@@ -14,9 +14,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use App\Models\TelegramWebhookMessage;
+use App\Models\TaskSchedule;
+use App\Services\WhatsAppService;
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
+
+    protected $whatsapp;
+
+    public function __construct(WhatsAppService $whatsapp)
+    {
+        $this->whatsapp = $whatsapp;
+    }
+
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -75,6 +89,15 @@ class TaskController extends Controller
             'added_by' => $activeUser
         ]);
 
+        TaskSchedule::create([
+            'task_id' => $task->task_id,
+            'assigned_date' => Carbon::now('Asia/Kolkata'),
+            'status' => 'Pending',
+            'frequency' => $request->frequency,
+            'created_by' => $activeUser,
+            'updated_by' => $activeUser,
+        ]);
+
         // Handle file uploads
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $document) {
@@ -130,6 +153,91 @@ class TaskController extends Controller
                     'updated_by' => $activeUser
                 ]);
             }
+        }
+
+        try {
+            $telegramConfig = DB::table('telegram_rn')->where('name', 'task')->first();
+            $botId = $telegramConfig->botId ?? null;
+
+            if (!$botId) {
+                Log::error('Telegram Bot ID not found for task notification.');
+                return;
+            }
+
+            $assign_to_parts = explode('*', $request->assign_to);
+            $assign_to_employee_code = trim($assign_to_parts[0]);
+
+            $assignChatId = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('telegram_chat_id');
+
+            if ($assignChatId) {
+                $message  = "📢 <b>New Task Assigned</b>\n\n";
+                $message .= "📌 <b>Title:</b> " . e($request->task_title) . "\n";
+                $message .= "⚠️ <b>Priority:</b> " . e($request->priority) . "\n";
+                $message .= "⏰ <b>Due Date:</b> " . ($request->due_date ?: 'Not Set') . "\n";
+                $message .= "👤 <b>Assigned To:</b> " . e($request->assign_to) . "\n";
+                $message .= "🧑‍💼 <b>Assigned By:</b> " . e($user->employee_name) . "\n";
+
+                $inlineKeyboard = [
+                    'inline_keyboard' => [
+                        [
+                            ['text' => '📂 Open Task!', 'url' => url('task_detail.php')]
+                        ]
+                    ]
+                ];
+
+                $response = Http::post("https://api.telegram.org/bot{$botId}/sendMessage", [
+                    'chat_id' => $assignChatId,
+                    'text' => $message,
+                    'parse_mode' => 'HTML',
+                    'reply_markup' => json_encode($inlineKeyboard)
+                ]);
+
+                $responseData = $response->json();
+                Log::info('Telegram Response:', $responseData);
+
+                if (!empty($responseData['ok']) && !empty($responseData['result'])) {
+                    TelegramWebhookMessage::create([
+                        'chat_id' => $assignChatId,
+                        'message_id' => $responseData['result']['message_id'],
+                        'name' => Auth::guard('web')->check() ? Auth::guard('web')->user()->employee_name : null,
+                        'username' => 'TelegramBot',
+                        'message_text' => $message,
+                        'message_array_data' => json_encode($responseData),
+                        'messageDate' => Carbon::now('Asia/Kolkata'),
+                        'created_at' => Carbon::now('Asia/Kolkata'),
+                        'updated_at' => Carbon::now('Asia/Kolkata')
+                    ]);
+                } else {
+                    Log::warning("Telegram message not sent. Reason: " . ($responseData['description'] ?? 'Unknown'));
+                }
+            } else {
+                Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
+            }
+        } catch (\Exception $e) {
+            Log::error('Telegram Notification Failed: ' . $e->getMessage());
+        }
+
+        $assign_to_employee_code = trim($assign_to_parts[0]);
+        $assignToMobileNoPersonal = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('mobile_no_personal');
+
+        if ($assignToMobileNoPersonal) {
+            $waMessage = "📢 *New Task Assigned*\n\n";
+            $waMessage .= "📌 Title: " . e($request->task_title) . "\n";
+            $waMessage .= "⚠️ Priority: " . e($request->priority) . "\n";
+            $waMessage .= "⏰ Due Date: " . ($request->due_date ?: 'Not Set') . "\n";
+            $waMessage .= "👤 Assigned To: " . e($request->assign_to) . "\n";
+            $waMessage .= "🧑‍💼 Assigned By: " . e($user->employee_name) . "\n";
+
+            $response = $this->whatsapp->sendWaMessage(
+                '169617539573196',
+                'EAAEY6g6mDSUBO4a9RKn5hBaFTL4YbYxaA3LlDlMKHNLWVqnTQpHXWw6V8Ta6P7SRg7dJeaaDnsXyRKNHKZCdXcbZCmP4KgAZAwDCAdxUnBgwXx0nW79EyPpUhkuBLN8BWkVnrmsrmZB7yqQHtxONqmzCASGTW6AJTaeZAoZAiC09etCHMnL4ZBV7GnnWqEwdZBzo',
+                $assignToMobileNoPersonal,
+                'text',
+                ['body' => $waMessage],
+                '',
+                '',
+                ''
+            );
         }
 
         return response()->json([
@@ -227,6 +335,16 @@ class TaskController extends Controller
             'added_by' => $activeUser
         ]);
 
+        TaskSchedule::create([
+            'task_id' => $task->delegate_task_id,
+            'assigned_date' => Carbon::now('Asia/Kolkata'),
+            'status' => 'Pending',
+            'frequency' => $request->frequency,
+            'created_by' => $activeUser,
+            'updated_by' => $activeUser,
+        ]);
+
+
         // Handle file uploads
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $document) {
@@ -282,6 +400,90 @@ class TaskController extends Controller
                     'updated_by' => $activeUser
                 ]);
             }
+        }
+
+        try {
+            $telegramConfig = DB::table('telegram_rn')->where('name', 'task')->first();
+            $botId = $telegramConfig->botId ?? null;
+
+            if (!$botId) {
+                Log::error('Telegram Bot ID not found for task notification.');
+                return;
+            }
+
+            $assign_to_parts = explode('*', $request->assign_to);
+            $assign_to_employee_code = trim($assign_to_parts[0]);
+
+            $assignChatId = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('telegram_chat_id');
+
+            if ($assignChatId) {
+                $message  = "📢 <b>New Task Delegated</b>\n\n";
+                $message .= "📌 <b>Title:</b> " . e($request->delegate_task_title) . "\n";
+                $message .= "⚠️ <b>Priority:</b> " . e($request->priority) . "\n";
+                $message .= "⏰ <b>Due Date:</b> " . ($request->due_date ?: 'Not Set') . "\n";
+                $message .= "👤 <b>Delegated To:</b> " . e($request->assign_to) . "\n";
+                $message .= "🧑‍💼 <b>Delegated By:</b> " . e($user->employee_name) . "\n";
+
+                $inlineKeyboard = [
+                    'inline_keyboard' => [
+                        [
+                            ['text' => '📂 Open Task!', 'url' => url('task_detail.php')]
+                        ]
+                    ]
+                ];
+                $response = Http::post("https://api.telegram.org/bot{$botId}/sendMessage", [
+                    'chat_id' => $assignChatId,
+                    'text' => $message,
+                    'parse_mode' => 'HTML',
+                    'reply_markup' => json_encode($inlineKeyboard)
+                ]);
+
+                $responseData = $response->json();
+                Log::info('Telegram Response:', $responseData);
+
+                if (!empty($responseData['ok']) && !empty($responseData['result'])) {
+                    TelegramWebhookMessage::create([
+                        'chat_id' => $assignChatId,
+                        'message_id' => $responseData['result']['message_id'],
+                        'name' => Auth::guard('web')->check() ? Auth::guard('web')->user()->employee_name : null,
+                        'username' => 'TelegramBot',
+                        'message_text' => $message,
+                        'message_array_data' => json_encode($responseData),
+                        'messageDate' => Carbon::now('Asia/Kolkata'),
+                        'created_at' => Carbon::now('Asia/Kolkata'),
+                        'updated_at' => Carbon::now('Asia/Kolkata')
+                    ]);
+                } else {
+                    Log::warning("Telegram message not sent. Reason: " . ($responseData['description'] ?? 'Unknown'));
+                }
+            } else {
+                Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
+            }
+        } catch (\Exception $e) {
+            Log::error('Telegram Notification Failed: ' . $e->getMessage());
+        }
+
+        $assign_to_employee_code = trim($assign_to_parts[0]);
+        $assignToMobileNoPersonal = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('mobile_no_personal');
+
+        if ($assignToMobileNoPersonal) {
+            $waMessage = "📢 *New Task Delegated*\n\n";
+            $waMessage .= "📌 Title: " . e($request->delegate_task_title) . "\n";
+            $waMessage .= "⚠️ Priority: " . e($request->priority) . "\n";
+            $waMessage .= "⏰ Due Date: " . ($request->due_date ?: 'Not Set') . "\n";
+            $waMessage .= "👤 Delegated To: " . e($request->assign_to) . "\n";
+            $waMessage .= "🧑‍💼 Delegated By: " . e($user->employee_name) . "\n";
+
+            $response = $this->whatsapp->sendWaMessage(
+                '169617539573196',
+                'EAAEY6g6mDSUBO4a9RKn5hBaFTL4YbYxaA3LlDlMKHNLWVqnTQpHXWw6V8Ta6P7SRg7dJeaaDnsXyRKNHKZCdXcbZCmP4KgAZAwDCAdxUnBgwXx0nW79EyPpUhkuBLN8BWkVnrmsrmZB7yqQHtxONqmzCASGTW6AJTaeZAoZAiC09etCHMnL4ZBV7GnnWqEwdZBzo',
+                $assignToMobileNoPersonal,
+                'text',
+                ['body' => $waMessage],
+                '',
+                '',
+                ''
+            );
         }
 
         return response()->json([
