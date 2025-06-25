@@ -1654,4 +1654,12 @@ img.aspect-square {
     box-shadow: var(--bs-box-shadow) !important;
 }
 
+.document-box {
+    margin-bottom: 1rem;
+}
+
+.document-box:last-child {
+    margin-bottom: 0;
+}
+
 /* task details end */

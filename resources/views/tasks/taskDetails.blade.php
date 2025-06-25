@@ -217,14 +217,24 @@
                             <h4 class="card-title mb-3 text-decoration-underline">Attachments</h4>
                             <div class="row m-0 justify-content-between">
                                 <div class="col p-0">
-                                    @foreach ($taskMedias as $taskMedia)
-                                    @if($taskMedia->category === "document")
-                                    <p class="card-title mb-3 text-decoration-underline">{{$taskMedia->task_id}}</p>
-                                    <div class="d-flex justify-content-between align-items-center bg-light mb-3 px-1 py-2 rounded">
-                                        <div class="d-flex align-items-center"><i class="ti ti-file-text me-1 text-secondary"></i><span class="text-sm">{{$taskMedia->file_name}}</span></div>
-                                        <a href="../assets/uploads/{{$taskMedia->file_name}}" class="ti ti-download border-0 bg-transparent ps-3" download></a>
+                                    @php
+                                    $grouped = $taskMedias->where('category', 'document')->groupBy('task_id');
+                                    @endphp
+
+                                    @foreach ($grouped as $taskId => $docs)
+                                    <p class="card-title my-3 fw-medium">{{ $taskId }}</p>
+
+                                    <div class="border p-3">
+                                        @foreach ($docs as $taskMedia)
+                                        <div class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
+                                            <div class="d-flex align-items-center">
+                                                <i class="ti ti-file-text me-1 text-secondary"></i>
+                                                <span class="small">{{ $taskMedia->file_name }}</span>
+                                            </div>
+                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}" class="ti ti-download border-0 bg-transparent ps-3" download></a>
+                                        </div>
+                                        @endforeach
                                     </div>
-                                    @endif
                                     @endforeach
                                 </div>
                             </div>
