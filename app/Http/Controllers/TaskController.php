@@ -334,7 +334,7 @@ class TaskController extends Controller
         return view('tasks.allTasks', compact('filteredTasks'));
     }
 
-    public function pendingTask2()
+    public function pendingTask()
     {
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
@@ -386,12 +386,12 @@ class TaskController extends Controller
         ]);
     }
 
-    public function pendingTask()
+    public function pendingTask2()
     {
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Step 1: Fetch delegated tasks
+        // 1. Fetch all delegated tasks (visible to this user)
         $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);
@@ -402,13 +402,9 @@ class TaskController extends Controller
                     ->orWhereJsonDoesntContain('not_visible_to', $usercode);
             })
             ->get()
-            ->filter(function ($task) use (&$hiddenTaskIds) {
-                return !in_array($task->task_id, $hiddenTaskIds);
-            })
             ->each(function ($task) {
                 $task->flag = 'Delegated';
             });
-
 
         // 2. Get all delegated task_ids (used to hide main tasks)
         $hiddenTaskIds = DelegatedTask::where(function ($query) use ($usercode) {
@@ -420,13 +416,13 @@ class TaskController extends Controller
             ->pluck('task_id')
             ->toArray();
 
-
         // 3. Fetch main tasks NOT hidden
         $mainTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);
         })
             ->where('status', 'Pending')
+            ->whereNotIn('task_id', $hiddenTaskIds)
             ->get()
             ->each(function ($task) {
                 $task->flag = 'Main';
@@ -444,23 +440,6 @@ class TaskController extends Controller
             'totalTasks' => $combinedTasks->count()
         ]);
     }
-
-    // 1. Fetch all delegated tasks (visible to this user)
-    // $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
-    //     $query->where('assign_to', $usercode)
-    //         ->orWhere('assign_by', $usercode);
-    // })
-    //     ->where('status', 'Pending')
-    //     ->where(function ($query) use ($usercode) {
-    //         $query->whereNull('not_visible_to')
-    //             ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-    //     })
-    //     ->get()
-    //     ->each(function ($task) {
-    //         $task->flag = 'Delegated';
-    //     });
-
-
 
     protected function organizeTasksByPriority($mainTasks, $delegatedTasks)
     {
