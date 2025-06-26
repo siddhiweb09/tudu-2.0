@@ -269,258 +269,156 @@ class TaskController extends Controller
 
     public function allTask()
     {
-
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
-        // 1. Get regular pending tasks assigned to/from user
-        $tasks = Task::where(function ($query) use ($usercode) {
+
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_from', $usercode);
-        })
-            ->where('status', 'Pending')
-            ->pluck('task_id')
-            ->toArray();
+        })->get();
 
-        // 2. Get delegated pending tasks assigned to/from user
-        $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_from', $usercode);
-        })
-            ->where('status', 'Pending')
-            ->get();
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
-        // 3. Filter out delegated tasks where user is in visible_to array
-        $filteredDelegatedTasks = $delegatedTasks->filter(function ($task) use ($usercode) {
-            $visibleTo = json_decode($task->visible_to, true) ?? [];
-            return !in_array($usercode, $visibleTo);
-        })
-            ->pluck('task_id')
-            ->toArray();
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
 
-        // 4. Combine both arrays (regular tasks + filtered delegated tasks)
-        $allTaskIds = array_unique(array_merge($tasks, $filteredDelegatedTasks));
-
-        // 5. Now you can get the full task records if needed
-        $finalTasks = Task::whereIn('task_id', $allTaskIds)->get(); // 1. Get regular pending tasks assigned to/from user
-        $tasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_from', $usercode);
-        })
-            ->where('status', 'Pending')
-            ->pluck('task_id')
-            ->toArray();
-
-        // 2. Get delegated pending tasks assigned to/from user
-        $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_from', $usercode);
-        })
-            ->where('status', 'Pending')
-            ->get();
-
-        // 3. Filter out delegated tasks where user is in visible_to array
-        $filteredDelegatedTasks = $delegatedTasks->filter(function ($task) use ($usercode) {
-            $visibleTo = json_decode($task->visible_to, true) ?? [];
-            return !in_array($usercode, $visibleTo);
-        })
-            ->pluck('task_id')
-            ->toArray();
-
-        // 4. Combine both arrays (regular tasks + filtered delegated tasks)
-        $allTaskIds = array_unique(array_merge($tasks, $filteredDelegatedTasks));
-
-        // 5. Now you can get the full task records if needed
-        $finalTasks = Task::whereIn('task_id', $allTaskIds)->get();
-
-
-        return view('tasks.allTasks');
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
+        });
+        return view('tasks.allTasks', compact('filteredTasks'));
     }
-
-
 
     public function pendingTask()
     {
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        $tasks = Task::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', 'Pending')
-            ->get();
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_from', $usercode);
+        })->where('status', 'Pending')->get();
 
-        // Get delegated tasks assigned to the user
-        $delegatedTasks = DelegatedTask::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', 'Pending')
-            ->get();
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
-        // Combine both collections
-        $allTasks = $tasks->merge($delegatedTasks);
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
 
-        // Normalize priority case (capitalize first letter)
-        $allTasks = $allTasks->map(function ($task) {
-            $task->priority = ucfirst(strtolower($task->priority));
-            return $task;
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
         });
-
-        // Group tasks by normalized priority
-        $groupedTasks = [
-            'High' => $allTasks->where('priority', 'High'),
-            'Medium' => $allTasks->where('priority', 'Medium'),
-            'Low' => $allTasks->where('priority', 'Low'),
-        ];
-
-        return view('tasks.pendingTask', compact('groupedTasks'));
+        return view('tasks.allTasks', compact('filteredTasks'));
     }
-
 
     public function inProcessTask()
     {
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        $tasks = Task::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', 'In Process')
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_from', $usercode);
+        })->where('status', 'In Process')
             ->get();
 
-        $delegatedTasks = DelegatedTask::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', 'In Process')
-            ->get();
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
-        $allTasks = $tasks->merge($delegatedTasks);
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
 
-        $allTasks = $allTasks->map(function ($task) {
-            $task->priority = ucfirst(strtolower($task->priority));
-            return $task;
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
         });
-
-        $groupedTasks = [
-            'High' => $allTasks->where('priority', 'High'),
-            'Medium' => $allTasks->where('priority', 'Medium'),
-            'Low' => $allTasks->where('priority', 'Low'),
-        ];
-
-        return view('tasks.inProcessTask', compact('groupedTasks'));
+        return view('tasks.allTasks', compact('filteredTasks'));
     }
-
 
     public function inReviewTask()
     {
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        $tasks = Task::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', 'In Review')
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_from', $usercode);
+        })->where('status', 'Completed')
+            ->where('final_status', 'Pending')
             ->get();
 
-        $delegatedTasks = DelegatedTask::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', 'In Review')
-            ->get();
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
-        $allTasks = $tasks->merge($delegatedTasks);
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
 
-        $allTasks = $allTasks->map(function ($task) {
-            $task->priority = ucfirst(strtolower($task->priority));
-            return $task;
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
         });
-
-        $groupedTasks = [
-            'High' => $allTasks->where('priority', 'High'),
-            'Medium' => $allTasks->where('priority', 'Medium'),
-            'Low' => $allTasks->where('priority', 'Low'),
-        ];
-
-        return view('tasks.inReviewTask', compact('groupedTasks'));
+        return view('tasks.allTasks', compact('filteredTasks'));
     }
 
     public function overdueTask()
     {
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
+        $today = Carbon::now('Asia/Kolkata');
 
-        $tasks = Task::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', '!=', 'Completed')
-            ->whereDate('due_date', '<', now())
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_from', $usercode);
+        })
+            ->where('status', 'Pending')
+            ->whereDate('due_date', '<', $today)
             ->get();
 
-        $delegatedTasks = DelegatedTask::where('assign_to', $usercode)->orwhere('assign_by', $usercode)
-            ->where('status', '!=', 'Completed')
-            ->whereDate('due_date', '<', now())
-            ->get();
 
-        $allTasks = $tasks->merge($delegatedTasks);
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
-        $allTasks = $allTasks->map(function ($task) {
-            $task->priority = ucfirst(strtolower($task->priority));
-            return $task;
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
+
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
         });
-
-        $groupedTasks = [
-            'High' => $allTasks->where('priority', 'High'),
-            'Medium' => $allTasks->where('priority', 'Medium'),
-            'Low' => $allTasks->where('priority', 'Low'),
-        ];
-
-        return view('tasks.overdueTask', compact('groupedTasks'));
+        return view('tasks.allTasks', compact('filteredTasks'));
     }
-    // public function pendingTask()
-    // {
-    //     $user = Auth::user();
-    //     $assign_to = $user->employee_code . '*' . $user->employee_name;
-
-    //     // Get main tasks assigned to the user
-    //     $tasks = Task::where('assign_to', $assign_to)
-    //         ->where('status', '!=', 'Completed')
-    //         ->with(['taskItems', 'taskMedias'])
-    //         ->get();
-
-    //     // Get delegated tasks assigned to the user
-    //     $delegatedTasks = DelegatedTask::where('assign_to', $assign_to)
-    //         ->where('status', '!=', 'Completed')
-    //         ->with(['taskItems', 'taskMedias'])
-    //         ->get();
-
-    //     // Combine both collections
-    //     $allTasks = $tasks->merge($delegatedTasks);
-
-    //     // Process each task to include stats
-    //     $processedTasks = $allTasks->map(function ($task) {
-    //         // Calculate progress stats
-    //         $total = $task->taskItems->count();
-    //         $completed = $task->taskItems->where('status', 'Completed')->count();
-    //         $progress = $total > 0 ? round(($completed / $total) * 100, 2) : 0;
-
-    //         // Count comments and media
-
-    //         $totalMedias = $task->taskMedias->count();
-
-    //         // Get team members
-    //         $assign_to_raw = is_array($task->assign_to) ? $task->assign_to : [$task->assign_to];
-    //         $employeeCodes = collect($assign_to_raw)->map(function ($entry) {
-    //             $parts = explode('*', $entry);
-    //             return $parts[0] ?? null;
-    //         })->filter()->toArray();
-
-    //         $teamMembers = User::whereIn('employee_code', $employeeCodes)
-    //             ->get(['employee_code', 'employee_name', 'profile_picture']);
-
-    //         // Add calculated fields to task
-    //         $task->total = $total;
-    //         $task->completed = $completed;
-    //         $task->progress = $progress;
-    //         $task->totalMedias = $totalMedias;
-    //         $task->teamMembers = $teamMembers;
-
-    //         return $task;
-    //     });
-
-    //     // Group tasks by priority
-    //     $groupedTasks = [
-    //         'High' => $processedTasks->where('priority', 'high'),
-    //         'Medium' => $processedTasks->where('priority', 'medium'),
-    //         'Low' => $processedTasks->where('priority', 'low')
-    //     ];
-
-    //     return view('tasks.pendingTask', compact('groupedTasks'));
-    // }
 
     public function delegateTask($id)
     {
@@ -767,7 +665,7 @@ class TaskController extends Controller
         // } else {
         // }
 
-        // Fetch the main task or throw 404 if not found
+         // Fetch the main task or throw 404 if not found
         $task = Task::where('task_id', $task_id)->firstOrFail();
 
         // Fetch delegated tasks and their IDs
