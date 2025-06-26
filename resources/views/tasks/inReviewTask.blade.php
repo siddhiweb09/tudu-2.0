@@ -179,8 +179,8 @@
     <div class="mt-2 px-4 py-2">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h4 class="card-title mb-0 fw-bold">Pending Tasks </h4>
-                <p class="text-muted mb-0">Track your pending tasks.</p>
+                <h4 class="card-title mb-0 fw-bold">In Review Tasks </h4>
+                <p class="text-muted mb-0">Track your in review tasks.</p>
             </div>
         </div>
 
@@ -188,7 +188,7 @@
             <div class="row g-4">
                 @foreach(['High', 'Medium', 'Low'] as $priority)
                 @php
-                $priorityTasks = $filteredTasks[$priority] ?? collect();
+                $priorityTasks = $tasksByPriority[$priority] ?? collect();
                 $priorityClasses = [
                 'High' => ['bg-class' => 'bg-primary-soft', 'text-class' => 'text-primary', 'icon' => 'bi-card-checklist'],
                 'Medium' => ['bg-class' => 'bg-warning-soft', 'text-class' => 'text-warning', 'icon' => 'bi-lightning-charge'],
@@ -217,7 +217,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="kanban-card-body">{!! $task->description !!}</div>
+                                <!-- <div class="kanban-card-body">{!! $task->description !!}</div> -->
                                 <div class="kanban-card-footer mt-2">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="avatar-group">

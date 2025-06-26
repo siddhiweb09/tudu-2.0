@@ -188,7 +188,7 @@
             <div class="row g-4">
                 @foreach(['High', 'Medium', 'Low'] as $priority)
                 @php
-                $priorityTasks = $filteredTasks[$priority] ?? collect();
+                $priorityTasks = $tasksByPriority[$priority] ?? collect();
                 $priorityClasses = [
                 'High' => ['bg-class' => 'bg-primary-soft', 'text-class' => 'text-primary', 'icon' => 'bi-card-checklist'],
                 'Medium' => ['bg-class' => 'bg-warning-soft', 'text-class' => 'text-warning', 'icon' => 'bi-lightning-charge'],
@@ -208,7 +208,7 @@
                         </div>
                         <div class="kanban-cards" id="{{ strtolower($priority) }}-column">
                             @foreach($priorityTasks as $task)
-                            <a href="{{ url('task/' . $task->task_id) }}" class="text-decoration-none text-dark">
+                            <a href="{{ url('task/' . ($task->flag == 'Main' ? $task->task_id : $task->delegate_task_id)) }}" class="text-decoration-none text-dark">
                                 <div class="kanban-card" draggable="true" style="border-left-color: {{ $priority == 'High' ? '#1520a6' : ($priority == 'Medium' ? '#ffc107' : '#198754') }};">
                                     <div class="kanban-card-header d-flex justify-content-between">
                                         <span>{{ $task->title }}</span>
@@ -219,7 +219,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- <div class="kanban-card-body">{!! $task->description !!}</div> --}}
+                                    <!-- {{-- <div class="kanban-card-body">{!! $task->description !!}</div> --}} -->
                                     <div class="kanban-card-footer mt-2">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="avatar-group">
