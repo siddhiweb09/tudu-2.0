@@ -323,7 +323,8 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "Pending")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -346,10 +347,10 @@
                                         </div>
                                     </div>
 
-                                    <h5 class="card-title mt-2">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+                                    <h5 class="card-title">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
 
                                     {{-- Progress Info --}}
-                                    <div class="row mt-2 m-0 justify-content-between">
+                                    <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
                                         <div class="col-auto">{{ $taskStat['progress'] }}%</div>
                                     </div>
@@ -396,6 +397,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @include('modalEditTask')
                             @endif
                             @endforeach
                         </div>
