@@ -176,101 +176,100 @@
 <!-- Blade View -->
 <div class="container-xxl py-4">
     <!-- User Status Ring Section -->
-    <div class="card mt-2 border-0 shadow-sm">
-        <div class="card-body px-4 py-2">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="card-title mb-0 fw-bold">Pending Tasks </h4>
-                    <p class="text-muted mb-0">Track your pending tasks.</p>
-                </div>
+
+    <div class="mt-2 px-4 py-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="card-title mb-0 fw-bold">Pending Tasks </h4>
+                <p class="text-muted mb-0">Track your pending tasks.</p>
             </div>
+        </div>
 
-            <div class="kanban-board">
-                <div class="row g-4">
-                    @foreach(['High', 'Medium', 'Low'] as $priority)
-                    @php
-                    $priorityTasks = $groupedTasks[$priority] ?? collect();
-                    $priorityClasses = [
-                    'High' => ['bg-class' => 'bg-primary-soft', 'text-class' => 'text-primary', 'icon' => 'bi-card-checklist'],
-                    'Medium' => ['bg-class' => 'bg-warning-soft', 'text-class' => 'text-warning', 'icon' => 'bi-lightning-charge'],
-                    'Low' => ['bg-class' => 'bg-success-soft', 'text-class' => 'text-success', 'icon' => 'bi-check-circle']
-                    ];
-                    @endphp
+        <div class="kanban-board">
+            <div class="row g-4">
+                @foreach(['High', 'Medium', 'Low'] as $priority)
+                @php
+                $priorityTasks = $filteredTasks[$priority] ?? collect();
+                $priorityClasses = [
+                'High' => ['bg-class' => 'bg-primary-soft', 'text-class' => 'text-primary', 'icon' => 'bi-card-checklist'],
+                'Medium' => ['bg-class' => 'bg-warning-soft', 'text-class' => 'text-warning', 'icon' => 'bi-lightning-charge'],
+                'Low' => ['bg-class' => 'bg-success-soft', 'text-class' => 'text-success', 'icon' => 'bi-check-circle']
+                ];
+                @endphp
 
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="kanban-column {{ $priorityClasses[$priority]['bg-class'] }}">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="{{ $priorityClasses[$priority]['text-class'] }} mb-0">
-                                    <i class="bi {{ $priorityClasses[$priority]['icon'] }} me-2"></i>{{ $priority }}
-                                </h6>
-                                <span class="badge {{ strtolower($priorityClasses[$priority]['text-class']) }} rounded-pill">
-                                    {{ $priorityTasks->count() }}
-                                </span>
-                            </div>
-                            <div class="kanban-cards" id="{{ strtolower($priority) }}-column">
-                                @foreach($priorityTasks as $task)
-                                <div class="kanban-card" draggable="true" style="border-left-color: {{ $priority == 'High' ? '#1520a6' : ($priority == 'Medium' ? '#ffc107' : '#198754') }};">
-                                    <div class="kanban-card-header d-flex justify-content-between">
-                                        <span>{{ $task->title }}</span>
-                                        <div class="dropdown">
-                                            <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical text-muted"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="kanban-card-body">{!! $task->description !!}</div>
-                                    <div class="kanban-card-footer mt-2">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="avatar-group">
-                                                @if($task->assign_to)
-                                                @php
-                                                $assigneeParts = explode('*', $task->assign_to);
-                                                $assigneeCode = $assigneeParts[0] ?? '';
-                                                @endphp
-                                                <img src="{{ asset('assets/images/default-profile.jpg') }}"
-                                                    class="avatar-xs rounded-circle"
-                                                    alt="{{ $assigneeParts[1] ?? 'Assignee' }}">
-                                                @endif
-                                            </div>
-                                            <span class="badge bg-light text-dark">
-                                                <i class="bi bi-calendar me-1"></i>
-                                                {{-- Handle recurring tasks --}}
-                                                @php
-                                                $frequency = $task->frequency;
-                                                $frequencyDuration = json_decode($task->frequency_duration, true) ?? [];
-                                                @endphp
-
-                                                @if($frequency == 'Daily')
-                                                Daily
-                                                @elseif($frequency == 'Weekly')
-                                                Weekly on: {{ implode(', ', $frequencyDuration) }}
-                                                @elseif($frequency == 'Monthly')
-                                                Monthly on day {{ $frequencyDuration[0] ?? '1' }}
-                                                @elseif($frequency == 'Yearly')
-                                                Yearly on {{ \Carbon\Carbon::parse($task->due_date)->format('M j') }}
-                                                @elseif($frequency == 'Periodically')
-                                                Every {{ $frequencyDuration[0] ?? '1' }} days
-                                                @elseif($task->due_date)
-                                                Due {{ \Carbon\Carbon::parse($task->due_date)->diffForHumans() }}
-                                                @endif
-
-                                            </span>
-                                        </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="kanban-column {{ $priorityClasses[$priority]['bg-class'] }}">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="{{ $priorityClasses[$priority]['text-class'] }} mb-0">
+                                <i class="bi {{ $priorityClasses[$priority]['icon'] }} me-2"></i>{{ $priority }}
+                            </h6>
+                            <span class="badge {{ strtolower($priorityClasses[$priority]['text-class']) }} rounded-pill">
+                                {{ $priorityTasks->count() }}
+                            </span>
+                        </div>
+                        <div class="kanban-cards" id="{{ strtolower($priority) }}-column">
+                            @foreach($priorityTasks as $task)
+                            <div class="kanban-card" draggable="true" style="border-left-color: {{ $priority == 'High' ? '#1520a6' : ($priority == 'Medium' ? '#ffc107' : '#198754') }};">
+                                <div class="kanban-card-header d-flex justify-content-between">
+                                    <span>{{ $task->title }}</span>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical text-muted"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                @endforeach
+                                <div class="kanban-card-body">{!! $task->description !!}</div>
+                                <div class="kanban-card-footer mt-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="avatar-group">
+                                            @if($task->assign_to)
+                                            @php
+                                            $assigneeParts = explode('*', $task->assign_to);
+                                            $assigneeCode = $assigneeParts[0] ?? '';
+                                            @endphp
+                                            <img src="{{ asset('assets/images/default-profile.jpg') }}"
+                                                class="avatar-xs rounded-circle"
+                                                alt="{{ $assigneeParts[1] ?? 'Assignee' }}">
+                                            @endif
+                                        </div>
+                                        <span class="badge bg-light text-dark">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            {{-- Handle recurring tasks --}}
+                                            @php
+                                            $frequency = $task->frequency;
+                                            $frequencyDuration = json_decode($task->frequency_duration, true) ?? [];
+                                            @endphp
 
-                                @if($priorityTasks->isEmpty())
-                                <div class="text-center py-4 text-muted">
-                                    <i class="bi bi-inbox fs-4"></i>
-                                    <p class="mb-0">No {{ $priority }} priority tasks</p>
+                                            @if($frequency == 'Daily')
+                                            Daily
+                                            @elseif($frequency == 'Weekly')
+                                            Weekly on: {{ implode(', ', $frequencyDuration) }}
+                                            @elseif($frequency == 'Monthly')
+                                            Monthly on day {{ $frequencyDuration[0] ?? '1' }}
+                                            @elseif($frequency == 'Yearly')
+                                            Yearly on {{ \Carbon\Carbon::parse($task->due_date)->format('M j') }}
+                                            @elseif($frequency == 'Periodically')
+                                            Every {{ $frequencyDuration[0] ?? '1' }} days
+                                            @elseif($task->due_date)
+                                            Due {{ \Carbon\Carbon::parse($task->due_date)->diffForHumans() }}
+                                            @endif
+
+                                        </span>
+                                    </div>
                                 </div>
-                                @endif
                             </div>
+                            @endforeach
+
+                            @if($priorityTasks->isEmpty())
+                            <div class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-4"></i>
+                                <p class="mb-0">No {{ $priority }} priority tasks</p>
+                            </div>
+                            @endif
                         </div>
                     </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
         </div>
     </div>

@@ -1298,48 +1298,6 @@ ul.dropdown-menu li:last-child {
 }
 
 /* Kanban Styles */
-.kanban-board {
-    overflow-x: auto;
-}
-
-.kanban-column {
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    padding: 15px;
-    min-height: 500px;
-}
-
-.dark-mode .kanban-column {
-    background-color: #2a2a2a;
-}
-
-/* .kanban-cards {
-    min-height: 400px;
-} */
-
-.kanban-card {
-    background-color: white;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    cursor: move;
-}
-
-.dark-mode .kanban-card {
-    background-color: #333;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.kanban-card-header {
-    font-weight: 500;
-    margin-bottom: 5px;
-}
-
-.kanban-card-body {
-    font-size: 0.9em;
-}
-
 /* Focus Mode */
 .focus-mode-card {
     background-color: #f8f9fa;

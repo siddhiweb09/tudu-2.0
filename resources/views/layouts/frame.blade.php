@@ -90,7 +90,7 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href"{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
+                                    <li><a class="dropdown-item"  href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew Tasks</a></li>

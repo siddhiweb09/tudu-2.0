@@ -75,7 +75,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mb-2 mb-lg-0 d-flex justify-content-between w-100">
                             <li class="nav-item">
-                                <a class="nav-link" href="../../">
+                                <a class="nav-link" href="../../index.html">
                                     <i class="ti ti-home-2 menu-icon"></i>
                                     <span class="menu-title">Dashboard</span>
                                 </a>
@@ -87,14 +87,16 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Pending Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Delayed Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do List</a></li>
+                                    <li><a class="dropdown-item"  href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do
+                                            List</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../projects">
+                                <a class="nav-link" href="../../index.html">
                                     <i class="ti ti-presentation-analytics menu-icon"></i>
                                     <span class="menu-title">Projects</span>
                                 </a>
