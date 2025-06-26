@@ -360,6 +360,21 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
+
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
+        }
+
+        return view('tasks.pendingTask', [
+            'filteredTasks' => $groupedTasks // same key expected by blade
+        ]);
+
         return view('tasks.pendingTask', compact('filteredTasks'));
     }
 
@@ -390,6 +405,22 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
+
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
+        }
+
+        return view('tasks.pendingTask', [
+            'filteredTasks' => $groupedTasks // same key expected by blade
+        ]);
+
+
         return view('tasks.inProcessTask', compact('filteredTasks'));
     }
 
@@ -421,6 +452,22 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
+
+
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
+        }
+
+        return view('tasks.pendingTask', [
+            'filteredTasks' => $groupedTasks // same key expected by blade
+        ]);
+
         return view('tasks.inReviewTask', compact('filteredTasks'));
     }
 
@@ -455,6 +502,23 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
+
+
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
+        }
+
+        return view('tasks.pendingTask', [
+            'filteredTasks' => $groupedTasks // same key expected by blade
+        ]);
+
+
         return view('tasks.overdueTask', compact('filteredTasks'));
     }
 
