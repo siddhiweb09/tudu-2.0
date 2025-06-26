@@ -316,15 +316,15 @@ class TaskController extends Controller
                 ->orWhere('assign_by', $usercode);
         })->get();
 
-        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        // Step 2: Filter out tasks that have a delegated task with current user in not_visible_to
         $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
             $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
             foreach ($delegatedTasks as $delegatedTask) {
-                $visibleTo = json_decode($delegatedTask->visible_to, true);
+                $visibleTo = json_decode($delegatedTask->not_visible_to, true);
 
                 if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
-                    // If usercode is in visible_to, skip this task
+                    // If usercode is in not_visible_to, skip this task
                     return false;
                 }
             }
@@ -339,43 +339,53 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Step 1: Get all tasks where the user is assign_to or assign_by
-        $allTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })->where('status', 'Pending')->get();
+        // Get pending main tasks visible to user
+        $mainTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode) // Assigned to user
+                ->orWhere('assign_by', $usercode); // Created by user
+        })
+            ->where('status', 'Pending')
+            ->get()->each(function ($task) {
+                $task->flag = 'Main'; // Add flag to each task model
+            });
 
-        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
-        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
-            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
+        $allDelegatedTasks = collect(); // Initialize as collection instead of array
 
-            foreach ($delegatedTasks as $delegatedTask) {
-                $visibleTo = json_decode($delegatedTask->visible_to, true);
-
-                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
-                    // If usercode is in visible_to, skip this task
-                    return false;
-                }
-            }
-            // Keep the task
-            return true;
-        });
-
-        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
-
-        foreach ($filteredTasks as $task) {
-            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
-            if (!isset($groupedTasks[$priority])) {
-                $groupedTasks[$priority] = collect();
-            }
-            $groupedTasks[$priority]->push($task);
+        foreach ($mainTasks as $mainTask) {
+            $delegatedTasks = DelegatedTask::where('task_id', $mainTask->task_id)
+                ->where('status', 'Pending')
+                ->where(function ($query) use ($usercode) {
+                    $query->whereNull('not_visible_to')
+                        ->orWhereJsonDoesntContain('not_visible_to', $usercode);
+                })
+                ->get()->each(function ($task) {
+                    $task->type = 'Delegated';
+                });
+            $allDelegatedTasks = $allDelegatedTasks->merge($delegatedTasks);
         }
 
-        return view('tasks.pendingTask', [
-            'filteredTasks' => $groupedTasks // same key expected by blade
-        ]);
+        $combined = $mainTasks->merge($allDelegatedTasks);
 
-        return view('tasks.pendingTask', compact('filteredTasks'));
+        // Now organize by priority as needed
+        $organizedTasks = $combined->groupBy(function ($task) {
+            return ucfirst(strtolower($task->priority ?? 'low'));
+        });
+
+        return view('tasks.pending', [
+            'tasksByPriority' => $organizedTasks,
+            'totalTasks' => $organizedTasks->count()
+        ]);
+    }
+
+    protected function organizeTasksByPriority($mainTasks, $delegatedTasks)
+    {
+        $combined = $mainTasks->merge($delegatedTasks);
+
+        return $combined->groupBy(function ($task) {
+            return ucfirst(strtolower($task->priority ?? 'low'));
+        })->mapWithKeys(function ($items, $priority) {
+            return [$priority => $items->sortByDesc('created_at')];
+        });
     }
 
     public function inProcessTask()
@@ -390,15 +400,15 @@ class TaskController extends Controller
         })->where('status', 'In Process')
             ->get();
 
-        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        // Step 2: Filter out tasks that have a delegated task with current user in not_visible_to
         $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
             $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
             foreach ($delegatedTasks as $delegatedTask) {
-                $visibleTo = json_decode($delegatedTask->visible_to, true);
+                $visibleTo = json_decode($delegatedTask->not_visible_to, true);
 
                 if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
-                    // If usercode is in visible_to, skip this task
+                    // If usercode is in not_visible_to, skip this task
                     return false;
                 }
             }
@@ -437,15 +447,15 @@ class TaskController extends Controller
             ->where('final_status', 'Pending')
             ->get();
 
-        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        // Step 2: Filter out tasks that have a delegated task with current user in not_visible_to
         $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
             $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
             foreach ($delegatedTasks as $delegatedTask) {
-                $visibleTo = json_decode($delegatedTask->visible_to, true);
+                $visibleTo = json_decode($delegatedTask->not_visible_to, true);
 
                 if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
-                    // If usercode is in visible_to, skip this task
+                    // If usercode is in not_visible_to, skip this task
                     return false;
                 }
             }
@@ -487,15 +497,15 @@ class TaskController extends Controller
             ->get();
 
 
-        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        // Step 2: Filter out tasks that have a delegated task with current user in not_visible_to
         $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
             $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
             foreach ($delegatedTasks as $delegatedTask) {
-                $visibleTo = json_decode($delegatedTask->visible_to, true);
+                $visibleTo = json_decode($delegatedTask->not_visible_to, true);
 
                 if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
-                    // If usercode is in visible_to, skip this task
+                    // If usercode is in not_visible_to, skip this task
                     return false;
                 }
             }
@@ -577,7 +587,7 @@ class TaskController extends Controller
             'assign_to' => $request->assign_to,
             'status' => 'Pending',
             'final_status' => 'Pending',
-            'visible_to' => $request->visible_json,
+            'not_visible_to' => $request->visible_json,
             'assign_by' => $activeUser,
         ]);
 
@@ -836,7 +846,7 @@ class TaskController extends Controller
     private function isHiddenFromUser($delegatedTasks, $usercode)
     {
         foreach ($delegatedTasks as $delegatedTask) {
-            $visibleTo = json_decode($delegatedTask->visible_to, true);
+            $visibleTo = json_decode($delegatedTask->not_visible_to, true);
             if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
                 return true;
             }
