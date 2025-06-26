@@ -3,11 +3,6 @@ $(document).ready(function () {
     initializeTaskForm("form1");
     initializeTaskForm("form2");
     initializeTaskForm("form3");
-    $(".summernote").summernote({
-        placeholder: "Hello Bootstrap 4",
-        tabsize: 2,
-        height: 100,
-    });
 });
 
 function initializeTaskForm(formId) {
@@ -209,20 +204,23 @@ function initializeTaskForm(formId) {
 
         // Toggle input vs select
         if (isChecked) {
-            $(`#${formId} #projectSelectWrapper`).addClass('d-none');
-            $(`#${formId} #projectInputWrapper`).removeClass('d-none');
+            $(`#${formId} #projectSelectWrapper`).addClass("d-none");
+            $(`#${formId} #projectInputWrapper`).removeClass("d-none");
         } else {
-            $(`#${formId} #projectSelectWrapper`).removeClass('d-none');
-            $(`#${formId} #projectInputWrapper`).addClass('d-none');
+            $(`#${formId} #projectSelectWrapper`).removeClass("d-none");
+            $(`#${formId} #projectInputWrapper`).addClass("d-none");
         }
 
         updateFinalProjectName(formId);
     });
 
     // Update hidden input on any change
-    $(`#${formId} #newProjectInput, #${formId} #projectSelect`).on("input change", function () {
-        updateFinalProjectName(formId);
-    });
+    $(`#${formId} #newProjectInput, #${formId} #projectSelect`).on(
+        "input change",
+        function () {
+            updateFinalProjectName(formId);
+        }
+    );
 
     $(`#${formId} #frequency_${formId}`).on("change", function () {
         var frequency = $(this).val();
@@ -522,8 +520,12 @@ function initializeTaskForm(formId) {
             const interval = $(`#${formId} #periodic_interval_${formId}`).val();
             if (interval) duration = [interval];
         } else if (frequency === "Custom") {
-            const freq = $(`#${formId} #custom_frequency_dropdown_${formId}`).val();
-            const occurs = $(`#${formId} #occurs_every_dropdown_${formId}`).val();
+            const freq = $(
+                `#${formId} #custom_frequency_dropdown_${formId}`
+            ).val();
+            const occurs = $(
+                `#${formId} #occurs_every_dropdown_${formId}`
+            ).val();
             if (freq && occurs) duration = [freq, occurs];
         }
 
@@ -579,7 +581,11 @@ function initializeTaskForm(formId) {
             const newProject = $(`#${formId} #newProjectInput`).val().trim();
             $(`#${formId} #finalProjectName`).val(newProject);
         } else {
-            const selectedProjectText = $(`#${formId} #projectSelect option:selected`).text().trim();
+            const selectedProjectText = $(
+                `#${formId} #projectSelect option:selected`
+            )
+                .text()
+                .trim();
             $(`#${formId} #finalProjectName`).val(selectedProjectText);
         }
     }

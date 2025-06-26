@@ -37,17 +37,17 @@
                         <h6 class="text-muted">Progress</h6>
                         <div class="row m-0 justify-content-between">
                             <div class="col-auto p-0">
-                                <h5 class="card-title">{{$progressPercentage}} %</h5>
+                                <h5 class="card-title">{{$stats['progressPercentage']}} %</h5>
                             </div>
                             <div class="col-auto p-0">
-                                <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
+                                <p class="card-text text-muted"><small>{{$stats['total']}} tasks ({{$stats['completed']}}
                                         completed)</small></p>
                             </div>
                         </div>
                         <!-- Progress bar -->
                         <div class="progress mt-2 rounded-pill" style="height: 20px;">
                             <div class="progress-bar bg-success" role="progressbar"
-                                style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
+                                style="width: {{ $stats['progressPercentage'] }}%;" aria-valuenow="{{ $stats['progressPercentage'] }}"
                                 aria-valuemin="0" aria-valuemax="100">
                             </div>
                         </div>
@@ -102,25 +102,36 @@
 </div>
 
 <div class="container-xxl p-4">
-    <nav>
-        <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
-            <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
-                type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
-                    class="ti ti-notes me-1"></i> Overview</button>
-            <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
-                role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
-                Tasks</button>
-            <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
-                role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
-                Team</button>
-            <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab"
-                data-bs-target="#nav-discussion" type="button" role="tab" aria-controls="nav-discussion"
-                aria-selected="false"><i class="ti ti-message me-1"></i> Discussion</button>
-            <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
-                type="button" role="tab" aria-controls="nav-analytics" aria-selected="false"><i
-                    class="ti ti-chart-bar me-1"></i> Analytics</button>
+    <div class="row justify-content-between">
+        <div class="col-auto">
+            <nav>
+                <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
+                    <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
+                        type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
+                            class="ti ti-notes me-1"></i> Overview</button>
+                    <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
+                        role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
+                        Tasks</button>
+                    <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
+                        role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
+                        Team</button>
+                    <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-discussion" type="button" role="tab" aria-controls="nav-discussion"
+                        aria-selected="false"><i class="ti ti-message me-1"></i> Discussion</button>
+                    <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
+                        type="button" role="tab" aria-controls="nav-analytics" aria-selected="false"><i
+                            class="ti ti-chart-bar me-1"></i> Analytics</button>
+                </div>
+            </nav>
         </div>
-    </nav>
+        <div class="col-auto">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                <button type="button" class="btn btn-sm btn-inverse-primary">Update Status</button>
+                <a href="/delegate-tasks/{{$task->task_id}}" class="btn btn-sm btn-inverse-primary">Delegate Tasks</a>
+            </div>
+        </div>
+    </div>
+
     <div class="tab-content mt-4" id="nav-tabContent">
         <div class="tab-pane fade" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
             <div class="row m-0">
@@ -321,7 +332,7 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Pending</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "Pending")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
                                 data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}"
@@ -410,7 +421,7 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Progress</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "In Progress")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
                                 data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
@@ -499,7 +510,7 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Review</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "In Review")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
                                 data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
@@ -588,7 +599,7 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Completed</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "Completed")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
                                 data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
@@ -726,13 +737,13 @@
                     <p class="text-muted mb-0">Project discussions and comments</p>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        New Discussion
+                       + New Discussion
                     </button>
 
                     <ul class="dropdown-menu" id="newDiscussionDropdown">
-                        @foreach ($individualStats as $taskStat)
+                        @foreach ($stats['individualStats'] as $taskStat)
                         <li>
                             <a class="dropdown-item new-discussion-link" href="javascript:void(0);"
                                 data-task-id="{{ $taskStat['task_id'] }}" data-task-title="{{ $taskStat['title'] }}"
@@ -748,7 +759,7 @@
 
             <div class="d-flex align-items-start comment-box">
                 @php
-                $groupedComments = collect($individualStats)
+                $groupedComments = collect($stats['individualStats'])
                 ->flatMap(fn($stat) => $stat['comment_list_items'])
                 ->groupBy('task_id');
                 @endphp
@@ -867,9 +878,9 @@
                     </div>
                 </div>
             </div>
-            <input hidden id="totalTasks" value="{{$totalTasks}}" />
-            <input hidden id="completedTasks" value="{{$completedTasks}}" />
-            <input hidden id="inProcessTasks" value="{{$inProcess}}" />
+            <input hidden id="totalTasks" value="{{$stats['total']}}" />
+            <input hidden id="completedTasks" value="{{$stats['completed']}}" />
+            <input hidden id="inProcessTasks" value="{{$stats['inProcess']}}" />
             <input hidden id="userLabels" value='{!! json_encode(array_column($userWiseStats, "employee_name")) !!}' />
             <input hidden id="totalTasksData" value="{!!json_encode(array_column($userWiseStats, 'total_tasks')) !!}" />
             <input hidden id="completedTasksData"
@@ -885,7 +896,7 @@
     const totalTasks = document.getElementById('totalTasks').value;
     const completedTasks = document.getElementById('completedTasks').value;
     const inProcessTasks = document.getElementById('inProcessTasks').value;
-    const remainingTasks = totalTasks - completedTasks- inProcessTasks;
+    const remainingTasks = totalTasks - completedTasks - inProcessTasks;
 
     const data = {
         labels: ['Completed', 'Remaining', 'Processing'],
