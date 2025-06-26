@@ -323,7 +323,9 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "Pending")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}"
+                                style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -346,10 +348,10 @@
                                         </div>
                                     </div>
 
-                                    <h5 class="card-title mt-2">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+                                    <h5 class="card-title">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
 
                                     {{-- Progress Info --}}
-                                    <div class="row mt-2 m-0 justify-content-between">
+                                    <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
                                         <div class="col-auto">{{ $taskStat['progress'] }}%</div>
                                     </div>
@@ -396,6 +398,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @include('modalEditTask')
                             @endif
                             @endforeach
                         </div>
@@ -409,7 +412,8 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "In Progress")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -482,6 +486,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @include('modalEditTask')
                             @endif
                             @endforeach
                         </div>
@@ -496,7 +501,8 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "In Review")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -571,6 +577,7 @@
                             </div>
                             @endif
                             @endforeach
+                            @include('modalEditTask')
                         </div>
 
                     </div>
@@ -583,7 +590,8 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "Completed")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -658,6 +666,7 @@
                             </div>
                             @endif
                             @endforeach
+                            @include('modalEditTask')
                         </div>
 
                     </div>
@@ -710,43 +719,62 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
+        <div class="tab-pane fade active show" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4">
                 <div>
                     <h2 class="h5 fw-bold mb-1">Discussions</h2>
                     <p class="text-muted mb-0">Project discussions and comments</p>
                 </div>
-                <button class="btn btn-primary d-inline-flex align-items-center">
-                    <i class="ti ti-message-circle me-2"></i> New Discussion
-                </button>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        New Discussion
+                    </button>
+
+                    <ul class="dropdown-menu" id="newDiscussionDropdown">
+                        @foreach ($individualStats as $taskStat)
+                        <li>
+                            <a class="dropdown-item new-discussion-link" href="javascript:void(0);"
+                                data-task-id="{{ $taskStat['task_id'] }}" data-task-title="{{ $taskStat['title'] }}"
+                                data-added-by="{{ $taskStat['added_by'] ?? 'Unknown' }}"
+                                data-created-at="{{ \Carbon\Carbon::parse($taskStat['assign_at'])->diffForHumans() }}">
+                                {{ $taskStat['title'] }}
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
 
-            <div class="d-flex align-items-start">
+            <div class="d-flex align-items-start comment-box">
+                @php
+                $groupedComments = collect($individualStats)
+                ->flatMap(fn($stat) => $stat['comment_list_items'])
+                ->groupBy('task_id');
+                @endphp
+
                 <div class="tab-content col-lg-8" id="v-pills-tabContent">
-                    @foreach ($individualStats as $stat)
-                    @foreach ($stat['comment_list_items'] as $index => $comment)
+                    @foreach ($groupedComments as $taskId => $comments)
                     @php
-                    $tabId = 'tab-comment-' . $comment->id;
+                    $firstComment = $comments->first();
+                    $tabId = 'tab-comment-' . $taskId;
                     @endphp
                     <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel"
                         aria-labelledby="{{ $tabId }}-tab" tabindex="0">
                         <div class="card">
                             <div class="card-body d-flex flex-column">
                                 <div class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="card-title mb-3 text-decoration-underline">
-                                                {{ $comment->task_title ?? 'Timeline' }}
-                                            </h4>
-                                            <small class="text-muted">Started by {{ $comment->added_by ?? 'Unknown' }} •
-                                                {{ $comment->created_at->diffForHumans() ?? '' }}</small>
-                                        </div>
-                                    </div>
+                                    <h4 class="card-title mb-3 text-decoration-underline">
+                                        {{ $firstComment->task_title ?? 'Timeline' }}
+                                    </h4>
+                                    <small class="text-muted">Started by {{ $firstComment->added_by ?? 'Unknown' }} •
+                                        {{ $firstComment->created_at->diffForHumans() ?? '' }}</small>
                                     <hr>
                                 </div>
                                 <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
+                                    @foreach ($comments as $comment)
                                     <div class="d-flex mb-4">
-                                        <img src="../assets/images/profile_picture/{{ $comment->added_by_picture }}"
+                                        <img src="{{ asset('assets/images/profile_picture/' . ($comment->added_by_picture ?? 'user.png')) }}"
                                             alt="{{ $comment->added_by }}" class="rounded-circle me-3" width="40"
                                             height="40">
                                         <div class="flex-grow-1">
@@ -757,23 +785,19 @@
                                                     class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                             </div>
                                             <p>{{ $comment->comment }}</p>
-                                            <!-- <div class="mt-2">
-                                                <button class="btn btn-sm btn-outline-secondary me-2">
-                                                    <i class="bi bi-reply me-1"></i> Reply
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-secondary">
-                                                    <i class="bi bi-link-45deg me-1"></i> Copy Link
-                                                </button>
-                                            </div> -->
                                         </div>
                                     </div>
+                                    @endforeach
                                 </div>
+
                                 <div class="d-flex">
                                     <img src="{{ asset('assets/images/profile_picture/' . ($activeUser->profile_picture ?? 'user.png')) }}"
                                         alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                                    <form class="flex-grow-1" method="POST" id="comment-form">
-                                        <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
-                                        <input hidden type="text" value="$comment->task_id" />
+                                    <form class="flex-grow-1 comment-form" id="comment-form-{{ $taskId }}"
+                                        data-task-id="{{ $taskId }}">
+                                        <textarea class="form-control mb-2" name="comment"
+                                            placeholder="Write a reply..." rows="3"></textarea>
+                                        <input hidden type="text" name="task_id" value="{{ $taskId }}" />
                                         <div class="text-end">
                                             <button class="btn btn-primary">Post Reply</button>
                                         </div>
@@ -783,35 +807,32 @@
                         </div>
                     </div>
                     @endforeach
-                    @endforeach
                 </div>
-                <div class="nav flex-column nav-pills col-lg-4 ps-3" id="v-pills-tab" role="tablist"
-                    aria-orientation="vertical">
+
+                <div class="nav flex-column nav-pills col-lg-4 ps-3" id="v-pills-tab" role="tablist">
                     <div class="card p-3">
                         <h4 class="card-title mb-3 text-decoration-underline">Recent Discussions</h4>
-                        @foreach ($individualStats as $stat)
-                        @foreach ($stat['comment_list_items'] as $index => $comment)
+                        @foreach ($groupedComments as $taskId => $comments)
                         @php
-                        $tabId = 'tab-comment-' . $comment->id;
+                        $firstComment = $comments->first();
+                        $tabId = 'tab-comment-' . $taskId;
                         @endphp
-                        <button class="nav-link bg-light text-start text-muted" id="{{ $tabId }}-tab"
+                        <button class="nav-link bg-light text-start text-muted mb-2" id="{{ $tabId }}-tab"
                             data-bs-toggle="pill" data-bs-target="#{{ $tabId }}" type="button" role="tab"
                             aria-controls="{{ $tabId }}" aria-selected="false">
-                            <h6 class="card-title mb-3 text-decoration-underline text-dark">
-                                {{ $comment->task_title ?? 'Untitled' }}
+                            <h6 class="card-title mb-2 text-decoration-underline text-dark">
+                                {{ $firstComment->task_title ?? 'Untitled' }}
                             </h6>
                             <div class="d-flex mb-2 small">
-                                <p>Started by {{ $comment->added_by ?? 'Unknown' }}</p>
+                                <p>Started by {{ $firstComment->added_by ?? 'Unknown' }}</p>
                                 <p class="mx-2">•</p>
-                                <p>{{ $comment->created_at->diffForHumans() ?? 'N/A' }}</p>
+                                <p>{{ $firstComment->created_at->diffForHumans() ?? 'N/A' }}</p>
                             </div>
                             <div class="d-flex small">
-                                <p>{{ $stat['totalComments'] ?? 0 }} replies</p>
+                                <p>{{ $comments->count() }} replies</p>
                             </div>
                         </button>
                         @endforeach
-                        @endforeach
-
                     </div>
                 </div>
             </div>
@@ -864,14 +885,14 @@
     const totalTasks = document.getElementById('totalTasks').value;
     const completedTasks = document.getElementById('completedTasks').value;
     const inProcessTasks = document.getElementById('inProcessTasks').value;
-    const remainingTasks = totalTasks - completedTasks;
+    const remainingTasks = totalTasks - completedTasks- inProcessTasks;
 
     const data = {
         labels: ['Completed', 'Remaining', 'Processing'],
         datasets: [{
             label: 'Task Completion',
             data: [completedTasks, remainingTasks, inProcessTasks],
-            backgroundColor: ['rgb(16, 185, 129)', 'rgb(255, 68, 68)', 'rgb(255, 180, 68)'],
+            backgroundColor: ['#01796f', '#f5385a', '#ff9f1c'],
             hoverOffset: 10
         }]
     };
@@ -937,15 +958,15 @@
             datasets: [{
                     label: 'Total Tasks',
                     data: totalTasksData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: '#4361ee',
+                    borderColor: '#4361ee',
                     borderWidth: 1
                 },
                 {
                     label: 'Completed Tasks',
                     data: completedTasksData,
-                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: '#4cc9f0',
+                    borderColor: '#4cc9f0',
                     borderWidth: 1
                 }
             ]
@@ -971,6 +992,98 @@
                 }
             }
         }
+    });
+
+    $(document).ready(function() {
+        $(".new-discussion-link").on("click", function() {
+            const taskId = $(this).data("task-id");
+            const taskTitle = $(this).data("task-title");
+            const addedBy = $(this).data("added-by");
+            const createdAt = $(this).data("created-at");
+
+            const tabId = `tab-comment-${taskId}`;
+            const navTabSelector = `#${tabId}-tab`;
+            const contentTabSelector = `#${tabId}`;
+
+            // Deactivate currently active tab and pane
+            $(".comment-box .nav-link.active").removeClass("active");
+            $(".comment-box .tab-pane.active.show").removeClass("active show");
+
+            if ($(navTabSelector).length) {
+                // Tab already exists → activate using Bootstrap's API
+                const tabTrigger = new bootstrap.Tab($(navTabSelector)[0]);
+                tabTrigger.show();
+            } else {
+                // Create new nav tab
+                const navTab = `
+                    <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
+                        data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
+                        aria-controls="${tabId}" aria-selected="false">
+                        <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
+                        <div class="d-flex mb-2 small">
+                            <p>Started by ${addedBy}</p>
+                            <p class="mx-2">•</p>
+                            <p>${createdAt}</p>
+                        </div>
+                        <div class="d-flex small">
+                            <p>0 replies</p>
+                        </div>
+                    </button>
+                `;
+                $("#v-pills-tab .card").append(navTab);
+
+                // Create new content pane (note: initially not active)
+                const contentTab = `
+                    <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
+                        <div class="card">
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-3">
+                                    <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
+                                    <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
+                                    <hr>
+                                </div>
+                                <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
+                                    <p class="text-muted">No comments yet.</p>
+                                </div>
+                                <div class="d-flex">
+                                    <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
+                                        alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                    <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
+                                        <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
+                                        <input hidden type="text" name="task_id" value="${taskId}" />
+                                        <div class="text-end">
+                                            <button class="btn btn-primary">Post Reply</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $("#v-pills-tabContent").append(contentTab);
+
+                // Activate newly created tab using Bootstrap's Tab API
+                setTimeout(() => {
+                    const tabTrigger = new bootstrap.Tab(document.getElementById(`${tabId}-tab`));
+                    tabTrigger.show();
+                }, 10); // short delay to ensure DOM is ready
+            }
+        });
+
+        $(".comment-box .nav-link").on("click", function() {
+            const target = $(this).data("bs-target"); // ID of the tab-pane to activate
+
+            // Deactivate all tabs and tab-panes
+            $(".comment-box .nav-link.active").removeClass("active");
+            $(".comment-box .tab-pane.active.show").removeClass("active show");
+
+            // Activate clicked tab
+            $(this).addClass("active");
+
+            // Activate corresponding tab-pane
+            $(target).addClass("active show");
+        });
+
     });
 </script>
 @endsection

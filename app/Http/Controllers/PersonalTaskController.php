@@ -590,5 +590,4 @@ class PersonalTaskController extends Controller
         return ($groups[$oldStatus] ?? null) !== ($groups[$newStatus] ?? null);
     }
 
-   
 }

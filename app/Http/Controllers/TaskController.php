@@ -215,32 +215,33 @@ class TaskController extends Controller
             } else {
                 Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
             }
+
+            $assign_to_employee_code = trim($assign_to_parts[0]);
+            $assignToMobileNoPersonal = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('mobile_no_personal');
+
+            if ($assignToMobileNoPersonal) {
+                $waMessage = "📢 *New Task Assigned*\n\n";
+                $waMessage .= "📌 Title: " . e($request->task_title) . "\n";
+                $waMessage .= "⚠️ Priority: " . e($request->priority) . "\n";
+                $waMessage .= "⏰ Due Date: " . ($request->due_date ?: 'Not Set') . "\n";
+                $waMessage .= "👤 Assigned To: " . e($request->assign_to) . "\n";
+                $waMessage .= "🧑‍💼 Assigned By: " . e($user->employee_name) . "\n";
+
+                $response = $this->whatsapp->sendWaMessage(
+                    '169617539573196',
+                    'EAAEY6g6mDSUBO4a9RKn5hBaFTL4YbYxaA3LlDlMKHNLWVqnTQpHXWw6V8Ta6P7SRg7dJeaaDnsXyRKNHKZCdXcbZCmP4KgAZAwDCAdxUnBgwXx0nW79EyPpUhkuBLN8BWkVnrmsrmZB7yqQHtxONqmzCASGTW6AJTaeZAoZAiC09etCHMnL4ZBV7GnnWqEwdZBzo',
+                    $assignToMobileNoPersonal,
+                    'text',
+                    ['body' => $waMessage],
+                    '',
+                    '',
+                    ''
+                );
+            }
         } catch (\Exception $e) {
             Log::error('Telegram Notification Failed: ' . $e->getMessage());
         }
 
-        $assign_to_employee_code = trim($assign_to_parts[0]);
-        $assignToMobileNoPersonal = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('mobile_no_personal');
-
-        if ($assignToMobileNoPersonal) {
-            $waMessage = "📢 *New Task Assigned*\n\n";
-            $waMessage .= "📌 Title: " . e($request->task_title) . "\n";
-            $waMessage .= "⚠️ Priority: " . e($request->priority) . "\n";
-            $waMessage .= "⏰ Due Date: " . ($request->due_date ?: 'Not Set') . "\n";
-            $waMessage .= "👤 Assigned To: " . e($request->assign_to) . "\n";
-            $waMessage .= "🧑‍💼 Assigned By: " . e($user->employee_name) . "\n";
-
-            $response = $this->whatsapp->sendWaMessage(
-                '169617539573196',
-                'EAAEY6g6mDSUBO4a9RKn5hBaFTL4YbYxaA3LlDlMKHNLWVqnTQpHXWw6V8Ta6P7SRg7dJeaaDnsXyRKNHKZCdXcbZCmP4KgAZAwDCAdxUnBgwXx0nW79EyPpUhkuBLN8BWkVnrmsrmZB7yqQHtxONqmzCASGTW6AJTaeZAoZAiC09etCHMnL4ZBV7GnnWqEwdZBzo',
-                $assignToMobileNoPersonal,
-                'text',
-                ['body' => $waMessage],
-                '',
-                '',
-                ''
-            );
-        }
 
         return response()->json([
             'status' => 'success',
@@ -711,31 +712,31 @@ class TaskController extends Controller
             } else {
                 Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
             }
+
+            $assign_to_employee_code = trim($assign_to_parts[0]);
+            $assignToMobileNoPersonal = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('mobile_no_personal');
+
+            if ($assignToMobileNoPersonal) {
+                $waMessage = "📢 *New Task Delegated*\n\n";
+                $waMessage .= "📌 Title: " . e($request->delegate_task_title) . "\n";
+                $waMessage .= "⚠️ Priority: " . e($request->priority) . "\n";
+                $waMessage .= "⏰ Due Date: " . ($request->due_date ?: 'Not Set') . "\n";
+                $waMessage .= "👤 Delegated To: " . e($request->assign_to) . "\n";
+                $waMessage .= "🧑‍💼 Delegated By: " . e($user->employee_name) . "\n";
+
+                $response = $this->whatsapp->sendWaMessage(
+                    '169617539573196',
+                    'EAAEY6g6mDSUBO4a9RKn5hBaFTL4YbYxaA3LlDlMKHNLWVqnTQpHXWw6V8Ta6P7SRg7dJeaaDnsXyRKNHKZCdXcbZCmP4KgAZAwDCAdxUnBgwXx0nW79EyPpUhkuBLN8BWkVnrmsrmZB7yqQHtxONqmzCASGTW6AJTaeZAoZAiC09etCHMnL4ZBV7GnnWqEwdZBzo',
+                    $assignToMobileNoPersonal,
+                    'text',
+                    ['body' => $waMessage],
+                    '',
+                    '',
+                    ''
+                );
+            }
         } catch (\Exception $e) {
             Log::error('Telegram Notification Failed: ' . $e->getMessage());
-        }
-
-        $assign_to_employee_code = trim($assign_to_parts[0]);
-        $assignToMobileNoPersonal = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('mobile_no_personal');
-
-        if ($assignToMobileNoPersonal) {
-            $waMessage = "📢 *New Task Delegated*\n\n";
-            $waMessage .= "📌 Title: " . e($request->delegate_task_title) . "\n";
-            $waMessage .= "⚠️ Priority: " . e($request->priority) . "\n";
-            $waMessage .= "⏰ Due Date: " . ($request->due_date ?: 'Not Set') . "\n";
-            $waMessage .= "👤 Delegated To: " . e($request->assign_to) . "\n";
-            $waMessage .= "🧑‍💼 Delegated By: " . e($user->employee_name) . "\n";
-
-            $response = $this->whatsapp->sendWaMessage(
-                '169617539573196',
-                'EAAEY6g6mDSUBO4a9RKn5hBaFTL4YbYxaA3LlDlMKHNLWVqnTQpHXWw6V8Ta6P7SRg7dJeaaDnsXyRKNHKZCdXcbZCmP4KgAZAwDCAdxUnBgwXx0nW79EyPpUhkuBLN8BWkVnrmsrmZB7yqQHtxONqmzCASGTW6AJTaeZAoZAiC09etCHMnL4ZBV7GnnWqEwdZBzo',
-                $assignToMobileNoPersonal,
-                'text',
-                ['body' => $waMessage],
-                '',
-                '',
-                ''
-            );
         }
 
         return response()->json([
@@ -1001,6 +1002,50 @@ class TaskController extends Controller
 
     public function addComment(Request $request)
     {
-        dd($request);
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
+
+        // Validate the main task data
+        $validator = Validator::make($request->all(), [
+            'task_id' => 'required|string|max:255',
+            'comment' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => $validator->errors()
+            ], 422);
+        }
+
+        $comment = TaskComment::create([
+            'task_id' => $request->task_id,
+            'comment' => $request->comment,
+            'added_by' => $activeUser
+        ]);
+
+        if ($comment) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Comment added successfully!',
+            ]);
+        }
+    }
+
+    public function dashboard()
+    {
+        $taskLists = TaskList::latest()->get();
+        $totalTasks = TaskList::count();
+        $completedTasks = TaskList::where('status', 'Completed')->count();
+        $inProcess = TaskList::where('status', 'In Progress')->count();
+        $pending = TaskList::where('status', 'Pending')->count();
+
+        return view('dashboard', [
+            'taskLists' => $taskLists,
+            'totalTasks' => $totalTasks,
+            'completedTasks' => $completedTasks,
+            'inProcess' => $inProcess,
+            'pending' => $pending,
+        ]);
     }
 }

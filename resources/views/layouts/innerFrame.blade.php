@@ -75,7 +75,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mb-2 mb-lg-0 d-flex justify-content-between w-100">
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
+                                <a class="nav-link" href="../../">
                                     <i class="ti ti-home-2 menu-icon"></i>
                                     <span class="menu-title">Dashboard</span>
                                 </a>
@@ -94,7 +94,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
+                                <a class="nav-link" href="../../projects">
                                     <i class="ti ti-presentation-analytics menu-icon"></i>
                                     <span class="menu-title">Projects</span>
                                 </a>
