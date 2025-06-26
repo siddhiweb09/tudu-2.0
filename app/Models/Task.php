@@ -62,6 +62,15 @@ class Task extends Model
         return $this->hasMany(TaskList::class);
     }
 
+    public function taskItems()
+    {
+        return $this->hasMany(TaskList::class, 'task_id', 'task_id');
+    }
+
+    public function taskMedias()
+    {
+        return $this->hasMany(TaskMedia::class, 'task_id', 'task_id');
+    }
 
     // public function logs()
     // {

@@ -56,4 +56,13 @@ class DelegatedTask extends Model
         return $delTaskId;
     }
 
+    public function taskItems()
+    {
+        return $this->hasMany(TaskList::class, 'task_id', 'delegate_task_id');
+    }
+
+    public function taskMedias()
+    {
+        return $this->hasMany(TaskMedia::class, 'task_id', 'delegate_task_id');
+    }
 }
