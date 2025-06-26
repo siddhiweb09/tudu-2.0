@@ -412,7 +412,8 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "In Progress")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -485,6 +486,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @include('modalEditTask')
                             @endif
                             @endforeach
                         </div>
@@ -499,7 +501,8 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "In Review")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -574,6 +577,7 @@
                             </div>
                             @endif
                             @endforeach
+                            @include('modalEditTask')
                         </div>
 
                     </div>
@@ -586,7 +590,8 @@
                         <div class="card-body">
                             @foreach ($individualStats as $taskStat)
                             @if ($taskStat['status'] === "Completed")
-                            <div class="card mb-3 task-card">
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -661,6 +666,7 @@
                             </div>
                             @endif
                             @endforeach
+                            @include('modalEditTask')
                         </div>
 
                     </div>
@@ -879,14 +885,14 @@
     const totalTasks = document.getElementById('totalTasks').value;
     const completedTasks = document.getElementById('completedTasks').value;
     const inProcessTasks = document.getElementById('inProcessTasks').value;
-    const remainingTasks = totalTasks - completedTasks;
+    const remainingTasks = totalTasks - completedTasks- inProcessTasks;
 
     const data = {
         labels: ['Completed', 'Remaining', 'Processing'],
         datasets: [{
             label: 'Task Completion',
             data: [completedTasks, remainingTasks, inProcessTasks],
-            backgroundColor: ['rgb(16, 185, 129)', 'rgb(255, 68, 68)', 'rgb(255, 180, 68)'],
+            backgroundColor: ['#01796f', '#f5385a', '#ff9f1c'],
             hoverOffset: 10
         }]
     };
@@ -952,15 +958,15 @@
             datasets: [{
                     label: 'Total Tasks',
                     data: totalTasksData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: '#4361ee',
+                    borderColor: '#4361ee',
                     borderWidth: 1
                 },
                 {
                     label: 'Completed Tasks',
                     data: completedTasksData,
-                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: '#4cc9f0',
+                    borderColor: '#4cc9f0',
                     borderWidth: 1
                 }
             ]
