@@ -379,7 +379,6 @@ class TaskController extends Controller
         $organizedTasks = $combined->groupBy(function ($task) {
             return ucfirst(strtolower($task->priority ?? 'low'));
         });
-        dd($organizedTasks);
         return view('tasks.pendingTask', [
             'tasksByPriority' => $organizedTasks,
             'totalTasks' => $organizedTasks->count()
