@@ -310,7 +310,7 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Step 1: Get all tasks where the user is assign_to or assign_from
+        // Step 1: Get all tasks where the user is assign_to or assign_by
         $allTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);
@@ -339,7 +339,7 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Step 1: Get all tasks where the user is assign_to or assign_from
+        // Step 1: Get all tasks where the user is assign_to or assign_by
         $allTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);
@@ -384,7 +384,7 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Step 1: Get all tasks where the user is assign_to or assign_from
+        // Step 1: Get all tasks where the user is assign_to or assign_by
         $allTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);
@@ -429,7 +429,7 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Step 1: Get all tasks where the user is assign_to or assign_from
+        // Step 1: Get all tasks where the user is assign_to or assign_by
         $allTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);
@@ -476,7 +476,7 @@ class TaskController extends Controller
         $usercode = $user->employee_code . '*' . $user->employee_name;
         $today = Carbon::now('Asia/Kolkata');
 
-        // Step 1: Get all tasks where the user is assign_to or assign_from
+        // Step 1: Get all tasks where the user is assign_to or assign_by
         $allTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);

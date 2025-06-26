@@ -706,7 +706,7 @@ function initializeTaskForm(formId) {
                             buttonsStyling: false,
                         }).then(() => {
                             if (response.redirect) {
-                                window.location.href = response.redirect;
+                                window.location.reload();
                             } else {
                                 // Use Bootstrap 5 compatible hide
                                 let modalEl = document.getElementById(formId);
