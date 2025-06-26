@@ -706,8 +706,26 @@ class TaskController extends Controller
                         'created_at' => Carbon::now('Asia/Kolkata'),
                         'updated_at' => Carbon::now('Asia/Kolkata')
                     ]);
+
+                    TaskLog::create([
+                        'task_id' => $request->delegate_task_id,
+                        'log_description' => 'Task Delegated Notification Send on Telegram',
+                        'added_by' => $activeUser
+                    ]);
+
+                    TelegramWhatsappLog::create([
+                        'task_id' => $request->delegate_task_id,
+                        'log_description' => 'Task Delegated Notification Send on Telegram',
+                        'notification_on' => 'Telegram'
+                    ]);
                 } else {
                     Log::warning("Telegram message not sent. Reason: " . ($responseData['description'] ?? 'Unknown'));
+
+                    TaskLog::create([
+                        'task_id' => $request->delegate_task_id,
+                        'log_description' => 'Task Delegated Notification Not Send on Telegram Chat ID Not Register',
+                        'added_by' => $activeUser
+                    ]);
                 }
             } else {
                 Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
@@ -734,6 +752,23 @@ class TaskController extends Controller
                     '',
                     ''
                 );
+                TaskLog::create([
+                    'task_id' => $request->delegate_task_id,
+                    'log_description' => 'Task Delegated Notification Send on Whatsapp',
+                    'added_by' => $activeUser
+                ]);
+
+                TelegramWhatsappLog::create([
+                    'task_id' => $request->delegate_task_id,
+                    'log_description' => 'Task Delegated Notification Send on Telegram',
+                    'notification_on' => 'Whatsapp'
+                ]);
+            } else {
+                TaskLog::create([
+                    'task_id' => $request->delegate_task_id,
+                    'log_description' => 'delegate_task_id Delegated Notification Not Send on Whatsapp Mobile No not Register',
+                    'added_by' => $activeUser
+                ]);
             }
         } catch (\Exception $e) {
             Log::error('Telegram Notification Failed: ' . $e->getMessage());
