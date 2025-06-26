@@ -22,7 +22,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Total Projects</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{ $totalTasks }}</h3>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">In Progress</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{ $inProcess }}</h3>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Completed</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{ $completedTasks }}</h3>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Pending</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{ $pending }}</h3>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
