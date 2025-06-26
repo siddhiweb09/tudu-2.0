@@ -322,7 +322,7 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
-        return view('tasks.allTasks', compact('filteredTasks'));
+        return view('tasks.pendingTask', compact('filteredTasks'));
     }
 
     public function inProcessTask()
@@ -352,7 +352,7 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
-        return view('tasks.allTasks', compact('filteredTasks'));
+        return view('tasks.inProcessTask', compact('filteredTasks'));
     }
 
     public function inReviewTask()
@@ -383,7 +383,7 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
-        return view('tasks.allTasks', compact('filteredTasks'));
+        return view('tasks.inReviewTask', compact('filteredTasks'));
     }
 
     public function overdueTask()
@@ -417,7 +417,7 @@ class TaskController extends Controller
             // Keep the task
             return true;
         });
-        return view('tasks.allTasks', compact('filteredTasks'));
+        return view('tasks.overdueTask', compact('filteredTasks'));
     }
 
     public function delegateTask($id)
