@@ -371,7 +371,7 @@ class TaskController extends Controller
             return ucfirst(strtolower($task->priority ?? 'low'));
         });
 
-        return view('tasks.pending', [
+        return view('tasks.pendingTask', [
             'tasksByPriority' => $organizedTasks,
             'totalTasks' => $organizedTasks->count()
         ]);
