@@ -88,9 +88,10 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Pending Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Delayed Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdiewTasks') }}">Overdiew Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do List</a></li>
                                 </ul>
                             </li>
@@ -247,7 +248,7 @@
                 return isValid;
             }
 
-          
+
 
             $("#flexSwitchCheckDefault").on("change", function() {
                 if ($(this).is(":checked")) {
@@ -426,7 +427,7 @@
                 $("#priorityInput").val(priority.replace("btnradio", "").toLowerCase());
             }
 
-    
+
             // Update tasks input
 
             // Add this new function to handle frequency duration

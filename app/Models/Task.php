@@ -52,26 +52,6 @@ class Task extends Model
         return $taskId;
     }
 
-    public function media()
-    {
-        return $this->hasMany(TaskMedia::class);
-    }
-
-    public function tasks()
-    {
-        return $this->hasMany(TaskList::class);
-    }
-
-    public function taskItems()
-    {
-        return $this->hasMany(TaskList::class, 'task_id', 'task_id');
-    }
-
-    public function taskMedias()
-    {
-        return $this->hasMany(TaskMedia::class, 'task_id', 'task_id');
-    }
-
     // public function logs()
     // {
     //     return $this->hasMany(TaskLog::class);
