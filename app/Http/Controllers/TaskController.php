@@ -271,6 +271,106 @@ class TaskController extends Controller
         return view('tasks.allTasks');
     }
 
+    // public function pendingTask()
+    // {
+    //     $user = Auth::user();
+    //     $assign_to = $user->employee_code . '*' . $user->employee_name;
+    //     $tasks = Task::where('assign_to', $assign_to)
+    //         ->orderBy('due_date', 'asc')
+    //         ->get();
+    //     return view('tasks.pendingTask',compact('tasks'));
+
+    // }
+
+    public function pendingTask()
+    {
+        $user = Auth::user();
+        $assign_to = $user->employee_code . '*' . $user->employee_name;
+
+        // Get main tasks assigned to the user
+        $tasks = Task::where('assign_to', $assign_to)
+            ->where('status', '!=', 'Completed') // Only pending tasks
+            ->get();
+
+        // Get delegated tasks assigned to the user
+        $delegatedTasks = DelegatedTask::where('assign_to', $assign_to)
+            ->where('status', '!=', 'Completed') // Only pending tasks
+            ->get();
+
+        // Combine both collections
+        $allTasks = $tasks->merge($delegatedTasks);
+
+        // Group tasks by priority
+        $groupedTasks = [
+            'High' => $allTasks->where('priority', 'high'),
+            'Medium' => $allTasks->where('priority', 'medium'),
+            'Low' => $allTasks->where('priority', 'low')
+        ];
+
+        return view('tasks.pendingTask', compact('groupedTasks'));
+    }
+
+    // public function pendingTask()
+    // {
+    //     $user = Auth::user();
+    //     $assign_to = $user->employee_code . '*' . $user->employee_name;
+
+    //     // Get main tasks assigned to the user
+    //     $tasks = Task::where('assign_to', $assign_to)
+    //         ->where('status', '!=', 'Completed')
+    //         ->with(['taskItems', 'taskMedias'])
+    //         ->get();
+
+    //     // Get delegated tasks assigned to the user
+    //     $delegatedTasks = DelegatedTask::where('assign_to', $assign_to)
+    //         ->where('status', '!=', 'Completed')
+    //         ->with(['taskItems', 'taskMedias'])
+    //         ->get();
+
+    //     // Combine both collections
+    //     $allTasks = $tasks->merge($delegatedTasks);
+
+    //     // Process each task to include stats
+    //     $processedTasks = $allTasks->map(function ($task) {
+    //         // Calculate progress stats
+    //         $total = $task->taskItems->count();
+    //         $completed = $task->taskItems->where('status', 'Completed')->count();
+    //         $progress = $total > 0 ? round(($completed / $total) * 100, 2) : 0;
+
+    //         // Count comments and media
+            
+    //         $totalMedias = $task->taskMedias->count();
+
+    //         // Get team members
+    //         $assign_to_raw = is_array($task->assign_to) ? $task->assign_to : [$task->assign_to];
+    //         $employeeCodes = collect($assign_to_raw)->map(function ($entry) {
+    //             $parts = explode('*', $entry);
+    //             return $parts[0] ?? null;
+    //         })->filter()->toArray();
+
+    //         $teamMembers = User::whereIn('employee_code', $employeeCodes)
+    //             ->get(['employee_code', 'employee_name', 'profile_picture']);
+
+    //         // Add calculated fields to task
+    //         $task->total = $total;
+    //         $task->completed = $completed;
+    //         $task->progress = $progress;
+    //         $task->totalMedias = $totalMedias;
+    //         $task->teamMembers = $teamMembers;
+
+    //         return $task;
+    //     });
+
+    //     // Group tasks by priority
+    //     $groupedTasks = [
+    //         'High' => $processedTasks->where('priority', 'high'),
+    //         'Medium' => $processedTasks->where('priority', 'medium'),
+    //         'Low' => $processedTasks->where('priority', 'low')
+    //     ];
+
+    //     return view('tasks.pendingTask', compact('groupedTasks'));
+    // }
+
     public function delegateTask($id)
     {
         return view('tasks.delegate', ['taskId' => $id]);
@@ -751,7 +851,34 @@ class TaskController extends Controller
 
     public function addComment(Request $request)
     {
-        dd($request);
+        $user = Auth::user();
+        $activeUser = $user->employee_code . "*" . $user->employee_name;
+
+        // Validate the main task data
+        $validator = Validator::make($request->all(), [
+            'task_id' => 'required|string|max:255',
+            'comment' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => $validator->errors()
+            ], 422);
+        }
+
+        $comment = TaskComment::create([
+            'task_id' => $request->task_id,
+            'comment' => $request->comment,
+            'added_by' => $activeUser
+        ]);
+
+        if ($comment) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Comment added successfully!',
+            ]);
+        }
     }
 
     public function dashboard()
