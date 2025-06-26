@@ -892,54 +892,6 @@ ul.dropdown-menu li:last-child {
     box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
 }
 
-/* Buttons */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 500;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: 1px solid transparent;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: var(--border-radius);
-    transition: var(--transition);
-    cursor: pointer;
-}
-
-.btn-primary {
-    background-color: var(--primary-color) !important;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background-color: var(--secondary-color) !important;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #3730a3;
-    transform: translateY(-1px);
-}
-
-.btn-outline {
-    background-color: transparent;
-    border: 1px solid var(--primary-color) !important;
-    color: var(--primary-color) !important;
-}
-
-.btn-outline:hover {
-    background-color: rgba(67, 97, 238, 0.1);
-}
 
 /* Form Steps Animation */
 .form-step {
@@ -1047,6 +999,14 @@ ul.dropdown-menu li:last-child {
     .step::after {
         display: none;
     }
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: red;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border: none !important;
 }
 
 /* task form end */
@@ -1677,7 +1637,7 @@ img.aspect-square {
 #taskDetailModal .modal-content {
     border-radius: 12px;
     border: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 #taskDetailModal .modal-body {
@@ -1715,7 +1675,7 @@ img.aspect-square {
 }
 
 .modal-dialog-centered {
-    max-width: 650px; 
+    max-width: 650px;
     width: 90%;
 }
 

@@ -138,7 +138,7 @@
                                                         <div class="select-card-header">
                                                             <i class="ti ti-tag me-2"></i>Category
                                                         </div>
-                                                        <select id="department" name="category" class="form-control"
+                                                        <select id="department" name="category" class="form-control js-example-basic-single" multiple
                                                             required>
                                                             <option value="">Select Category</option>
                                                         </select>
