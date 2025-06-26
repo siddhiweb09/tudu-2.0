@@ -85,6 +85,9 @@ Route::middleware(['auth:web'])->group(function () {
 
     // Kanban Cards Status Change in Personal
     Route::put('/update-status/{id}', [PersonalTaskController::class, 'updateKanbanStatus']);
+
+    Route::get('/', [TaskController::class,'dashboard']);
+    Route::get('/projects', [UserController::class,'project']);
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');

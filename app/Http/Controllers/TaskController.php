@@ -534,7 +534,7 @@ class TaskController extends Controller
         // Total stats (combined)
         $totalTasks = $taskItems->count();
         $completedTasks = $taskItems->where('status', 'Completed')->count();
-        $inProcess = $taskItems->where('status','In Progress')->count();
+        $inProcess = $taskItems->where('status', 'In Progress')->count();
         $progressPercentage = $totalTasks > 0
             ? round(($completedTasks / $totalTasks) * 100, 2)
             : 0;
@@ -752,5 +752,22 @@ class TaskController extends Controller
     public function addComment(Request $request)
     {
         dd($request);
+    }
+
+    public function dashboard()
+    {
+        $taskLists = TaskList::latest()->get();
+        $totalTasks = TaskList::count();
+        $completedTasks = TaskList::where('status', 'Completed')->count();
+        $inProcess = TaskList::where('status', 'In Progress')->count();
+        $pending = TaskList::where('status', 'Pending')->count();
+
+        return view('dashboard', [
+            'taskLists' => $taskLists,
+            'totalTasks' => $totalTasks,
+            'completedTasks' => $completedTasks,
+            'inProcess' => $inProcess,
+            'pending' => $pending,
+        ]);
     }
 }

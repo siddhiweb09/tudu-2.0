@@ -98,7 +98,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
+                                <a class="nav-link" href="../../projects">
                                     <i class="ti ti-presentation-analytics menu-icon"></i>
                                     <span class="menu-title">Projects</span>
                                 </a>
