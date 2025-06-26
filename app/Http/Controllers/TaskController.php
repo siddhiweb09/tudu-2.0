@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\TelegramWebhookMessage;
 use App\Models\TaskSchedule;
 use App\Services\WhatsAppService;
+use App\Models\TelegramWhatsappLog;
+
 use Carbon\Carbon;
 
 class TaskController extends Controller
@@ -209,8 +211,26 @@ class TaskController extends Controller
                         'created_at' => Carbon::now('Asia/Kolkata'),
                         'updated_at' => Carbon::now('Asia/Kolkata')
                     ]);
+
+                    TaskLog::create([
+                        'task_id' => $request->task_id,
+                        'log_description' => 'Task created Notification Send on Telegram',
+                        'added_by' => $activeUser
+                    ]);
+
+                    TelegramWhatsappLog::create([
+                        'task_id' => $request->task_id,
+                        'log_description' => 'Task created Notification Send on Telegram',
+                        'notification_on' => 'Telegram'
+                    ]);
                 } else {
                     Log::warning("Telegram message not sent. Reason: " . ($responseData['description'] ?? 'Unknown'));
+
+                    TaskLog::create([
+                        'task_id' => $request->task_id,
+                        'log_description' => 'Task created Notification Not Send on Telegram Chat ID Not Register',
+                        'added_by' => $activeUser
+                    ]);
                 }
             } else {
                 Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
@@ -237,6 +257,24 @@ class TaskController extends Controller
                     '',
                     ''
                 );
+
+                TaskLog::create([
+                    'task_id' => $request->task_id,
+                    'log_description' => 'Task created Notification Send on Whatsapp',
+                    'added_by' => $activeUser
+                ]);
+
+                TelegramWhatsappLog::create([
+                    'task_id' => $request->task_id,
+                    'log_description' => 'Task created Notification Send on Telegram',
+                    'notification_on' => 'Whatsapp'
+                ]);
+            } else {
+                TaskLog::create([
+                    'task_id' => $request->task_id,
+                    'log_description' => 'Task created Notification Not Send on Whatsapp Mobile No not Register',
+                    'added_by' => $activeUser
+                ]);
             }
         } catch (\Exception $e) {
             Log::error('Telegram Notification Failed: ' . $e->getMessage());
