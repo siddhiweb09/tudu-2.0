@@ -91,7 +91,7 @@
                                     <li><a class="dropdown-item" href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.overdiewTasks') }}">Overdiew Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do List</a></li>
                                 </ul>
                             </li>
