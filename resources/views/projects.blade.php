@@ -8,23 +8,11 @@
             <!-- Search and Filter Section -->
             <div class="d-flex align-items-center w-100 w-sm-auto gap-2">
                 <div class="position-relative w-100" style="max-width: 260px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        fill="currentColor" class="bi bi-search position-absolute top-50 translate-middle-y ms-2 text-muted"
-                        viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.397h-.001l3.85 3.85a1 1 0 0 0 
-                        1.415-1.415l-3.85-3.85zm-5.242 1.01a5.5 
-                        5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
-                    </svg>
+                    <i class="ti ti-search me-2 position-absolute top-50 translate-middle-y ms-2 text-muted"></i>
                     <input type="search" class="form-control ps-5 py-2" placeholder="Search projects...">
                 </div>
                 <button class="btn btn-outline-secondary d-flex align-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        fill="currentColor" class="bi bi-funnel me-2" viewBox="0 0 16 16">
-                        <path d="M1.5 1.5a.5.5 0 0 0 0 1H2v.691a.5.5 
-                        0 0 0 .146.354L6 7.707V13.5a.5.5 0 0 0 .724.447l2-1A.5.5 
-                        0 0 0 9 12.5V7.707l3.854-4.854A.5.5 0 0 0 13 2.191V1.5h.5a.5.5 
-                        0 0 0 0-1h-12z" />
-                    </svg>
+                    <i class="ti ti-filter me-2"></i>
                     All Projects
                 </button>
             </div>
@@ -32,37 +20,12 @@
             <!-- View Toggle Buttons -->
             <div class="d-flex w-100 w-sm-auto justify-content-between justify-content-sm-end">
                 <div class="bg-light rounded d-flex p-1 gap-2">
-                    <button id="gridViewBtn" class="btn btn-light border d-flex align-items-center active">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                            fill="currentColor" class="bi bi-grid-3x3-gap-fill me-2" viewBox="0 0 16 16">
-                            <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 
-                            1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm6 0a1 
-                            1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 
-                            1H8a1 1 0 0 1-1-1V2zm6-1a1 1 0 0 1 1 
-                            1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2a1 
-                            1 0 0 1 1-1h2zM2 8a1 1 0 0 1-1-1V5a1 1 0 0 
-                            1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 
-                            1H2zm6-1a1 1 0 0 1 1-1h2a1 1 0 0 1 
-                            1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7zm6 
-                            0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 
-                            1v2a1 1 0 0 1-1 1h-2a1 1 0 0 
-                            1-1-1V7z" />
-                        </svg>
-                        Grid
+                    <button id="gridViewBtn" type="button" class="btn btn-light border d-flex align-items-center active">
+                        <i class="ti ti-layout-grid me-2"></i>
+                        <span>Grid</span>
                     </button>
                     <button id="listViewBtn" class="btn btn-light text-muted d-flex align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                            fill="currentColor" class="bi bi-list-ul me-2" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.5 3.5A.5.5 0 0 1 2 
-                            3h1a.5.5 0 0 1 0 1H2a.5.5 0 0 1-.5-.5zM1.5 
-                            8a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 
-                            1H2a.5.5 0 0 1-.5-.5zM2 12a.5.5 0 0 
-                            0 0 1h1a.5.5 0 0 0 0-1H2zM5 4a.5.5 
-                            0 0 1 0-1h9a.5.5 0 0 1 0 
-                            1H5zm0 4a.5.5 0 0 1 0-1h9a.5.5 0 0 1 0 
-                            1H5zm0 4a.5.5 0 0 1 0-1h9a.5.5 0 0 1 0 
-                            1H5z" />
-                        </svg>
+                        <i class="ti ti-list-details me-2"></i>
                         List
                     </button>
                 </div>
@@ -118,7 +81,7 @@
                             </td>
                             <td>
                                 <div class="d-flex align-items-center text-muted small">
-                                    <i class="bi bi-calendar me-2"></i> Nov 15, 2023
+                                    <i class="ti ti-calendar me-2"></i> Nov 15, 2023
                                 </div>
                             </td>
                             <td>
@@ -135,7 +98,7 @@
                             </td>
                             <td class="text-end">
                                 <button class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-three-dots"></i>
+                                    <i class="ti ti-dots"></i>
                                 </button>
                             </td>
                         </tr>
@@ -160,7 +123,7 @@
                                     <div>
                                         <h5 class="card-title font-semibold text-lg d-flex align-items-center">
                                             Figma Design System
-                                            <i class="bi bi-star-fill text-warning ms-2"></i>
+                                            <i class="ti ti-star-fill text-warning ms-2"></i>
                                         </h5>
                                         <p class="card-subtitle text-muted text-sm">UI component library for design system</p>
                                     </div>
@@ -171,11 +134,11 @@
                         <div class="card-body p-3 p-sm-6 pt-0">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex align-items-center text-muted text-sm">
-                                    <i class="bi bi-calendar me-1"></i>
+                                    <i class="ti ti-calendar me-1"></i>
                                     <span>Deadline: Nov 15, 2023</span>
                                 </div>
                                 <button class="btn btn-sm btn-outline-secondary" type="button">
-                                    <i class="bi bi-three-dots"></i>
+                                    <i class="ti ti-dots"></i>
                                     <span class="visually-hidden">Project actions</span>
                                 </button>
                             </div>
@@ -201,11 +164,11 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-3 text-xs text-muted">
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-file-text me-1"></i>
+                                        <i class="ti ti-file-text me-1"></i>
                                         <span>24 tasks</span>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-bar-chart me-1"></i>
+                                        <i class="ti ti-chart-bar me-1"></i>
                                         <span>128 activities</span>
                                     </div>
                                 </div>
@@ -225,8 +188,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Other project cards... -->
             </div>
         </div>
     </main>
