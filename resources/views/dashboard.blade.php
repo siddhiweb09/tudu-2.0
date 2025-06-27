@@ -476,7 +476,7 @@
                                             <label for="task-1" class="fw-semibold">Create component documentation</label>
                                             <div class="small text-muted mt-1 d-flex align-items-center gap-3 flex-wrap">
                                                 <span class="d-flex align-items-center text-primary">
-                                                    <i class="bi bi-clock me-1"></i> Today, 2:00 PM
+                                                    <i class="ti ti-clock me-1"></i> Today, 2:00 PM
                                                 </span>
                                                 <span class="badge bg-danger text-white">High</span>
                                             </div>
@@ -485,7 +485,7 @@
                                     <div class="d-flex align-items-center gap-2">
                                         <img src="/avatars/alex-morgan.png" class="rounded-circle border" width="28" height="28" alt="Alex">
                                         <img src="/avatars/jessica-chen.png" class="rounded-circle border" width="28" height="28" alt="Jessica">
-                                        <button class="btn btn-sm btn-light"><i class="bi bi-three-dots"></i></button>
+                                        <button class="btn btn-sm btn-light"><i class="ti ti-three-dots"></i></button>
                                     </div>
                                 </div>
 
@@ -497,18 +497,18 @@
                                             <label for="task-2" class="text-decoration-line-through text-muted">Design system color palette update</label>
                                             <div class="small text-muted mt-1 d-flex align-items-center gap-3 flex-wrap">
                                                 <span class="d-flex align-items-center text-primary">
-                                                    <i class="bi bi-clock me-1"></i> Today, 10:00 AM
+                                                    <i class="ti ti-clock me-1"></i> Today, 10:00 AM
                                                 </span>
                                                 <span class="badge bg-warning text-dark">Medium</span>
                                                 <span class="text-success d-flex align-items-center">
-                                                    <i class="bi bi-check-circle me-1"></i> Completed
+                                                    <i class="ti ti-check-circle me-1"></i> Completed
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
                                         <img src="/avatars/alex-morgan.png" class="rounded-circle border" width="28" height="28" alt="Alex">
-                                        <button class="btn btn-sm btn-light"><i class="bi bi-three-dots"></i></button>
+                                        <button class="btn btn-sm btn-light"><i class="ti ti-three-dots"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -523,7 +523,7 @@
                 <!-- Add New Task -->
                 <div class="card-footer text-center border-top">
                     <button class="btn btn-outline-primary w-100">
-                        <i class="bi bi-plus me-2"></i> Add New Task
+                        <i class="ti ti-plus me-2"></i> Add New Task
                     </button>
                 </div>
             </div>
@@ -538,7 +538,7 @@
                             <h4 class="mb-0">Team Performance</h4>
                             <small class="text-muted">Weekly task completion rate</small>
                         </div>
-                        <button class="btn btn-sm btn-light"><i class="bi bi-three-dots"></i></button>
+                        <button class="btn btn-sm btn-light"><i class="ti ti-three-dots"></i></button>
                     </div>
 
                     <!-- Chart Placeholder -->
@@ -567,7 +567,7 @@
                             <small class="text-muted">Performance overview of team members</small>
                         </div>
                         <button class="btn btn-outline-secondary btn-sm d-flex align-items-center">
-                            <i class="bi bi-people-fill me-2"></i> View All
+                            <i class="ti ti-people-fill me-2"></i> View All
                         </button>
                     </div>
 
@@ -602,12 +602,12 @@
                                     </td>
                                     <td class="text-center">
                                         <span class="badge bg-success-subtle text-success d-inline-flex align-items-center">
-                                            <i class="bi bi-arrow-up-right me-1"></i> +12% this week
+                                            <i class="ti ti-arrow-up-right me-1"></i> +12% this week
                                         </span>
                                     </td>
                                     <td class="text-end">
                                         <button class="btn btn-sm btn-light">
-                                            <i class="bi bi-three-dots-vertical"></i>
+                                            <i class="ti ti-three-dots-vertical"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -626,7 +626,7 @@
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h5 class="card-title mb-0">Tomorrow Note</h5>
                         <span class="badge bg-light text-dark d-inline-flex align-items-center">
-                            <i class="bi bi-lock-fill me-1 small"></i> Private
+                            <i class="ti ti-lock-fill me-1 small"></i> Private
                         </span>
                     </div>
                     <small class="text-muted">Your personal notes for tomorrow</small>
@@ -642,7 +642,7 @@
 
                 <div class="card-footer d-flex justify-content-between pt-3">
                     <button class="btn btn-outline-secondary btn-sm d-flex align-items-center">
-                        <i class="bi bi-plus me-2"></i> Add Note
+                        <i class="ti ti-plus me-2"></i> Add Note
                     </button>
                     <button class="btn btn-outline-secondary btn-sm">Edit Notes</button>
                 </div>
