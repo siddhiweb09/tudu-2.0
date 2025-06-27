@@ -106,9 +106,9 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
-                                    <i class="ti ti-table-plus menu-icon"></i>
-                                    <span class="menu-title">Quick Add Task </span>
+                                <a class="nav-link" href="{{ route('team.viewTeams') }}">
+                                    <i class="ti ti-user-shield menu-icon"></i>
+                                    <span class="menu-title">Teams</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -163,7 +163,7 @@
     <script src="assets/js/task-update-form.js"></script>
 
     <script>
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             const preloader = document.querySelector('.preloader');
             if (preloader) {
                 preloader.style.opacity = '0';

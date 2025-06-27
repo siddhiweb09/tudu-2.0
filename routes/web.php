@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\PersonalTaskController;
@@ -73,9 +74,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/personal-tasks/{task}/documents/upload', [PersonalTaskController::class, 'uploadDocument'])->name('personal-tasks.upload-document');
     Route::post('/personal-tasks-delete-document', [PersonalTaskController::class, 'deleteDocument'])->name('personal-tasks.delete-document');
 
-    // Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
-    // Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
-    // Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
+    Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
+    Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
+    Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
 
     //fetch Functions
     Route::get('/get-task-details/{id}', [TaskController::class, 'getTaskById']);
@@ -90,6 +91,10 @@ Route::middleware(['auth:web'])->group(function () {
     // Kanban Cards Status Change in Personal
     Route::put('/update-status/{id}', [PersonalTaskController::class, 'updateKanbanStatus']);
 
+
+    //teams 
+    Route::match(['get', 'post'], 'teams', [TeamController::class, 'teams'])->name('team.viewTeams');
+    Route::post('/create-team', [TeamController::class, 'createTeam'])->name('store.createTeam');
     Route::get('/projects', [UserController::class,'project']);
 });
 
