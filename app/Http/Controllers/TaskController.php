@@ -575,7 +575,7 @@ class TaskController extends Controller
         ]);
     }
 
-   
+
     public function overdueTask()
     {
         $user = Auth::user();
@@ -1161,20 +1161,20 @@ class TaskController extends Controller
         }
     }
 
-    // public function dashboard()
-    // {
-    //     $taskLists = TaskList::latest()->get();
-    //     $totalTasks = TaskList::count();
-    //     $completedTasks = TaskList::where('status', 'Completed')->count();
-    //     $inProcess = TaskList::where('status', 'In Progress')->count();
-    //     $pending = TaskList::where('status', 'Pending')->count();
+    public function dashboard()
+    {
+        $taskLists = Task::latest()->limit(3)->get();
+        $totalTasks = Task::count();
+        $completedTasks = Task::where('status', 'Completed')->count();
+        $inProcess = Task::where('status', 'In Progress')->count();
+        $pending = Task::where('status', 'Pending')->count();
+        return view('dashboard', [
 
-    //     return view('dashboard', [
-    //         'taskLists' => $taskLists,
-    //         'totalTasks' => $totalTasks,
-    //         'completedTasks' => $completedTasks,
-    //         'inProcess' => $inProcess,
-    //         'pending' => $pending,
-    //     ]);
-    // }
+            'taskLists' => $taskLists,
+            'totalTasks' => $totalTasks,
+            'completedTasks' => $completedTasks,
+            'inProcess' => $inProcess,
+            'pending' => $pending,
+        ]);
+    }
 }

@@ -26,9 +26,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 // Protected routes (only accessible after login)
 Route::middleware(['auth:web'])->group(function () {
     // Dashboard
-    Route::get('/', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/', [TaskController::class, 'dashboard'])->name('dashboard');
     Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
     Route::match(['get', 'post'], '/pending-tasks', [TaskController::class, 'pendingTask'])->name('tasks.pendingTasks');
     Route::match(['get', 'post'], '/in-process-tasks', [TaskController::class, 'inProcessTask'])->name('tasks.inProcessTasks');
