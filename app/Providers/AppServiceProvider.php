@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('layouts.frame', function ($view) {
+            $user = Auth::user();
+            $view->with([
+                'user' => $user,
+            ]);
+        });
+
+        View::composer('layouts.innerFrame', function ($view) {
+            $user = Auth::user();
+            $view->with([
+                'user' => $user,
+            ]);
+        });
+
+        View::composer('layouts.personalTaskFrame', function ($view) {
+            $user = Auth::user();
+            $view->with([
+                'user' => $user,
+            ]);
+        });
+
     }
 }

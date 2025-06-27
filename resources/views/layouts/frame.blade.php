@@ -58,10 +58,10 @@
                         <div class="dropdown-center">
                             <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                <img src="assets/images/logo.png" class="rounded-circle profile-pic" />
+                                <img src="{{ asset('assets/images/profile_picture/' . ($user->profile_picture ?: 'user.png')) }}" class="rounded-circle profile-pic" />
                             </button>
                             <ul class="dropdown-menu profile-menu">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="/profile/{{ Auth::user()->id}}">Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
