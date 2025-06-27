@@ -37,6 +37,23 @@ class TeamController extends Controller
             return $isLeader || ($isPublic && $isTeamMember);
         });
 
+        // ✅ Collect all unique member codes from visible teams
+        $memberCodes = collect($teams)
+            ->flatMap(function ($team) {
+                return json_decode($team->team_members, true) ?? [];
+            })
+            ->map(function ($member) {
+                return explode('*', $member)[0]; // Get employee_code only
+            })
+            ->unique()
+            ->values();
+
+        // ✅ Fetch only team members with profile pictures
+        $users = User::whereIn('employee_code', $memberCodes)
+            ->select('employee_code', 'employee_name', 'profile_picture')
+            ->get()
+            ->keyBy('employee_code');
+
         return view("team.viewTeams", compact("users", "teams"));
     }
 

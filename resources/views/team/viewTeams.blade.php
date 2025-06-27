@@ -58,11 +58,42 @@
             padding-bottom: 0.75rem;
             margin-bottom: 0.75rem;
         }
+
+        .icon-btn {
+            height: 32px;
+            width: 32px;
+        }
+
+        /* Modern tab styling */
+        .nav-pills .nav-link {
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            color: #4b5563;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            background-color: transparent;
+        }
+
+        .nav-pills .nav-link:hover {
+            color: #1520a6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #1520a6;
+            color: white;
+            box-shadow: 0 4px 6px -1px #1520a6;
+            border-color: #1520a6;
+        }
+
+        .nav-pills .nav-link i {
+            font-size: 1.1rem;
+        }
     </style>
 
     <div class="bg-white border-bottom py-4">
         <div class="container-xxl">
-            <!-- Header Section -->
+            <!-- Header -->
             <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
                 <div>
@@ -71,121 +102,184 @@
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTeamModal">
-                        <i class="ti ti-plus"></i>
+                        <i class="ti ti-plus me-1"></i> Create Team
                     </button>
                 </div>
             </div>
 
-            <!-- Team Cards Grid -->
-            <div class="row m-0">
-                @foreach ($teams as $team)
-                    @php
-                        $teamMembers = json_decode($team->team_members, true);
-                        $memberCount = is_array($teamMembers) ? count($teamMembers) : 0;
-                    @endphp
+            <!-- Tabs -->
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="d-flex justify-content-end border-0">
+                        <div class="nav nav-pills gap-2" id="teamTabs" role="tablist">
+                            <button class="nav-link active d-flex align-items-center" id="all-tab" data-bs-toggle="pill"
+                                data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+                                <i class="ti ti-users-group me-2"></i>
+                                <span>All Teams</span>
+                            </button>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden position-relative">
-                            <!-- Badge -->
-                            <span
-                                class="badge position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill bg-{{ $team->team_visibilty === 'public' ? 'success' : 'info' }}">
-                                {{ ucfirst($team->team_visibilty) }}
-                            </span>
+                            <button class="nav-link d-flex align-items-center" id="private-tab" data-bs-toggle="pill"
+                                data-bs-target="#private" type="button" role="tab" aria-controls="private"
+                                aria-selected="false">
+                                <i class="ti ti-lock me-2"></i>
+                                <span>Private</span>
+                            </button>
 
-                            <!-- Card Header -->
-                            <div class="card-body pb-0">
-                                <div class="d-flex align-items-center gap-3 mb-4">
-                                    @if ($team->team_avatar)
-                                        <img src="{{ asset('assets/images/team_avatars/' . $team->team_avatar) }}"
-                                            class="rounded-circle border border-2" width="60" height="60" alt="Avatar">
-                                    @else
-                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary fw-bold"
-                                            style="width:60px; height:60px;">
-                                            {{ strtoupper(substr($team->team_name, 0, 1)) }}
+                            <button class="nav-link d-flex align-items-center" id="public-tab" data-bs-toggle="pill"
+                                data-bs-target="#public" type="button" role="tab" aria-controls="public"
+                                aria-selected="false">
+                                <i class="ti ti-eye me-2"></i>
+                                <span>Public</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="teamTabsContent">
+                @php
+                    $visibilityGroups = [
+                        'all' => $teams,
+                        'private' => $teams->where('team_visibilty', 'private'),
+                        'public' => $teams->where('team_visibilty', 'public'),
+                    ];
+                @endphp
+
+                @foreach ($visibilityGroups as $tab => $group)
+                    <div class="tab-pane fade {{ $tab == 'all' ? 'show active' : '' }}" id="{{ $tab }}" role="tabpanel">
+                        <div class="row">
+                            @forelse ($group as $team)
+                                @php
+                                    $teamMembers = json_decode($team->team_members, true);
+                                    $memberCount = is_array($teamMembers) ? count($teamMembers) : 0;
+                                @endphp
+
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="card h-100 shadow border-1 rounded-4 overflow-hidden position-relative pt-2">
+                                        <!-- Visibility Badge -->
+                                        <span
+                                            class="badge position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill bg-{{ $team->team_visibilty === 'public' ? 'success' : 'danger' }}">
+                                            <i class="ti {{ $team->team_visibilty === 'public' ? 'ti-eye' : 'ti-lock' }} me-1"></i>
+                                            {{ ucfirst($team->team_visibilty) }}
+                                        </span>
+
+                                        <!-- Card Body -->
+                                        <div class="card-body pb-0">
+                                            <div class="d-flex align-items-center gap-3 mb-4">
+                                                @if ($team->team_avatar)
+                                                    <img src="{{ asset('assets/images/team_avatars/' . $team->team_avatar) }}"
+                                                        class="rounded-circle border border-2" width="60" height="60" alt="Avatar">
+                                                @else
+                                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary fw-bold"
+                                                        style="width:60px; height:60px;">
+                                                        {{ strtoupper(substr($team->team_name, 0, 1)) }}
+                                                    </div>
+                                                @endif
+
+                                                <div>
+                                                    <h5 class="mb-1 fw-semibold">{{ $team->team_name }}</h5>
+                                                    <small class="text-muted">Team ID: {{ $team->team_code }}</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <i class="ti ti-crown text-warning me-2"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Leader</small>
+                                                        <span class="fw-medium">{{ $team->team_leader }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center">
+                                                    <i class="ti ti-users text-primary me-2"></i>
+                                                    <div>
+                                                        <small class="text-muted d-block">Members</small>
+                                                        <span class="fw-medium">{{ $memberCount }}
+                                                            {{ $memberCount === 1 ? 'member' : 'members' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @if (is_array($teamMembers))
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    @foreach ($teamMembers as $member)
+                                                        @php
+                                                            [$code, $name] = explode('*', $member);
+                                                            $profile = $users->firstWhere('employee_code', $code)?->profile_picture;
+                                                        @endphp
+                                                        <div class="aspect-square-container p-0 w-auto">
+                                                            <div class="aspect-square-box">
+                                                                @if (!empty($profile))
+                                                                    <img class="aspect-square rounded-circle" alt="{{ $name }}"
+                                                                        src="{{ asset('assets/images/profile_picture/' . $profile) }}">
+                                                                @else
+                                                                    <img class="aspect-square rounded-circle" alt="{{ $name }}"
+                                                                        src="{{ asset('assets/images/profile_picture/user.png') }}">
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
-                                    @endif
 
-                                    <div>
-                                        <h5 class="mb-1 fw-semibold">{{ $team->team_name }}</h5>
-                                        <small class="text-muted">Team ID: {{ $team->team_code }}</small>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="ti ti-crown text-warning me-2"></i>
-                                        <div>
-                                            <small class="text-muted d-block">Leader</small>
-                                            <span class="fw-medium">{{ $team->team_leader }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-center">
-                                        <i class="ti ti-users text-primary me-2"></i>
-                                        <div>
-                                            <small class="text-muted d-block">Members</small>
-                                            <span class="fw-medium">{{ $memberCount }}
-                                                {{ $memberCount === 1 ? 'member' : 'members' }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                @if (is_array($teamMembers) && $memberCount > 0)
-                                    <div>
-                                        <a href="#membersCollapse-{{ $team->id }}" data-bs-toggle="collapse" role="button"
-                                            class="small text-decoration-none d-inline-flex align-items-center">
-                                            <i class="ti ti-chevron-down me-1"></i> View members
-                                        </a>
-                                        <div class="collapse mt-2" id="membersCollapse-{{ $team->id }}">
-                                            <div class="d-flex flex-wrap gap-2">
-                                                @foreach ($teamMembers as $member)
-                                                    <span class="badge bg-light border text-dark">{{ $member }}</span>
-                                                @endforeach
+                                        <!-- Card Footer -->
+                                        <div
+                                            class="card-footer bg-white border-top-0 mt-auto d-flex justify-content-between align-items-center px-4 py-3">
+                                            <small class="text-muted">Created {{ $team->created_at->diffForHumans() }}</small>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-primary rounded-circle p-2 icon-btn"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ti ti-dots-vertical fs-5"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-end p-2 shadow border-0">
+                                                    <div class="d-flex gap-2 justify-content-center">
+                                                        <a class="btn btn-sm btn-outline-primary rounded-circle p-2 icon-btn"
+                                                            href="#" title="Edit">
+                                                            <i class="ti ti-edit fs-5"></i>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-outline-danger rounded-circle p-2 icon-btn"
+                                                            href="#" title="Delete">
+                                                            <i class="ti ti-trash fs-5"></i>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-outline-success rounded-circle p-2 icon-btn"
+                                                            href="#" title="Add Members">
+                                                            <i class="ti ti-users-plus fs-5"></i>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-outline-info rounded-circle p-2 icon-btn" href="#"
+                                                            title="View Members">
+                                                            <i class="ti ti-eye fs-5"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                @endif
-                            </div>
-
-                            <!-- Footer -->
-                            <div
-                                class="card-footer bg-white border-top-0 mt-auto d-flex justify-content-between align-items-center px-4 py-3">
-                                <small class="text-muted">Created {{ $team->created_at->diffForHumans() }}</small>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary rounded-pill" data-bs-toggle="dropdown">
-                                        <i class="ti ti-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                        <li><a class="dropdown-item" href="#"><i class="ti ti-edit me-2"></i>Edit Team</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="ti ti-trash me-2"></i>Delete Team</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="#"><i class="ti ti-users-plus me-2"></i>Add
-                                                Members</a></li>
-                                    </ul>
                                 </div>
-                            </div>
+                            @empty
+                                <div class="col-12 text-center py-5">
+                                    <div class="mb-4">
+                                        <div class="bg-light-primary p-4 rounded-circle d-inline-block">
+                                            <i class="ti ti-users-off fs-1 text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="mb-2">No teams found</h5>
+                                    <p class="text-muted mb-4">Create your first team to get started</p>
+                                    <button type="button" class="btn btn-primary px-4" data-bs-toggle="modal"
+                                        data-bs-target="#createTeamModal">
+                                        <i class="ti ti-plus me-2"></i>Create Team
+                                    </button>
+                                </div>
+                            @endforelse
                         </div>
                     </div>
                 @endforeach
             </div>
-
-            <!-- Empty State -->
-            @if(count($teams) === 0)
-                <div class="text-center py-5">
-                    <div class="mb-4">
-                        <div class="bg-light-primary p-4 rounded-circle d-inline-block">
-                            <i class="ti ti-users-off fs-1 text-primary"></i>
-                        </div>
-                    </div>
-                    <h5 class="mb-2">No teams found</h5>
-                    <p class="text-muted mb-4">Create your first team to get started</p>
-                    <button type="button" class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#createTeamModal">
-                        <i class="ti ti-plus me-2"></i>Create Team
-                    </button>
-                </div>
-            @endif
         </div>
     </div>
+
 
     <!-- Modal -->
     <div class="modal fade" id="createTeamModal" tabindex="-1" aria-labelledby="createTeamModalLabel" aria-hidden="true">
