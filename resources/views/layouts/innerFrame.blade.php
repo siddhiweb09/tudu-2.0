@@ -13,6 +13,7 @@
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/animate.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <!-- Core Css -->
     <link rel="stylesheet" href="../assets/css/styles.css" />
@@ -87,10 +88,12 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Pending Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Delayed Tasks</a></li>
-                                    <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do List</a></li>
+                                    <li><a class="dropdown-item"  href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do
+                                            List</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -151,6 +154,7 @@
     <script src="../assets/summernote/summernote.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="../assets/js/task-form.js"></script>
     <script src="../assets/js/task-update-form.js"></script>
@@ -168,6 +172,10 @@
                 placeholder: "Describe your task here....",
                 tabsize: 2,
                 height: 100,
+            });
+
+            $('.js-example-basic-single').select2({
+                placeholder: 'Select an option'
             });
         });
     </script>

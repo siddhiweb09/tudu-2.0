@@ -19,8 +19,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\TelegramWebhookMessage;
 use App\Models\TaskSchedule;
 use App\Services\WhatsAppService;
-use App\Models\TelegramWhatsappLog;
-
 use Carbon\Carbon;
 
 class TaskController extends Controller
@@ -211,26 +209,8 @@ class TaskController extends Controller
                         'created_at' => Carbon::now('Asia/Kolkata'),
                         'updated_at' => Carbon::now('Asia/Kolkata')
                     ]);
-
-                    TaskLog::create([
-                        'task_id' => $request->task_id,
-                        'log_description' => 'Task created Notification Send on Telegram',
-                        'added_by' => $activeUser
-                    ]);
-
-                    TelegramWhatsappLog::create([
-                        'task_id' => $request->task_id,
-                        'log_description' => 'Task created Notification Send on Telegram',
-                        'notification_on' => 'Telegram'
-                    ]);
                 } else {
                     Log::warning("Telegram message not sent. Reason: " . ($responseData['description'] ?? 'Unknown'));
-
-                    TaskLog::create([
-                        'task_id' => $request->task_id,
-                        'log_description' => 'Task created Notification Not Send on Telegram Chat ID Not Register',
-                        'added_by' => $activeUser
-                    ]);
                 }
             } else {
                 Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
@@ -257,24 +237,6 @@ class TaskController extends Controller
                     '',
                     ''
                 );
-
-                TaskLog::create([
-                    'task_id' => $request->task_id,
-                    'log_description' => 'Task created Notification Send on Whatsapp',
-                    'added_by' => $activeUser
-                ]);
-
-                TelegramWhatsappLog::create([
-                    'task_id' => $request->task_id,
-                    'log_description' => 'Task created Notification Send on Telegram',
-                    'notification_on' => 'Whatsapp'
-                ]);
-            } else {
-                TaskLog::create([
-                    'task_id' => $request->task_id,
-                    'log_description' => 'Task created Notification Not Send on Whatsapp Mobile No not Register',
-                    'added_by' => $activeUser
-                ]);
             }
         } catch (\Exception $e) {
             Log::error('Telegram Notification Failed: ' . $e->getMessage());
@@ -310,21 +272,21 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Step 1: Get all tasks where the user is assign_to or assign_by
+        // Step 1: Get all tasks where the user is assign_to or assign_from
         $allTasks = Task::where(function ($query) use ($usercode) {
             $query->where('assign_to', $usercode)
                 ->orWhere('assign_by', $usercode);
         })->get();
 
-        // Step 2: Filter out tasks that have a delegated task with current user in not_visible_to
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
         $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
             $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
             foreach ($delegatedTasks as $delegatedTask) {
-                $visibleTo = json_decode($delegatedTask->not_visible_to, true);
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
 
                 if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
-                    // If usercode is in not_visible_to, skip this task
+                    // If usercode is in visible_to, skip this task
                     return false;
                 }
             }
@@ -339,116 +301,44 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Get pending main tasks visible to user
-        $mainTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode) // Assigned to user
-                ->orWhere('assign_by', $usercode); // Created by user
-        })
-            ->where('status', 'Pending')
-            ->get()->each(function ($task) {
-                $task->flag = 'Main'; // Add flag to each task model
-            });
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_by', $usercode);
+        })->where('status', 'Pending')->get();
 
-        $allDelegatedTasks = collect(); // Initialize as collection instead of array
-        $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode) // Assigned to user
-                ->orWhere('assign_by', $usercode); // Created by user
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
+
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
+
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
         });
-        foreach ($mainTasks as $mainTask) {
-            $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode, $mainTask) {
-                $query->where('assign_to', $usercode) // Assigned to user
-                    ->orWhere('assign_by', $usercode)
-                    ->orwhere('task_id', $mainTask->task_id); // Created by user
-            })
-                ->where('status', 'Pending')
-                ->where(function ($query) use ($usercode) {
-                    $query->whereNull('not_visible_to')
-                        ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-                })
-                ->each(function ($task) {
-                    $task->flag = 'Delegated';
-                });
 
-            dd($delegatedTasks);
-            $allDelegatedTasks = $allDelegatedTasks->merge($delegatedTasks);
+        // Step 3: Normalize priority and group
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
         }
 
-        $combined = $mainTasks->merge($allDelegatedTasks);
-
-        // Now organize by priority as needed
-        $organizedTasks = $combined->groupBy(function ($task) {
-            return ucfirst(strtolower($task->priority ?? 'low'));
-        });
         return view('tasks.pendingTask', [
-            'tasksByPriority' => $organizedTasks,
-            'totalTasks' => $organizedTasks->count()
+            'filteredTasks' => $groupedTasks // same key expected by blade
         ]);
-    }
 
-    public function pendingTask2()
-    {
-        $user = Auth::user();
-        $usercode = $user->employee_code . '*' . $user->employee_name;
-
-        // 1. Fetch all delegated tasks (visible to this user)
-        $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })
-            ->where('status', 'Pending')
-            ->where(function ($query) use ($usercode) {
-                $query->whereNull('not_visible_to')
-                    ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-            })
-            ->get()
-            ->each(function ($task) {
-                $task->flag = 'Delegated';
-            });
-
-        // 2. Get all delegated task_ids (used to hide main tasks)
-        $hiddenTaskIds = DelegatedTask::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })
-            ->whereNotNull('not_visible_to')
-            ->whereJsonContains('not_visible_to', $usercode)
-            ->pluck('task_id')
-            ->toArray();
-
-        // 3. Fetch main tasks NOT hidden
-        $mainTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })
-            ->where('status', 'Pending')
-            ->whereNotIn('task_id', $hiddenTaskIds)
-            ->get()
-            ->each(function ($task) {
-                $task->flag = 'Main';
-            });
-
-        // 4. Merge and group by priority
-        $combinedTasks = $mainTasks->merge($delegatedTasks);
-
-        $tasksByPriority = $combinedTasks->groupBy(function ($task) {
-            return ucfirst(strtolower($task->priority ?? 'Low'));
-        });
-
-        return view('tasks.pendingTask', [
-            'tasksByPriority' => $tasksByPriority,
-            'totalTasks' => $combinedTasks->count()
-        ]);
-    }
-
-    protected function organizeTasksByPriority($mainTasks, $delegatedTasks)
-    {
-        $combined = $mainTasks->merge($delegatedTasks);
-
-        return $combined->groupBy(function ($task) {
-            return ucfirst(strtolower($task->priority ?? 'low'));
-        })->mapWithKeys(function ($items, $priority) {
-            return [$priority => $items->sortByDesc('created_at')];
-        });
+        return view('tasks.pendingTask', compact('filteredTasks'));
     }
 
     public function inProcessTask()
@@ -456,143 +346,139 @@ class TaskController extends Controller
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Get pending main tasks visible to user
-        $mainTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode) // Assigned to user
-                ->orWhere('assign_by', $usercode); // Created by user
-        })
-            ->where('status', 'In Process')
-            ->get()->each(function ($task) {
-                $task->flag = 'Main'; // Add flag to each task model
-            });
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_by', $usercode);
+        })->where('status', 'In Process')
+            ->get();
 
-        $allDelegatedTasks = collect(); // Initialize as collection instead of array
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
-        foreach ($mainTasks as $mainTask) {
-            $delegatedTasks =  DelegatedTask::where(function ($query) use ($usercode, $mainTask) {
-                $query->where('assign_to', $usercode) // Assigned to user
-                    ->orWhere('assign_by', $usercode)
-                    ->orwhere('task_id', $mainTask->task_id); // Created by user
-            })
-                ->where('status', 'Pending')
-                ->where(function ($query) use ($usercode) {
-                    $query->whereNull('not_visible_to')
-                        ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-                })
-                ->get()->each(function ($task) {
-                    $task->type = 'Delegated';
-                });
-            $allDelegatedTasks = $allDelegatedTasks->merge($delegatedTasks);
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
+
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
+        });
+
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
         }
 
-        $combined = $mainTasks->merge($allDelegatedTasks);
-
-        // Now organize by priority as needed
-        $organizedTasks = $combined->groupBy(function ($task) {
-            return ucfirst(strtolower($task->priority ?? 'low'));
-        });
-        // dd($organizedTasks);
-        return view('tasks.inProcessTask', [
-            'tasksByPriority' => $organizedTasks,
-            'totalTasks' => $organizedTasks->count()
+        return view('tasks.pendingTask', [
+            'filteredTasks' => $groupedTasks // same key expected by blade
         ]);
+
+        return view('tasks.inProcessTask', compact('filteredTasks'));
     }
 
     public function inReviewTask()
     {
-
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
 
-        // Get pending main tasks visible to user
-        $mainTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode) // Assigned to user
-                ->orWhere('assign_by', $usercode); // Created by user
-        })
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_by', $usercode);
+        })->where('status', 'Completed')
             ->where('final_status', 'Pending')
-            ->get()->each(function ($task) {
-                $task->flag = 'Main'; // Add flag to each task model
-            });
+            ->get();
 
-        $allDelegatedTasks = collect(); // Initialize as collection instead of array
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
 
-        foreach ($mainTasks as $mainTask) {
-            $delegatedTasks = DelegatedTask::where(function ($query) use ($usercode, $mainTask) {
-                $query->where('assign_to', $usercode) // Assigned to user
-                    ->orWhere('assign_by', $usercode)
-                    ->orwhere('task_id', $mainTask->task_id); // Created by user
-            })
-                ->where('status', 'Pending')
-                ->where(function ($query) use ($usercode) {
-                    $query->whereNull('not_visible_to')
-                        ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-                })
-                ->get()->each(function ($task) {
-                    $task->type = 'Delegated';
-                });
-            $allDelegatedTasks = $allDelegatedTasks->merge($delegatedTasks);
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
+
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
+        });
+
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
         }
 
-        $combined = $mainTasks->merge($allDelegatedTasks);
-
-        // Now organize by priority as needed
-        $organizedTasks = $combined->groupBy(function ($task) {
-            return ucfirst(strtolower($task->priority ?? 'low'));
-        });
-        // dd($organizedTasks);
-        return view('tasks.inReviewTask', [
-            'tasksByPriority' => $organizedTasks,
-            'totalTasks' => $organizedTasks->count()
+        return view('tasks.pendingTask', [
+            'filteredTasks' => $groupedTasks // same key expected by blade
         ]);
-    }
 
+        return view('tasks.inReviewTask', compact('filteredTasks'));
+    }
 
     public function overdueTask()
     {
         $user = Auth::user();
         $usercode = $user->employee_code . '*' . $user->employee_name;
         $today = Carbon::now('Asia/Kolkata');
-        // Get pending main tasks visible to user
-        $mainTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode) // Assigned to user
-                ->orWhere('assign_by', $usercode); // Created by user
+
+        // Step 1: Get all tasks where the user is assign_to or assign_from
+        $allTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_by', $usercode);
         })
             ->where('status', 'Pending')
             ->whereDate('due_date', '<', $today)
-            ->get()->each(function ($task) {
-                $task->flag = 'Main'; // Add flag to each task model
-            });
+            ->get();
 
-        $allDelegatedTasks = collect(); // Initialize as collection instead of array
 
-        foreach ($mainTasks as $mainTask) {
-            $delegatedTasks =  DelegatedTask::where(function ($query) use ($usercode, $mainTask) {
-                $query->where('assign_to', $usercode) // Assigned to user
-                    ->orWhere('assign_by', $usercode)
-                    ->orwhere('task_id', $mainTask->task_id); // Created by user
-            })
-                ->where('status', 'Pending')
-                ->where(function ($query) use ($usercode) {
-                    $query->whereNull('not_visible_to')
-                        ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-                })
-                ->get()->each(function ($task) {
-                    $task->type = 'Delegated';
-                });
-            $allDelegatedTasks = $allDelegatedTasks->merge($delegatedTasks);
+        // Step 2: Filter out tasks that have a delegated task with current user in visible_to
+        $filteredTasks = $allTasks->filter(function ($task) use ($usercode) {
+            $delegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
+
+            foreach ($delegatedTasks as $delegatedTask) {
+                $visibleTo = json_decode($delegatedTask->visible_to, true);
+
+                if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
+                    // If usercode is in visible_to, skip this task
+                    return false;
+                }
+            }
+            // Keep the task
+            return true;
+        });
+
+        $groupedTasks = collect(['High' => collect(), 'Medium' => collect(), 'Low' => collect()]);
+
+        foreach ($filteredTasks as $task) {
+            $priority = ucfirst(strtolower($task->priority ?? 'Low')); // normalize
+            if (!isset($groupedTasks[$priority])) {
+                $groupedTasks[$priority] = collect();
+            }
+            $groupedTasks[$priority]->push($task);
         }
 
-        $combined = $mainTasks->merge($allDelegatedTasks);
-
-        // Now organize by priority as needed
-        $organizedTasks = $combined->groupBy(function ($task) {
-            return ucfirst(strtolower($task->priority ?? 'low'));
-        });
-        // dd($organizedTasks);
-        return view('tasks.overdueTask', [
-            'tasksByPriority' => $organizedTasks,
-            'totalTasks' => $organizedTasks->count()
+        return view('tasks.pendingTask', [
+            'filteredTasks' => $groupedTasks // same key expected by blade
         ]);
+
+        return view('tasks.overdueTask', compact('filteredTasks'));
     }
 
     public function delegateTask($id)
@@ -650,7 +536,7 @@ class TaskController extends Controller
             'assign_to' => $request->assign_to,
             'status' => 'Pending',
             'final_status' => 'Pending',
-            'not_visible_to' => $request->visible_json,
+            'visible_to' => $request->visible_json,
             'assign_by' => $activeUser,
         ]);
 
@@ -779,26 +665,8 @@ class TaskController extends Controller
                         'created_at' => Carbon::now('Asia/Kolkata'),
                         'updated_at' => Carbon::now('Asia/Kolkata')
                     ]);
-
-                    TaskLog::create([
-                        'task_id' => $request->delegate_task_id,
-                        'log_description' => 'Task Delegated Notification Send on Telegram',
-                        'added_by' => $activeUser
-                    ]);
-
-                    TelegramWhatsappLog::create([
-                        'task_id' => $request->delegate_task_id,
-                        'log_description' => 'Task Delegated Notification Send on Telegram',
-                        'notification_on' => 'Telegram'
-                    ]);
                 } else {
                     Log::warning("Telegram message not sent. Reason: " . ($responseData['description'] ?? 'Unknown'));
-
-                    TaskLog::create([
-                        'task_id' => $request->delegate_task_id,
-                        'log_description' => 'Task Delegated Notification Not Send on Telegram Chat ID Not Register',
-                        'added_by' => $activeUser
-                    ]);
                 }
             } else {
                 Log::warning("No Telegram chat ID found for employee code: {$assign_to_employee_code}");
@@ -825,23 +693,6 @@ class TaskController extends Controller
                     '',
                     ''
                 );
-                TaskLog::create([
-                    'task_id' => $request->delegate_task_id,
-                    'log_description' => 'Task Delegated Notification Send on Whatsapp',
-                    'added_by' => $activeUser
-                ]);
-
-                TelegramWhatsappLog::create([
-                    'task_id' => $request->delegate_task_id,
-                    'log_description' => 'Task Delegated Notification Send on Telegram',
-                    'notification_on' => 'Whatsapp'
-                ]);
-            } else {
-                TaskLog::create([
-                    'task_id' => $request->delegate_task_id,
-                    'log_description' => 'delegate_task_id Delegated Notification Not Send on Whatsapp Mobile No not Register',
-                    'added_by' => $activeUser
-                ]);
             }
         } catch (\Exception $e) {
             Log::error('Telegram Notification Failed: ' . $e->getMessage());
@@ -870,190 +721,185 @@ class TaskController extends Controller
 
     public function taskDetails($task_id)
     {
-        $activeUser = Auth::user();
-        $usercode = $activeUser->employee_code . '*' . $activeUser->employee_name;
+        // $task_id_parts = explode('', $task_id);
+        // if ($task_id_parts[0] === "DELTASK") {
+        // } else {
+        // }
 
-        // Determine if it's a delegated task
-        $isDelegated = str_starts_with($task_id, 'DELTASK');
+        // Fetch the main task or throw 404 if not found
+        $task = Task::where('task_id', $task_id)->firstOrFail();
 
-        // Fetch task and delegated tasks
-        $delegatedTasks = $this->getDelegatedTasks($task_id, $isDelegated);
-        $task = $this->getMainTask($task_id, $isDelegated, $delegatedTasks);
-
-        if ($isDelegated && $this->isHiddenFromUser($delegatedTasks, $usercode)) {
-            return false;
-        }
-
+        // Fetch delegated tasks and their IDs
+        $delegatedTasks = DelegatedTask::where('task_id', $task_id)->get();
         $delegatedTaskIds = $delegatedTasks->pluck('delegate_task_id')->toArray();
+
+        // Combine main and delegated task IDs
         $allTaskIds = array_unique(array_merge([$task->task_id], $delegatedTaskIds));
 
-        // Load related items
+        // Fetch task items related to all tasks
         $taskItems = TaskList::whereIn('task_id', $allTaskIds)->get();
         $taskComments = TaskComment::whereIn('task_id', $allTaskIds)->get();
         $taskMedias = TaskMedia::whereIn('task_id', $allTaskIds)->get();
-        $activities = TaskLog::whereIn('task_id', $allTaskIds)->orderByDesc('id')->get();
 
-        $stats = $this->generateStats(
-            $task,
-            $delegatedTasks,
-            $taskItems,
-            $taskComments,
-            $taskMedias
-        );
+        // Total stats (combined)
+        $totalTasks = $taskItems->count();
+        $completedTasks = $taskItems->where('status', 'Completed')->count();
+        $inProcess = $taskItems->where('status', 'In Progress')->count();
+        $progressPercentage = $totalTasks > 0
+            ? round(($completedTasks / $totalTasks) * 100, 2)
+            : 0;
 
-        $team = $this->getTaskTeam($task, $delegatedTasks);
-        $teamCount = count($team);
-        $userWiseStats = $this->generateUserWiseStats($stats['individualStats']);
-        $activities = TaskLog::whereIn('task_id', $allTaskIds)->orderByDesc('id')->get();
-        $totalActivity = $activities->count(); // Calculate total activities
-        $lastActivity = $activities->first();
-
-        return view('tasks.taskDetails', compact(
-            'task',
-            'delegatedTasks',
-            'taskItems',
-            'taskMedias',
-            'taskComments',
-            'stats',
-            'team',
-            'teamCount',
-            'activities',
-            'totalActivity', // Add this
-            'lastActivity',  // Add this
-            'userWiseStats',
-            'activeUser'
-        ));
-    }
-
-    private function getDelegatedTasks($task_id, $isDelegated)
-    {
-        return $isDelegated
-            ? DelegatedTask::where('delegate_task_id', $task_id)->get()
-            : DelegatedTask::where('task_id', $task_id)->get();
-    }
-
-    private function getMainTask($task_id, $isDelegated, $delegatedTasks)
-    {
-        if ($isDelegated) {
-            $realTaskId = optional($delegatedTasks->first())->task_id;
-            return Task::where('task_id', $realTaskId)->firstOrFail();
-        }
-        return Task::where('task_id', $task_id)->firstOrFail();
-    }
-
-    private function isHiddenFromUser($delegatedTasks, $usercode)
-    {
-        foreach ($delegatedTasks as $delegatedTask) {
-            $visibleTo = json_decode($delegatedTask->not_visible_to, true);
-            if (is_array($visibleTo) && in_array($usercode, $visibleTo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private function generateStats($task, $delegatedTasks, $taskItems, $taskComments, $taskMedias)
-    {
-        $delegatedTaskIds = $delegatedTasks->pluck('delegate_task_id')->toArray();
-        $allTaskIds = array_unique(array_merge([$task->task_id], $delegatedTaskIds));
-
+        // Individual stats for each task ID
         $individualStats = [];
 
         foreach ($allTaskIds as $id) {
             $items = $taskItems->where('task_id', $id);
-            $comments = $taskComments->where('task_id', $id);
-            $medias = $taskMedias->where('task_id', $id);
+            $total = $items->count();
+            $completed = $items->where('status', 'Completed')->count();
+            $progress = $total > 0 ? round(($completed / $total) * 100, 2) : 0;
 
-            $title = $this->getTaskTitle($id, $task, $delegatedTasks);
-            $assignTo = $this->getAssignTo($id, $task, $delegatedTasks);
-            $teamMembers = $this->getTeamMembers($assignTo);
+            $commentItems = $taskComments->where('task_id', $id);
+            $totalComments = $commentItems->count();
 
+            foreach ($commentItems as $commentItem) {
+                // Set task title
+                if (!empty($commentItem->task_id)) {
+                    $parts = explode('-', $commentItem->task_id);
+                    if ($parts[0] === "DELTASK") {
+                        $commentItem->task_title = DelegatedTask::where('delegate_task_id', $commentItem->task_id)->value('title');
+                    } else {
+                        $commentItem->task_title = Task::where('task_id', $commentItem->task_id)->value('title');
+                    }
+                } else {
+                    $commentItem->task_title = 'Untitled';
+                }
+
+                // Set user profile
+                if (!empty($commentItem->added_by)) {
+                    $added_by_parts = explode('*', $commentItem->added_by);
+                    $user = User::where('employee_code', $added_by_parts[0])->first(['employee_name', 'profile_picture']);
+                    $commentItem->added_by_name = optional($user)->employee_name ?? 'Unknown';
+                    $commentItem->added_by_picture = optional($user)->profile_picture ?? 'user.png';
+                } else {
+                    $commentItem->added_by_name = 'Unknown';
+                    $commentItem->added_by_picture = 'user.png';
+                }
+            }
+
+
+            $mediaItems = $taskMedias->where('task_id', $id);
+            $totalMedias = $mediaItems->count();
+
+            foreach ($mediaItems as $mediaItem) {
+                // Check if it's a delegated task based on task_id format
+                if (!empty($mediaItem->task_id)) {
+                    $totalMediasParts = explode('-', $mediaItem->task_id);
+
+                    if ($totalMediasParts[0] === "DELTASK") {
+                        $taskTitle = DelegatedTask::where('delegate_task_id', $mediaItem->task_id)->value('title');
+                    } else {
+                        $taskTitle = Task::where('task_id', $mediaItem->task_id)->value('title');
+                    }
+
+                    // Attach the title dynamically
+                    $mediaItem->task_title = $taskTitle;
+                } else {
+                    $mediaItem->task_title = 'Untitled';
+                }
+            }
+
+            // If it's the main task
+            if ($id == $task->task_id) {
+                $title = $task->title;
+                $priority = $task->priority;
+                $status = $task->status;
+                $assign_at = $task->created_at;
+                $assign_to_raw = [$task->assign_to]; // Make it an array for consistency
+            } else {
+                $delegated = $delegatedTasks->firstWhere('delegate_task_id', $id);
+                $title = optional($delegated)->title ?? 'Untitled';
+                $priority = optional($delegated)->priority ?? null;
+                $status = optional($delegated)->status ?? null;
+                $assign_at = optional($delegated)->created_at ?? null;
+                $assign_to_raw = optional($delegated)->assign_to
+                    ? [optional($delegated)->assign_to]
+                    : [];
+            }
+
+            // Extract employee codes
+            $employeeCodes = [];
+            foreach ($assign_to_raw as $entry) {
+                $parts = explode('*', $entry);
+                if (!empty($parts[0])) {
+                    $employeeCodes[] = $parts[0];
+                }
+            }
+
+            // Fetch team members' profile pictures
+            $teamMembers = User::whereIn('employee_code', $employeeCodes)
+                ->get(['employee_code', 'employee_name', 'profile_picture']);
+
+            // Push structured data
             $individualStats[] = [
                 'task_id' => $id,
                 'title' => $title,
-                'priority' => $this->getTaskProperty($id, $task, $delegatedTasks, 'priority'),
-                'status' => $this->getTaskProperty($id, $task, $delegatedTasks, 'status'),
-                'assign_at' => $this->getTaskProperty($id, $task, $delegatedTasks, 'created_at'),
-                'assign_to' => $assignTo,
-                'total' => $items->count(),
-                'completed' => $items->where('status', 'Completed')->count(),
-                'progress' => $items->count() ? round(($items->where('status', 'Completed')->count() / $items->count()) * 100, 2) : 0,
-                'totalComments' => $comments->count(),
-                'totalMedias' => $medias->count(),
+                'priority' => $priority,
+                'status' => $status,
+                'assign_at' => $assign_at,
+                'assign_to' => $assign_to_raw,
+                'total' => $total,
+                'totalComments' => $totalComments,
+                'totalMedias' => $totalMedias,
+                'completed' => $completed,
+                'progress' => $progress,
                 'teamMembers' => $teamMembers,
                 'task_list_items' => $items,
-                'comment_list_items' => $comments,
+                'comment_list_items' => $commentItems,
             ];
         }
+        // dd($individualStats);
+        // Extract owner employee_code
+        $ownerParts = explode('*', $task->assign_to);
+        $ownerId = $ownerParts[0];
 
-        $total = $taskItems->count();
-        $completed = $taskItems->where('status', 'Completed')->count();
-        $progressPercentage = $total > 0 ? round(($completed / $total) * 100, 2) : 0;
+        // Extract delegated task assignee employee_codes
+        $delegatedAssigneesRaw = $delegatedTasks->pluck('assign_to')->toArray();
+        $ids = [];
 
-        $inProcess = $taskItems->where('status', 'In Progress')->count();
+        foreach ($delegatedAssigneesRaw as $rawAssignTo) {
+            $parts = explode('*', $rawAssignTo);
+            if (isset($parts[0])) {
+                $ids[] = $parts[0];
+            }
+        }
 
-        return compact('total', 'completed', 'progressPercentage', 'individualStats', 'inProcess');
-    }
+        // Merge and deduplicate employee codes
+        $empIds = array_unique(array_merge($ids, [$ownerId]));
 
-    private function getTaskTitle($id, $task, $delegatedTasks)
-    {
-        if ($id == $task->task_id) return $task->title;
+        // Fetch user details
+        $team = User::whereIn('employee_code', $empIds)
+            ->get(['employee_code', 'employee_name', 'profile_picture']);
+        $teamCount = $team->count();
 
-        return optional($delegatedTasks->firstWhere('delegate_task_id', $id))->title ?? 'Untitled';
-    }
+        // Fetch activity logs
+        $activities = TaskLog::whereIn('task_id', $allTaskIds)
+            ->orderBy('id', 'DESC')
+            ->get();
+        $totalActivity = $activities->count();
+        $lastActivity = $activities->first();
 
-    private function getAssignTo($id, $task, $delegatedTasks)
-    {
-        $entry = $id == $task->task_id
-            ? $task->assign_to
-            : optional($delegatedTasks->firstWhere('delegate_task_id', $id))->assign_to;
+        $userWiseStats = [];
 
-        return $entry ? [$entry] : [];
-    }
-
-    private function getTaskProperty($id, $task, $delegatedTasks, $property)
-    {
-        return $id == $task->task_id
-            ? $task->$property
-            : optional($delegatedTasks->firstWhere('delegate_task_id', $id))->$property;
-    }
-
-    private function getTeamMembers($assignToRaw)
-    {
-        $employeeCodes = collect($assignToRaw)->map(function ($entry) {
-            return explode('*', $entry)[0] ?? null;
-        })->filter()->unique();
-
-        return User::whereIn('employee_code', $employeeCodes)->get([
-            'employee_code',
-            'employee_name',
-            'profile_picture'
-        ]);
-    }
-
-    private function getTaskTeam($task, $delegatedTasks)
-    {
-        $mainCode = explode('*', $task->assign_to)[0] ?? null;
-
-        $delegatedCodes = $delegatedTasks->pluck('assign_to')->map(function ($a) {
-            return explode('*', $a)[0] ?? null;
-        });
-
-        $empIds = collect($delegatedCodes)->merge([$mainCode])->filter()->unique();
-
-        return User::whereIn('employee_code', $empIds)->get(['employee_code', 'employee_name', 'profile_picture']);
-    }
-
-    private function generateUserWiseStats($individualStats)
-    {
-        $stats = [];
+        // Combine assign_to values from main and delegated tasks
+        $allAssignments = [];
 
         foreach ($individualStats as $taskData) {
             foreach ($taskData['assign_to'] as $assignTo) {
                 [$empCode, $empName] = explode('*', $assignTo);
 
-                if (!isset($stats[$empCode])) {
-                    $stats[$empCode] = [
+                // Initialize if user not yet added
+                if (!isset($userWiseStats[$empCode])) {
+                    $userWiseStats[$empCode] = [
                         'employee_code' => $empCode,
                         'employee_name' => $empName ?? '',
                         'tasks' => [],
@@ -1063,7 +909,8 @@ class TaskController extends Controller
                     ];
                 }
 
-                $stats[$empCode]['tasks'][] = [
+                // Add task info to the user
+                $userWiseStats[$empCode]['tasks'][] = [
                     'task_id' => $taskData['task_id'],
                     'title' => $taskData['title'],
                     'status' => $taskData['status'],
@@ -1075,18 +922,41 @@ class TaskController extends Controller
                     'task_list_items' => $taskData['task_list_items'],
                 ];
 
-                $stats[$empCode]['total_tasks'] += $taskData['total'];
-                $stats[$empCode]['completed_tasks'] += $taskData['completed'];
+                // Update counts
+                $userWiseStats[$empCode]['total_tasks'] += $taskData['total'];
+                $userWiseStats[$empCode]['completed_tasks'] += $taskData['completed'];
             }
         }
 
-        foreach ($stats as &$userStat) {
+        // Calculate progress for each user
+        foreach ($userWiseStats as &$userStat) {
             $userStat['progress'] = $userStat['total_tasks'] > 0
                 ? round(($userStat['completed_tasks'] / $userStat['total_tasks']) * 100, 2)
                 : 0;
         }
+        $activeUser = Auth::user();
 
-        return $stats;
+        // dd($userWiseStats);
+
+        return view('tasks.taskDetails', compact(
+            'task',
+            'delegatedTasks',
+            'taskItems',
+            'taskMedias',
+            'taskComments',
+            'totalTasks',
+            'completedTasks',
+            'progressPercentage',
+            'teamCount',
+            'team',
+            'totalActivity',
+            'lastActivity',
+            'activities',
+            'userWiseStats',
+            'activeUser',
+            'individualStats',
+            'inProcess' // ← Include individual task stats
+        ));
     }
 
     public function addComment(Request $request)

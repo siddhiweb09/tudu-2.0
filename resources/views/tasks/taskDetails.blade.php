@@ -37,17 +37,17 @@
                         <h6 class="text-muted">Progress</h6>
                         <div class="row m-0 justify-content-between">
                             <div class="col-auto p-0">
-                                <h5 class="card-title">{{$progressPercentage}} %</h5>
+                                <h5 class="card-title">{{$stats['progressPercentage']}} %</h5>
                             </div>
                             <div class="col-auto p-0">
-                                <p class="card-text text-muted"><small>{{$totalTasks}} tasks ({{$completedTasks}}
+                                <p class="card-text text-muted"><small>{{$stats['total']}} tasks ({{$stats['completed']}}
                                         completed)</small></p>
                             </div>
                         </div>
                         <!-- Progress bar -->
                         <div class="progress mt-2 rounded-pill" style="height: 20px;">
                             <div class="progress-bar bg-success" role="progressbar"
-                                style="width: {{ $progressPercentage }}%;" aria-valuenow="{{ $progressPercentage }}"
+                                style="width: {{ $stats['progressPercentage'] }}%;" aria-valuenow="{{ $stats['progressPercentage'] }}"
                                 aria-valuemin="0" aria-valuemax="100">
                             </div>
                         </div>
@@ -102,25 +102,36 @@
 </div>
 
 <div class="container-xxl p-4">
-    <nav>
-        <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
-            <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
-                type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
-                    class="ti ti-notes me-1"></i> Overview</button>
-            <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
-                role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
-                Tasks</button>
-            <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
-                role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
-                Team</button>
-            <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab"
-                data-bs-target="#nav-discussion" type="button" role="tab" aria-controls="nav-discussion"
-                aria-selected="false"><i class="ti ti-message me-1"></i> Discussion</button>
-            <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
-                type="button" role="tab" aria-controls="nav-analytics" aria-selected="false"><i
-                    class="ti ti-chart-bar me-1"></i> Analytics</button>
+    <div class="row justify-content-between">
+        <div class="col-auto">
+            <nav>
+                <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
+                    <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
+                        type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
+                            class="ti ti-notes me-1"></i> Overview</button>
+                    <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
+                        role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
+                        Tasks</button>
+                    <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
+                        role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
+                        Team</button>
+                    <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-discussion" type="button" role="tab" aria-controls="nav-discussion"
+                        aria-selected="false"><i class="ti ti-message me-1"></i> Discussion</button>
+                    <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
+                        type="button" role="tab" aria-controls="nav-analytics" aria-selected="false"><i
+                            class="ti ti-chart-bar me-1"></i> Analytics</button>
+                </div>
+            </nav>
         </div>
-    </nav>
+        <div class="col-auto">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                <button type="button" class="btn btn-sm btn-inverse-primary">Update Status</button>
+                <a href="/delegate-tasks/{{$task->task_id}}" class="btn btn-sm btn-inverse-primary">Delegate Tasks</a>
+            </div>
+        </div>
+    </div>
+
     <div class="tab-content mt-4" id="nav-tabContent">
         <div class="tab-pane fade" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
             <div class="row m-0">
@@ -321,10 +332,11 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Pending</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "Pending")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
-                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}"
+                                style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
@@ -409,7 +421,7 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Progress</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "In Progress")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
                                 data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
@@ -498,7 +510,7 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Review</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "In Review")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
                                 data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
@@ -587,7 +599,7 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Completed</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($individualStats as $taskStat)
+                            @foreach ($stats['individualStats'] as $taskStat)
                             @if ($taskStat['status'] === "Completed")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
                                 data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
@@ -725,15 +737,16 @@
                     <p class="text-muted mb-0">Project discussions and comments</p>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        New Discussion
+                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                       + New Discussion
                     </button>
 
                     <ul class="dropdown-menu" id="newDiscussionDropdown">
-                        @foreach ($individualStats as $taskStat)
+                        @foreach ($stats['individualStats'] as $taskStat)
                         <li>
-                            <a class="dropdown-item new-discussion-link" href="javascript:void(0);" data-task-id="{{ $taskStat['task_id'] }}"
-                                data-task-title="{{ $taskStat['title'] }}"
+                            <a class="dropdown-item new-discussion-link" href="javascript:void(0);"
+                                data-task-id="{{ $taskStat['task_id'] }}" data-task-title="{{ $taskStat['title'] }}"
                                 data-added-by="{{ $taskStat['added_by'] ?? 'Unknown' }}"
                                 data-created-at="{{ \Carbon\Carbon::parse($taskStat['assign_at'])->diffForHumans() }}">
                                 {{ $taskStat['title'] }}
@@ -746,7 +759,7 @@
 
             <div class="d-flex align-items-start comment-box">
                 @php
-                $groupedComments = collect($individualStats)
+                $groupedComments = collect($stats['individualStats'])
                 ->flatMap(fn($stat) => $stat['comment_list_items'])
                 ->groupBy('task_id');
                 @endphp
@@ -773,12 +786,14 @@
                                     @foreach ($comments as $comment)
                                     <div class="d-flex mb-4">
                                         <img src="{{ asset('assets/images/profile_picture/' . ($comment->added_by_picture ?? 'user.png')) }}"
-                                            alt="{{ $comment->added_by }}" class="rounded-circle me-3" width="40" height="40">
+                                            alt="{{ $comment->added_by }}" class="rounded-circle me-3" width="40"
+                                            height="40">
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center mb-1">
                                                 <strong>{{ $comment->added_by }}</strong>
                                                 <span class="mx-2 text-muted">•</span>
-                                                <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+                                                <small
+                                                    class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                             </div>
                                             <p>{{ $comment->comment }}</p>
                                         </div>
@@ -789,8 +804,10 @@
                                 <div class="d-flex">
                                     <img src="{{ asset('assets/images/profile_picture/' . ($activeUser->profile_picture ?? 'user.png')) }}"
                                         alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                                    <form class="flex-grow-1 comment-form" id="comment-form-{{ $taskId }}" data-task-id="{{ $taskId }}">
-                                        <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
+                                    <form class="flex-grow-1 comment-form" id="comment-form-{{ $taskId }}"
+                                        data-task-id="{{ $taskId }}">
+                                        <textarea class="form-control mb-2" name="comment"
+                                            placeholder="Write a reply..." rows="3"></textarea>
                                         <input hidden type="text" name="task_id" value="{{ $taskId }}" />
                                         <div class="text-end">
                                             <button class="btn btn-primary">Post Reply</button>
@@ -814,7 +831,7 @@
                         <button class="nav-link bg-light text-start text-muted mb-2" id="{{ $tabId }}-tab"
                             data-bs-toggle="pill" data-bs-target="#{{ $tabId }}" type="button" role="tab"
                             aria-controls="{{ $tabId }}" aria-selected="false">
-                            <h6 class="card-title mb-3 text-decoration-underline text-dark">
+                            <h6 class="card-title mb-2 text-decoration-underline text-dark">
                                 {{ $firstComment->task_title ?? 'Untitled' }}
                             </h6>
                             <div class="d-flex mb-2 small">
@@ -861,9 +878,9 @@
                     </div>
                 </div>
             </div>
-            <input hidden id="totalTasks" value="{{$totalTasks}}" />
-            <input hidden id="completedTasks" value="{{$completedTasks}}" />
-            <input hidden id="inProcessTasks" value="{{$inProcess}}" />
+            <input hidden id="totalTasks" value="{{$stats['total']}}" />
+            <input hidden id="completedTasks" value="{{$stats['completed']}}" />
+            <input hidden id="inProcessTasks" value="{{$stats['inProcess']}}" />
             <input hidden id="userLabels" value='{!! json_encode(array_column($userWiseStats, "employee_name")) !!}' />
             <input hidden id="totalTasksData" value="{!!json_encode(array_column($userWiseStats, 'total_tasks')) !!}" />
             <input hidden id="completedTasksData"
@@ -879,14 +896,14 @@
     const totalTasks = document.getElementById('totalTasks').value;
     const completedTasks = document.getElementById('completedTasks').value;
     const inProcessTasks = document.getElementById('inProcessTasks').value;
-    const remainingTasks = totalTasks - completedTasks;
+    const remainingTasks = totalTasks - completedTasks - inProcessTasks;
 
     const data = {
         labels: ['Completed', 'Remaining', 'Processing'],
         datasets: [{
             label: 'Task Completion',
             data: [completedTasks, remainingTasks, inProcessTasks],
-            backgroundColor: ['rgb(16, 185, 129)', 'rgb(255, 68, 68)', 'rgb(255, 180, 68)'],
+            backgroundColor: ['#01796f', '#f5385a', '#ff9f1c'],
             hoverOffset: 10
         }]
     };
@@ -952,15 +969,15 @@
             datasets: [{
                     label: 'Total Tasks',
                     data: totalTasksData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: '#4361ee',
+                    borderColor: '#4361ee',
                     borderWidth: 1
                 },
                 {
                     label: 'Completed Tasks',
                     data: completedTasksData,
-                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: '#4cc9f0',
+                    borderColor: '#4cc9f0',
                     borderWidth: 1
                 }
             ]
@@ -1010,50 +1027,50 @@
             } else {
                 // Create new nav tab
                 const navTab = `
-            <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
-                data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
-                aria-controls="${tabId}" aria-selected="false">
-                <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
-                <div class="d-flex mb-2 small">
-                    <p>Started by ${addedBy}</p>
-                    <p class="mx-2">•</p>
-                    <p>${createdAt}</p>
-                </div>
-                <div class="d-flex small">
-                    <p>0 replies</p>
-                </div>
-            </button>
-        `;
+                    <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
+                        data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
+                        aria-controls="${tabId}" aria-selected="false">
+                        <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
+                        <div class="d-flex mb-2 small">
+                            <p>Started by ${addedBy}</p>
+                            <p class="mx-2">•</p>
+                            <p>${createdAt}</p>
+                        </div>
+                        <div class="d-flex small">
+                            <p>0 replies</p>
+                        </div>
+                    </button>
+                `;
                 $("#v-pills-tab .card").append(navTab);
 
                 // Create new content pane (note: initially not active)
                 const contentTab = `
-            <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
-                <div class="card">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-3">
-                            <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
-                            <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
-                            <hr>
-                        </div>
-                        <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
-                            <p class="text-muted">No comments yet.</p>
-                        </div>
-                        <div class="d-flex">
-                            <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
-                                alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                            <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
-                                <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
-                                <input hidden type="text" name="task_id" value="${taskId}" />
-                                <div class="text-end">
-                                    <button class="btn btn-primary">Post Reply</button>
+                    <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
+                        <div class="card">
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-3">
+                                    <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
+                                    <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
+                                    <hr>
                                 </div>
-                            </form>
+                                <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
+                                    <p class="text-muted">No comments yet.</p>
+                                </div>
+                                <div class="d-flex">
+                                    <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
+                                        alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                    <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
+                                        <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
+                                        <input hidden type="text" name="task_id" value="${taskId}" />
+                                        <div class="text-end">
+                                            <button class="btn btn-primary">Post Reply</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        `;
+                `;
                 $("#v-pills-tabContent").append(contentTab);
 
                 // Activate newly created tab using Bootstrap's Tab API
@@ -1062,6 +1079,20 @@
                     tabTrigger.show();
                 }, 10); // short delay to ensure DOM is ready
             }
+        });
+
+        $(".comment-box .nav-link").on("click", function() {
+            const target = $(this).data("bs-target"); // ID of the tab-pane to activate
+
+            // Deactivate all tabs and tab-panes
+            $(".comment-box .nav-link.active").removeClass("active");
+            $(".comment-box .tab-pane.active.show").removeClass("active show");
+
+            // Activate clicked tab
+            $(this).addClass("active");
+
+            // Activate corresponding tab-pane
+            $(target).addClass("active show");
         });
 
     });

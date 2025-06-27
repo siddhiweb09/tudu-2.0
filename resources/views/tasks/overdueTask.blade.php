@@ -179,8 +179,8 @@
     <div class="mt-2 px-4 py-2">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h4 class="card-title mb-0 fw-bold">Pending Tasks </h4>
-                <p class="text-muted mb-0">Track your pending tasks.</p>
+                <h4 class="card-title mb-0 fw-bold">Overdue Tasks </h4>
+                <p class="text-muted mb-0">Track your overdue tasks.</p>
             </div>
         </div>
 
@@ -208,55 +208,55 @@
                         </div>
                         <div class="kanban-cards" id="{{ strtolower($priority) }}-column">
                             @foreach($priorityTasks as $task)
-                            <a href="{{ url('task/' . ($task->flag == 'Main' ? $task->task_id : $task->delegate_task_id)) }}" class="text-decoration-none text-dark">
-                                <div class="kanban-card" draggable="true" style="border-left-color: {{ $priority == 'High' ? '#1520a6' : ($priority == 'Medium' ? '#ffc107' : '#198754') }};">
-                                    <div class="kanban-card-header d-flex justify-content-between">
-                                        <span>{{ $task->title }}</span>
-                                        <div class="dropdown">
-                                            <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical text-muted"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- {{-- <div class="kanban-card-body">{!! $task->description !!}</div> --}} -->
-                                    <div class="kanban-card-footer mt-2">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="avatar-group">
-                                                @if($task->assign_to)
-                                                @php
-                                                $assigneeParts = explode('*', $task->assign_to);
-                                                @endphp
-                                                <img src="{{ asset('assets/images/default-profile.jpg') }}"
-                                                    class="avatar-xs rounded-circle"
-                                                    alt="{{ $assigneeParts[1] ?? 'Assignee' }}">
-                                                @endif
-                                            </div>
-                                            <span class="badge bg-light text-dark">
-                                                <i class="bi bi-calendar me-1"></i>
-                                                @php
-                                                $frequency = $task->frequency;
-                                                $frequencyDuration = json_decode($task->frequency_duration, true) ?? [];
-                                                @endphp
-
-                                                @if($frequency == 'Daily')
-                                                Daily
-                                                @elseif($frequency == 'Weekly')
-                                                Weekly on: {{ implode(', ', $frequencyDuration) }}
-                                                @elseif($frequency == 'Monthly')
-                                                Monthly on day {{ $frequencyDuration[0] ?? '1' }}
-                                                @elseif($frequency == 'Yearly')
-                                                Yearly on {{ \Carbon\Carbon::parse($task->due_date)->format('M j') }}
-                                                @elseif($frequency == 'Periodically')
-                                                Every {{ $frequencyDuration[0] ?? '1' }} days
-                                                @elseif($task->due_date)
-                                                Due {{ \Carbon\Carbon::parse($task->due_date)->diffForHumans() }}
-                                                @endif
-                                            </span>
-                                        </div>
+                            <div class="kanban-card" draggable="true" style="border-left-color: {{ $priority == 'High' ? '#1520a6' : ($priority == 'Medium' ? '#ffc107' : '#198754') }};">
+                                <div class="kanban-card-header d-flex justify-content-between">
+                                    <span>{{ $task->title }}</span>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical text-muted"></i>
+                                        </button>
                                     </div>
                                 </div>
-                            </a>
+                                <!-- <div class="kanban-card-body">{!! $task->description !!}</div> -->
+                                <div class="kanban-card-footer mt-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="avatar-group">
+                                            @if($task->assign_to)
+                                            @php
+                                            $assigneeParts = explode('*', $task->assign_to);
+                                            $assigneeCode = $assigneeParts[0] ?? '';
+                                            @endphp
+                                            <img src="{{ asset('assets/images/default-profile.jpg') }}"
+                                                class="avatar-xs rounded-circle"
+                                                alt="{{ $assigneeParts[1] ?? 'Assignee' }}">
+                                            @endif
+                                        </div>
+                                        <span class="badge bg-light text-dark">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            {{-- Handle recurring tasks --}}
+                                            @php
+                                            $frequency = $task->frequency;
+                                            $frequencyDuration = json_decode($task->frequency_duration, true) ?? [];
+                                            @endphp
+
+                                            @if($frequency == 'Daily')
+                                            Daily
+                                            @elseif($frequency == 'Weekly')
+                                            Weekly on: {{ implode(', ', $frequencyDuration) }}
+                                            @elseif($frequency == 'Monthly')
+                                            Monthly on day {{ $frequencyDuration[0] ?? '1' }}
+                                            @elseif($frequency == 'Yearly')
+                                            Yearly on {{ \Carbon\Carbon::parse($task->due_date)->format('M j') }}
+                                            @elseif($frequency == 'Periodically')
+                                            Every {{ $frequencyDuration[0] ?? '1' }} days
+                                            @elseif($task->due_date)
+                                            Due {{ \Carbon\Carbon::parse($task->due_date)->diffForHumans() }}
+                                            @endif
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                             @endforeach
 
                             @if($priorityTasks->isEmpty())

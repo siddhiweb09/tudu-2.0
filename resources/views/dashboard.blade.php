@@ -2,6 +2,7 @@
 
 @section('main')
 
+<!-- total task cards -->
 <section class="container mb-5 mt-5">
     <div class="row g-4">
         <!-- Card 1 -->
@@ -21,7 +22,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Total Projects</h6>
-                        <h3 class="fw-bold text-dark mt-1">12</h3>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -42,7 +43,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">In Progress</h6>
-                        <h3 class="fw-bold text-dark mt-1">7</h3>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -63,7 +64,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Completed</h6>
-                        <h3 class="fw-bold text-dark mt-1">4</h3>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -84,8 +85,8 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <h6 class="text-muted mb-0">Overdue</h6>
-                        <h3 class="fw-bold text-dark mt-1">1</h3>
+                        <h6 class="text-muted mb-0">Pending</h6>
+                        <h3 class="fw-bold text-dark mt-1"></h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -94,6 +95,7 @@
     </div>
 </section>
 
+<!-- Project Overview -->
 <section class="container mb-5">
     <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
         <h2 class="h5 fw-semibold text-dark">Project Overview</h2>
@@ -157,10 +159,15 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="d-flex">
-                            <img src="assets\images\logo-4.jpg" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Alex Morgan">
-                            <img src="assets\images\logo-4.jpg" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Jessica Chen">
-                            <img src="assets\images\logo-4.jpg" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Ryan Park">
+                        <div class="aspect-square-container mb-2">
+                            <div class="aspect-square-box">
+                                <img class="aspect-square"
+                                    src="../assets/images/profile_picture/user.png">
+                            </div>
+                            <div class="aspect-square-box">
+                                <img class="aspect-square"
+                                    src="../assets/images/profile_picture/user.png">
+                            </div>
                         </div>
                         <div class="d-flex gap-3 small text-muted">
                             <div class="d-flex align-items-center">
@@ -233,10 +240,15 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="d-flex">
-                            <img src="/avatars/alex-morgan.png" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Alex Morgan">
-                            <img src="/avatars/jessica-chen.png" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Jessica Chen">
-                            <img src="/avatars/ryan-park.png" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Ryan Park">
+                        <div class="aspect-square-container mb-2">
+                            <div class="aspect-square-box">
+                                <img class="aspect-square"
+                                    src="../assets/images/profile_picture/user.png">
+                            </div>
+                            <div class="aspect-square-box">
+                                <img class="aspect-square"
+                                    src="../assets/images/profile_picture/user.png">
+                            </div>
                         </div>
                         <div class="d-flex gap-3 small text-muted">
                             <div class="d-flex align-items-center">
@@ -309,10 +321,15 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="d-flex">
-                            <img src="/avatars/alex-morgan.png" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Alex Morgan">
-                            <img src="/avatars/jessica-chen.png" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Jessica Chen">
-                            <img src="/avatars/ryan-park.png" class="rounded-circle border border-white me-n2" width="32" height="32" alt="Ryan Park">
+                        <div class="aspect-square-container mb-2">
+                            <div class="aspect-square-box">
+                                <img class="aspect-square"
+                                    src="../assets/images/profile_picture/user.png">
+                            </div>
+                            <div class="aspect-square-box">
+                                <img class="aspect-square"
+                                    src="../assets/images/profile_picture/user.png">
+                            </div>
                         </div>
                         <div class="d-flex gap-3 small text-muted">
                             <div class="d-flex align-items-center">
@@ -340,6 +357,8 @@
         </div>
     </div>
 </section>
+
+<!-- Project Analytics -->
 <section class="container">
     <div class="row g-3 g-xl-4 mb-4">
         <!-- Project Analytics (8 cols) -->
@@ -414,6 +433,7 @@
     </div>
 </section>
 
+<!-- My Tasks -->
 <section class="container">
     <div class="row g-3 mb-4">
         <!-- My Tasks (Left Column) -->
@@ -534,6 +554,7 @@
     </div>
 </section>
 
+<!-- Team Members -->
 <section class="container">
     <div class="row g-3 g-xl-4">
         <!-- Left column: Team Members -->
