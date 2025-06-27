@@ -29,6 +29,16 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    // Route::get('/profile', function () {
+    //     return view('profile');
+    // })->name('profile');
+
+    Route::get('/profile/{user_id}', [UserController::class, 'userProfile'])->name('profile');
+    Route::post('/user/change-picture/{user_id}', [UserController::class, 'changePicture'])
+        ->where('id', '.*')
+        ->name('user.changepicture');
+
     Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
     Route::match(['get', 'post'], '/pending-tasks', [TaskController::class, 'pendingTask'])->name('tasks.pendingTasks');
     Route::match(['get', 'post'], '/in-process-tasks', [TaskController::class, 'inProcessTask'])->name('tasks.inProcessTasks');
@@ -95,7 +105,7 @@ Route::middleware(['auth:web'])->group(function () {
     //teams 
     Route::match(['get', 'post'], 'teams', [TeamController::class, 'teams'])->name('team.viewTeams');
     Route::post('/create-team', [TeamController::class, 'createTeam'])->name('store.createTeam');
-    Route::get('/projects', [UserController::class,'project']);
+    Route::get('/projects', [UserController::class, 'project']);
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');

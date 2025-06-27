@@ -415,7 +415,7 @@
         }
     </style>
     <!-- AI Suggestions -->
-    <div class="personal-tasks-container p-4">
+    <div class="personal-tasks-container container-xxl py-4">
         <!-- Header with View Controls -->
         <div class=" row mb-4">
             <div class="col-12">
