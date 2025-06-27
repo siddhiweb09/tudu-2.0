@@ -1,4 +1,4 @@
-@extends('layouts.innerframe')
+@extends('layouts.innerFrame')
 
 @section('main')
 <div class="bg-white border-bottom">

@@ -90,11 +90,11 @@
                                     <span class="menu-title">My Tasks</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.allTask') }}">Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTask') }}">Pending Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTask') }}">In Process Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTask') }}">In Review Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTask') }}">Overdiew Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do
                                             List</a></li>
                                 </ul>
@@ -138,6 +138,22 @@
         <div class="page-wrapper">
             @yield('main')
         </div>
+        <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between mb-3">
+                <div>
+                    <a href="privacy-policy" class="px-2 text-secondary text-small">Privacy Policy</a>
+                    <a href="terms-and-conditions" class="border-top-0 border border-bottom-0 px-2 text-secondary text-small">Terms and Conditions</a>
+                    <a href="about-us" class="px-2 text-secondary text-small">About Us</a>
+                </div>
+                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">v.1.2024</span>
+            </div>
+            <div class="row justify-content-center px-4">
+                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.
+                    <a href="https://insityapp.com" target="_blank">ISBM Group</a>. All rights
+                    reserved.</span>
+            </div>
+        </footer>
+
     </div>
 
     <div id="addtask-trigger">
@@ -163,7 +179,7 @@
     <script src="assets/js/task-update-form.js"></script>
 
     <script>
-        window.addEventListener('load', function () {
+        window.addEventListener('load', function() {
             const preloader = document.querySelector('.preloader');
             if (preloader) {
                 preloader.style.opacity = '0';

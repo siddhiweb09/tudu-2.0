@@ -91,14 +91,14 @@
                                     <span class="menu-title">My Tasks</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTasks') }}">Pending
+                                    <li><a class="dropdown-item" href="{{ route('tasks.allTask') }}">Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTask') }}">Pending
                                             Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTask') }}">In Process
                                             Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTask') }}">In Review
                                             Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTask') }}">Overdiew
                                             Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do
                                             List</a></li>
