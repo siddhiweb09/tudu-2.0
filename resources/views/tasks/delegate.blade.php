@@ -324,7 +324,7 @@
                                                         <div class="select-card-header">
                                                             <div class="row">
                                                                 <div class="col-md-6">
-                                                                    <i class="ti ti-eye me-2"></i>Task Visibility
+                                                                    <i class="ti ti-eye me-2"></i>Not Visible TO
                                                                 </div>
                                                             </div>
                                                         </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\PersonalTaskController;
@@ -25,15 +26,31 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 // Protected routes (only accessible after login)
 Route::middleware(['auth:web'])->group(function () {
     // Dashboard
-    Route::get('/', function () {
-        return view('dashboard');
-    })->name('dashboard');
-    Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
-    Route::match(['get', 'post'], '/pending-tasks', [TaskController::class, 'pendingTask'])->name('tasks.pendingTasks');
-    Route::match(['get', 'post'], '/in-process-tasks', [TaskController::class, 'inProcessTask'])->name('tasks.inProcessTasks');
-    Route::match(['get', 'post'], '/in-review-tasks', [TaskController::class, 'inReviewTask'])->name('tasks.inReviewTasks');
-    Route::match(['get', 'post'], '/overdue-tasks', [TaskController::class, 'overdueTask'])->name('tasks.overdueTasks');
+    Route::get('/', [TaskController::class, 'dashboard'])->name('dashboard');
 
+    Route::get('/profile/{user_id}', [UserController::class, 'userProfile'])->name('profile');
+    Route::post('/user/change-picture/{user_id}', [UserController::class, 'changePicture'])
+        ->where('id', '.*')
+        ->name('user.changepicture');
+
+    Route::get('/pending-tasks', function () {
+        return view('tasks.pendingTask');
+    })->name('tasks.pendingTask');
+    Route::get('/in-process-tasks', function () {
+        return view('tasks.inProcessTask');
+    })->name('tasks.inProcessTask');
+    Route::get('/in-review-tasks', function () {
+        return view('tasks.inReviewTask');
+    })->name('tasks.inReviewTask');
+    Route::get('/overdue-tasks', function () {
+        return view('tasks.overdueTask');
+    })->name('tasks.overdueTask');
+
+    Route::match(['get', 'post'], '/all-task', [TaskController::class, 'allTask'])->name('tasks.allTasks');
+    Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTask');
+
+    Route::get('/tasks/{type}', [TaskController::class, 'getTasksByType']);
+    Route::get('/fetch-user-tasks/{id}', [TaskController::class, 'getUserTasks']);
     // Tasks
     Route::get('/tasks-calender', function () {
         return view('tasks.calender');
@@ -73,9 +90,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/personal-tasks/{task}/documents/upload', [PersonalTaskController::class, 'uploadDocument'])->name('personal-tasks.upload-document');
     Route::post('/personal-tasks-delete-document', [PersonalTaskController::class, 'deleteDocument'])->name('personal-tasks.delete-document');
 
-    // Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
-    // Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
-    // Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
+    Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
+    Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updateStatus'])->name('personal-tasks.update-status');
+    Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
 
     //fetch Functions
     Route::get('/get-task-details/{id}', [TaskController::class, 'getTaskById']);
@@ -90,7 +107,11 @@ Route::middleware(['auth:web'])->group(function () {
     // Kanban Cards Status Change in Personal
     Route::put('/update-status/{id}', [PersonalTaskController::class, 'updateKanbanStatus']);
 
-    Route::get('/projects', [UserController::class,'project']);
+
+    //teams 
+    Route::match(['get', 'post'], 'teams', [TeamController::class, 'teams'])->name('team.viewTeams');
+    Route::post('/create-team', [TeamController::class, 'createTeam'])->name('store.createTeam');
+    Route::get('/projects', [UserController::class, 'project']);
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');
