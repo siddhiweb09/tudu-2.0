@@ -221,17 +221,8 @@
 
                                     <!-- {{-- <div class="kanban-card-body">{!! $task->description !!}</div> --}} -->
                                     <div class="kanban-card-footer mt-2">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="avatar-group">
-                                                @if($task->assign_to)
-                                                @php
-                                                $assigneeParts = explode('*', $task->assign_to);
-                                                @endphp
-                                                <img src="{{ asset('assets/images/default-profile.jpg') }}"
-                                                    class="avatar-xs rounded-circle"
-                                                    alt="{{ $assigneeParts[1] ?? 'Assignee' }}">
-                                                @endif
-                                            </div>
+                                        <div class="d-flex align-items-center">
+                                           
                                             <span class="badge bg-light text-dark">
                                                 <i class="bi bi-calendar me-1"></i>
                                                 @php
