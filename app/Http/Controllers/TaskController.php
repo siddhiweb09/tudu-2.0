@@ -1113,18 +1113,96 @@ class TaskController extends Controller
 
     public function dashboard()
     {
-        $taskLists = Task::latest()->limit(3)->get();
-        $totalTasks = Task::count();
-        $completedTasks = Task::where('status', 'Completed')->count();
-        $inProcess = Task::where('status', 'In Progress')->count();
-        $pending = Task::where('status', 'Pending')->count();
-        return view('dashboard', [
+        $proUser = Auth::user();
 
-            'taskLists' => $taskLists,
-            'totalTasks' => $totalTasks,
-            'completedTasks' => $completedTasks,
-            'inProcess' => $inProcess,
-            'pending' => $pending,
+        // $user = Auth::user();
+        $usercode = $proUser->employee_code . '*' . $proUser->employee_name;
+
+        // Step 1: Main tasks assigned to or by user
+        $mainTasks = Task::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_by', $usercode);
+        })->get()->each(function ($task) {
+            $task->flag = 'Main';
+        });
+
+        // Step 2: Direct delegated tasks
+        $directDelegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
+            $query->where('assign_to', $usercode)
+                ->orWhere('assign_by', $usercode);
+        })
+            ->where(function ($query) use ($usercode) {
+                $query->whereNull('not_visible_to')
+                    ->orWhereJsonDoesntContain('not_visible_to', $usercode);
+            })
+            ->get()
+            ->each(function ($task) {
+                $task->flag = 'Delegated';
+            });
+
+        // Step 3: Delegated tasks related to main tasks and visible
+        $mainTaskIds = $mainTasks->pluck('task_id')->toArray();
+
+        $relatedDelegatedTasks = DelegatedTask::whereIn('task_id', $mainTaskIds)
+            ->where(function ($query) use ($usercode) {
+                $query->whereNull('not_visible_to')
+                    ->orWhereJsonDoesntContain('not_visible_to', $usercode);
+            })
+            ->get()
+            ->each(function ($task) {
+                $task->flag = 'Delegated';
+            });
+
+        // Step 4: Merge all tasks
+        $allTasks = $mainTasks->merge($directDelegatedTasks)->merge($relatedDelegatedTasks);
+
+        // Group tasks by project name
+        $projects = $allTasks->filter(function ($task) {
+            return !empty($task->project_name);
+        })->groupBy('project_name');
+
+        $projectStatusCounts = [
+            'total' => 0,
+            'completed' => 0,
+            'in_progress' => 0,
+            'pending' => 0,
+        ];
+
+        foreach ($projects as $projectName => $tasks) {
+            $statuses = $tasks->pluck('final_status')->map(fn($s) => strtolower($s));
+
+            $projectStatusCounts['total']++;
+
+            if ($statuses->contains('pending')) {
+                $projectStatusCounts['pending']++;
+            } elseif ($statuses->contains('in progress')) {
+                $projectStatusCounts['in_progress']++;
+            } elseif ($statuses->every(fn($s) => $s === 'completed')) {
+                $projectStatusCounts['completed']++;
+            }
+        }
+
+        // Optional: Calculate completion percentage based on projects
+        $projectCompletionPercentage = $projectStatusCounts['total'] > 0
+            ? round(($projectStatusCounts['completed'] / $projectStatusCounts['total']) * 100)
+            : 0;
+
+        $projectNames = $allTasks->pluck('project_name',)
+            ->filter()                                    
+            ->unique()                                    
+            ->values();                                   
+
+        $projectCount = $projectNames->count();           
+
+
+        return view('dashboard', [
+            'proUser' => $proUser,
+            'taskCompletion' => $projectCompletionPercentage,
+            'totalProjects' => $projectStatusCounts['total'],
+            'completedProjectCount' => $projectStatusCounts['completed'],
+            'inProcessProjectCount' => $projectStatusCounts['in_progress'],
+            'pendingProjectCount' => $projectStatusCounts['pending'],
+            'projectNames' => $projectNames,
         ]);
     }
 }
