@@ -527,7 +527,6 @@ class TaskController extends Controller
                     'id' => $task->flag === 'Main' ? $task->task_id : $task->delegate_task_id,
                     'type' => $task->flag,
                     'title' => $task->title,
-                    'description' => $task->description,
                     'status' => $task->status,
                     'final_status' => $task->final_status,
                     'priority' => $task->priority,
