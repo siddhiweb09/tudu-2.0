@@ -57,7 +57,8 @@
 
                         <!-- Example single danger button -->
                         <div class="dropdown-center">
-                            <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <img src="../assets/images/logo.png" class="rounded-circle profile-pic" />
                             </button>
                             <ul class="dropdown-menu profile-menu">
@@ -65,7 +66,9 @@
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                     </div>
@@ -82,16 +85,21 @@
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ti ti-list-details menu-icon"></i>
                                     <span class="menu-title">My Tasks</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item"  href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTasks') }}">Pending
+                                            Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process
+                                            Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review
+                                            Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew
+                                            Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do
                                             List</a></li>
                                 </ul>
@@ -103,9 +111,9 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
-                                    <i class="ti ti-table-plus menu-icon"></i>
-                                    <span class="menu-title">Quick Add Task </span>
+                                <a class="nav-link" href="{{ route('team.viewTeams') }}">
+                                    <i class="ti ti-user-shield menu-icon"></i>
+                                    <span class="menu-title">Teams</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -160,7 +168,7 @@
     <script src="../assets/js/task-update-form.js"></script>
 
     <script>
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             const preloader = document.querySelector('.preloader');
             if (preloader) {
                 preloader.style.opacity = '0';

@@ -1,60 +1,62 @@
 @extends('layouts.frame')
 
 @section('main')
+
     <style>
+        /* Enhanced Team Cards */
         .team-card {
-            transition: all 0.3s ease;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(21, 32, 166, 0.05);
-            border: 1px solid rgba(21, 32, 166, 0.1);
+            transition: all 0.3s ease-in-out;
+            border-radius: 1rem;
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0);
         }
 
         .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(21, 32, 166, 0.15);
-            border-color: rgba(21, 32, 166, 0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-color: transparent;
         }
 
-        .avatar {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .avatar-xl {
+        /* Avatar */
+        .team-card .avatar-xl {
             width: 60px;
             height: 60px;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: var(--bs-light);
         }
 
-        .badge {
-            padding: 0.35em 0.65em;
-            font-weight: 500;
+        /* Badge for visibility */
+        .team-card .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        .dropdown-menu {
-            border-radius: 12px;
-            border: 1px solid rgba(21, 32, 166, 0.1);
+        /* Card header elements */
+        .team-card h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
         }
 
-        .bg-light-primary {
-            background-color: rgba(21, 32, 166, 0.08);
+        /* Collapsible members section */
+        .team-card .collapse .badge {
+            background-color: var(--bs-gray-100);
+            border: 1px solid var(--bs-gray-300);
+            color: var(--bs-dark);
+            font-size: 0.75rem;
         }
 
-        .btn-light-primary {
-            background-color: rgba(21, 32, 166, 0.08);
-            color: #1520a6;
-            border: none;
+        /* Dropdown button hover */
+        .team-card .dropdown-menu .dropdown-item:hover {
+            background-color: var(--bs-primary-bg-subtle);
+            color: var(--bs-primary);
         }
 
-        .btn-light-primary:hover {
-            background-color: rgba(21, 32, 166, 0.15);
+        /* Divider between sections if needed */
+        .team-card .card-body>.mb-3:not(:last-child) {
+            border-bottom: 1px dashed #dee2e6;
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
         }
     </style>
 
@@ -68,15 +70,14 @@
                     <p class="text-muted mb-0">Organize and manage your teams efficiently</p>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary px-4" data-bs-toggle="modal"
-                        data-bs-target="#createTeamModal">
-                        <i class="ti ti-plus me-2"></i>Create New Team
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTeamModal">
+                        <i class="ti ti-plus"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Team Cards Grid -->
-            <div class="row g-4">
+            <div class="row m-0">
                 @foreach ($teams as $team)
                     @php
                         $teamMembers = json_decode($team->team_members, true);
@@ -84,114 +85,83 @@
                     @endphp
 
                     <div class="col-lg-4 col-md-6">
-                        <div class="card border-0 h-100 team-card"
-                            style="background: linear-gradient(135deg, rgba(21, 32, 166, 0.08) 0%, rgba(21, 32, 166, 0.03) 100%);">
-                            <!-- Card Header with Avatar -->
-                            <div class="card-header bg-transparent border-0 position-relative pt-4">
-                                <div class="d-flex align-items-center gap-3">
+                        <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden position-relative">
+                            <!-- Badge -->
+                            <span
+                                class="badge position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill bg-{{ $team->team_visibilty === 'public' ? 'success' : 'info' }}">
+                                {{ ucfirst($team->team_visibilty) }}
+                            </span>
+
+                            <!-- Card Header -->
+                            <div class="card-body pb-0">
+                                <div class="d-flex align-items-center gap-3 mb-4">
                                     @if ($team->team_avatar)
-                                        <div class="avatar avatar-xl flex-shrink-0">
-                                            <img src="{{ asset('assets/images/team_avatars/' . $team->team_avatar) }}"
-                                                class="rounded-circle border border-3 border-white shadow-sm"
-                                                alt="{{ $team->team_name }} avatar">
-                                        </div>
+                                        <img src="{{ asset('assets/images/team_avatars/' . $team->team_avatar) }}"
+                                            class="rounded-circle border border-2" width="60" height="60" alt="Avatar">
                                     @else
-                                        <div
-                                            class="avatar avatar-xl bg-light-primary flex-shrink-0 rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-3 border-white">
-                                            <span class="fs-4 text-primary fw-bold">{{ substr($team->team_name, 0, 1) }}</span>
+                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary fw-bold"
+                                            style="width:60px; height:60px;">
+                                            {{ strtoupper(substr($team->team_name, 0, 1)) }}
                                         </div>
                                     @endif
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-0 text-dark">{{ $team->team_name }}</h5>
+
+                                    <div>
+                                        <h5 class="mb-1 fw-semibold">{{ $team->team_name }}</h5>
                                         <small class="text-muted">Team ID: {{ $team->team_code }}</small>
                                     </div>
                                 </div>
-                                <div class="position-absolute top-0 end-0 mt-3 me-3">
-                                    <span
-                                        class="badge rounded-pill bg-white text-primary border border-primary border-opacity-25 shadow-sm">
-                                        {{ ucfirst($team->team_visibilty) }}
-                                    </span>
-                                </div>
-                            </div>
 
-                            <!-- Card Body -->
-                            <div class="card-body pt-1 pb-3">
-                                <!-- Team Leader -->
-                                <div class="d-flex align-items-center gap-2 mb-3 p-3 bg-white rounded-3 shadow-sm">
-                                    <div class="bg-light-primary p-2 rounded-circle">
-                                        <i class="ti ti-crown text-primary"></i>
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="ti ti-crown text-warning me-2"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Leader</small>
+                                            <span class="fw-medium">{{ $team->team_leader }}</span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <small class="text-muted d-block">Team Leader</small>
-                                        <span class="fw-medium text-dark">{{ $team->team_leader }}</span>
-                                    </div>
-                                </div>
 
-                                <!-- Members Count -->
-                                <div class="d-flex align-items-center gap-2 mb-3 p-3 bg-white rounded-3 shadow-sm">
-                                    <div class="bg-light-primary p-2 rounded-circle">
-                                        <i class="ti ti-users text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted d-block">Members</small>
-                                        <span class="fw-medium text-dark">{{ $memberCount }}
-                                            {{ $memberCount === 1 ? 'member' : 'members' }}</span>
+                                    <div class="d-flex align-items-center">
+                                        <i class="ti ti-users text-primary me-2"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Members</small>
+                                            <span class="fw-medium">{{ $memberCount }}
+                                                {{ $memberCount === 1 ? 'member' : 'members' }}</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Members List (Collapsible) -->
                                 @if (is_array($teamMembers) && $memberCount > 0)
-                                    <div class="mb-3">
-                                        <a class="d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="collapse"
-                                            href="#membersCollapse-{{ $team->id }}" role="button">
-                                            <i class="ti ti-chevron-down text-primary"></i>
-                                            <small class="text-primary fw-medium">View all members</small>
+                                    <div>
+                                        <a href="#membersCollapse-{{ $team->id }}" data-bs-toggle="collapse" role="button"
+                                            class="small text-decoration-none d-inline-flex align-items-center">
+                                            <i class="ti ti-chevron-down me-1"></i> View members
                                         </a>
                                         <div class="collapse mt-2" id="membersCollapse-{{ $team->id }}">
-                                            <div class="bg-white p-3 rounded-3 shadow-sm">
-                                                <div class="d-flex flex-wrap gap-2">
-                                                    @foreach ($teamMembers as $member)
-                                                        <span class="badge bg-light text-dark rounded-pill">{{ $member }}</span>
-                                                    @endforeach
-                                                </div>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                @foreach ($teamMembers as $member)
+                                                    <span class="badge bg-light border text-dark">{{ $member }}</span>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
                                 @endif
                             </div>
 
-                            <!-- Card Footer with Actions -->
-                            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="ti ti-clock me-1"></i>Created {{ $team->created_at->diffForHumans() }}
-                                    </small>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-light-primary rounded-circle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ti ti-dots"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end shadow">
-                                            <li>
-                                                <a class="dropdown-item" href="#">
-                                                    <i class="ti ti-edit me-2"></i>Edit Team
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="#">
-                                                    <i class="ti ti-trash me-2"></i>Delete Team
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="#">
-                                                    <i class="ti ti-users-plus me-2"></i>Add Members
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                            <!-- Footer -->
+                            <div
+                                class="card-footer bg-white border-top-0 mt-auto d-flex justify-content-between align-items-center px-4 py-3">
+                                <small class="text-muted">Created {{ $team->created_at->diffForHumans() }}</small>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill" data-bs-toggle="dropdown">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li><a class="dropdown-item" href="#"><i class="ti ti-edit me-2"></i>Edit Team</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="ti ti-trash me-2"></i>Delete Team</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="#"><i class="ti ti-users-plus me-2"></i>Add
+                                                Members</a></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
