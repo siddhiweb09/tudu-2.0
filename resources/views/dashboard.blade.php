@@ -16,7 +16,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Total Projects</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{$totalTasks}}</h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$totalProjects}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">In Progress</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{$inProcess}}</h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$inProcessProjectCount}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Completed</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{$completedTasks}}</h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$completedProjectCount}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Pending</h6>
-                        <h3 class="fw-bold text-dark mt-1">{{$pending}}</h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$pendingProjectCount}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
 
     <div class="row g-3">
         <!-- Card -->
-        @foreach($taskLists as $task)
+        @foreach($projectNames as $project)
         <div class="col-12 col-md-6 col-xxl-4">
             <div class="card border shadow-sm h-100">
                 <div class="card-body pb-2">
@@ -103,20 +103,20 @@
                             <div class="me-2" style="width: 4px; background-color: #facc15; border-radius: 2px;"></div>
                             <div>
                                 <h5 class="card-title d-flex align-items-center mb-1">
-                                    {{ $task->project_name }}
+                                    {{ $project }}
                                     <i class="ti ti-star-filled ms-2 text-warning" style="font-size: 16px;"></i>
                                 </h5>
-                                <p class="card-subtitle text-muted small">{{ $task-> title }}</p>
+                                <p class="card-subtitle text-muted small"></p>
                             </div>
                         </div>
-                        <span class="badge bg-warning text-dark align-self-start">{{ $task->status }}</span>
+                        <span class="badge bg-warning text-dark align-self-start"></span>
                     </div>
                 </div>
                 <div class="card-body pt-0">
                     <div class="d-flex justify-content-between text-muted small mb-2">
                         <div class="d-flex align-items-center">
                             <i class="ti ti-calendar me-1" style="font-size: 16px;"></i>
-                            Deadline: {{ $task-> due_date }}
+                            Deadline:
                         </div>
                         <button class="btn btn-sm btn-light p-1">
                             <i class="ti ti-dots text-secondary" style="font-size: 16px;"></i>
