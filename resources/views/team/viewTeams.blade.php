@@ -203,13 +203,13 @@
                                             </div>
 
                                             @if (is_array($teamMembers))
-                                                <div class="d-flex flex-wrap gap-2">
+                                                <div class="d-flex flex-wrap gap-3">
                                                     @foreach ($teamMembers as $member)
                                                         @php
                                                             [$code, $name] = explode('*', $member);
                                                             $profile = $users->firstWhere('employee_code', $code)?->profile_picture;
                                                         @endphp
-                                                        <div class="aspect-square-container p-0 w-auto">
+                                                        <div class="aspect-square-container p-0 w-auto aspect-gap">
                                                             <div class="aspect-square-box">
                                                                 @if (!empty($profile))
                                                                     <img class="aspect-square rounded-circle" alt="{{ $name }}"
