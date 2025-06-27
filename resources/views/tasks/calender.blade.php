@@ -245,6 +245,7 @@
         }
     }
 </style>
+
 <div class="container-fluid mt-3">
     <div class="row mt-3 justify-content-center">
         <div class="col-xl-10 col-lg-11 col-md-12">
@@ -252,19 +253,19 @@
             <div class="card shadow-sm border-0 overflow-hidden">
                 <div class="card-body p-4">
                     <div class="calendar-nav">
-                        <h4 class="calendar-title">June 2025</h4>
+                        <h4 class="calendar-title">Loading...</h4>
                         <div class="nav-btn-group">
-                            <button class="nav-btn">
+                            <button class="nav-btn prev-month">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="15 18 9 12 15 6"></polyline>
                                 </svg>
                             </button>
-                            <button class="nav-btn">
+                            <button class="nav-btn next-month">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="9 18 15 12 9 6"></polyline>
                                 </svg>
                             </button>
-                            <button class="nav-btn" style="background: var(--bg-light); color: var(--primary-color); border: 1px solid var(--border-color);">
+                            <button class="nav-btn today-btn" style="background: var(--bg-light); color: var(--primary-color); border: 1px solid var(--border-color);">
                                 Today
                             </button>
                         </div>
@@ -281,171 +282,13 @@
                             <div class="calendar-day-header">Sun</div>
                         </div>
 
-                        <!-- Calendar body structure -->
                         <div class="calendar-grid">
-                            <!-- Week 1 -->
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day">
-                                <div class="day-number">1</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">2</div>
-                            </div>
-
-                            <!-- Week 2 -->
-                            <div class="calendar-day">
-                                <div class="day-number">3</div>
-                                <div class="day-tasks">
-                                    <div class="calendar-task medium-priority" data-task-id="1">
-                                        <span class="badge bg-warning">Medium</span>
-                                        <span class="task-title">Team sync meeting</span>
-                                    </div>
+                            <!-- Calendar will be dynamically generated here -->
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
-                            <div class="calendar-day">
-                                <div class="day-number">4</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">5</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">6</div>
-                                <div class="day-tasks">
-                                    <div class="calendar-task high-priority" data-task-id="2">
-                                        <span class="badge bg-danger">High</span>
-                                        <span class="task-title">Project deadline</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">7</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">8</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">9</div>
-                            </div>
-
-                            <!-- Week 3 -->
-                            <div class="calendar-day">
-                                <div class="day-number">10</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">11</div>
-                                <div class="day-tasks">
-                                    <div class="calendar-task medium-priority" data-task-id="3">
-                                        <span class="badge bg-warning">Medium</span>
-                                        <span class="task-title">Client presentation</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">12</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">13</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">14</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">15</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">16</div>
-                            </div>
-
-                            <!-- Week 4 -->
-                            <div class="calendar-day">
-                                <div class="day-number">17</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">18</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">19</div>
-                                <div class="day-tasks">
-                                    <div class="calendar-task low-priority" data-task-id="4">
-                                        <span class="badge bg-success">Low</span>
-                                        <span class="task-title">Monthly review</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">20</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">21</div>
-                            </div>
-                            <div class="calendar-day today">
-                                <div class="day-number">22</div>
-                                <div class="day-tasks">
-                                    <div class="calendar-task high-priority" data-task-id="5">
-                                        <span class="badge bg-danger">High</span>
-                                        <span class="task-title">Important meeting</span>
-                                    </div>
-                                    <div class="calendar-task medium-priority" data-task-id="6">
-                                        <span class="badge bg-warning">Medium</span>
-                                        <span class="task-title">Team lunch</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">23</div>
-                            </div>
-
-                            <!-- Week 5 -->
-                            <div class="calendar-day">
-                                <div class="day-number">24</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">25</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">26</div>
-                                <div class="day-tasks">
-                                    <div class="calendar-task medium-priority" data-task-id="7">
-                                        <span class="badge bg-warning">Medium</span>
-                                        <span class="task-title">Product demo</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">27</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">28</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">29</div>
-                            </div>
-                            <div class="calendar-day">
-                                <div class="day-number">30</div>
-                                <div class="day-tasks">
-                                    <div class="calendar-task medium-priority" data-task-id="8">
-                                        <span class="badge bg-warning">Medium</span>
-                                        <span class="task-title">Friday Task: Meeting Review</span>
-                                    </div>
-                                    <div class="calendar-task medium-priority" data-task-id="9">
-                                        <span class="badge bg-warning">Medium</span>
-                                        <span class="task-title">Second Task: Demo Prep</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Week 6 -->
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
-                            <div class="calendar-day empty"></div>
                         </div>
                     </div>
                 </div>
@@ -453,57 +296,220 @@
         </div>
     </div>
 </div>
+
+<!-- Task Details Modal -->
+<div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Task Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Task details will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" class="btn btn-primary view-task-btn">View Full Details</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('customJs')
 <script>
+    const authUserId = "{{ Auth::id() }}";
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
     $(document).ready(function() {
-        $('.calendar-task').click(function() {
-            const taskId = $(this).data('task-id');
-            $.get('/get-task-details', {
-                task_id: taskId
-            }, function(data) {
-                let html = `
-                <h6>${data.title}</h6>
-                <p>${data.description || 'No description'}</p>
-                <div class="task-meta">
-                    <div><strong>Status:</strong> <span class="badge bg-${getStatusClass(data.status)}">${data.status.replace('_', ' ')}</span></div>
-                    <div><strong>Priority:</strong> <span class="badge bg-${getPriorityClass(data.priority)}">${data.priority}</span></div>
-                    <div><strong>Due Date:</strong> ${data.due_date ? formatDate(data.due_date) : 'No deadline'}</div>
-                </div>
-            `;
-                $('#calendarTaskDetails').html(html);
-                const modal = new bootstrap.Modal(document.getElementById('calendarTaskModal'));
-                modal.show();
-            });
+        loadCalendarTasks();
+        
+        // Navigation handlers
+        $('.prev-month').click(function() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            loadCalendarTasks();
         });
 
-        function getStatusClass(status) {
-            const classes = {
-                'todo': 'secondary',
-                'in_progress': 'info',
-                'completed': 'success'
-            };
-            return classes[status] || 'secondary';
-        }
+        $('.next-month').click(function() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            loadCalendarTasks();
+        });
 
-        function getPriorityClass(priority) {
-            const classes = {
-                'low': 'success',
-                'medium': 'warning',
-                'high': 'danger'
-            };
-            return classes[priority] || 'secondary';
-        }
-
-        function formatDate(dateString) {
-            const options = {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            };
-            return new Date(dateString).toLocaleDateString(undefined, options);
-        }
+        $('.today-btn').click(function() {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            loadCalendarTasks();
+        });
     });
+
+    function loadCalendarTasks() {
+        $.ajax({
+            url: `/fetch-user-tasks/${authUserId}`,
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function() {
+                $('.calendar-grid').html(`
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                `);
+            },
+            success: function(response) {
+                renderCalendar(currentMonth, currentYear, response.all_tasks);
+            },
+            error: function(xhr) {
+                console.error('Error fetching tasks:', xhr.responseText);
+                $('.calendar-grid').html(`
+                    <div class="col-12 text-center py-4 text-danger">
+                        <i class="bi bi-exclamation-triangle fs-4"></i>
+                        <p class="mb-0">Failed to load tasks. Please try again.</p>
+                    </div>
+                `);
+            }
+        });
+    }
+
+    function renderCalendar(month, year, tasks) {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDay = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+        
+        // Adjust starting day to make Monday first day of week
+        const adjustedStartingDay = startingDay === 0 ? 6 : startingDay - 1;
+        
+        // Update calendar title
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", 
+                           "August", "September", "October", "November", "December"];
+        $('.calendar-title').text(`${monthNames[month]} ${year}`);
+        
+        // Generate calendar grid
+        let calendarHtml = '';
+        const today = new Date();
+        
+        // Add empty cells for days before the first day of the month
+        for (let i = 0; i < adjustedStartingDay; i++) {
+            calendarHtml += `<div class="calendar-day empty"></div>`;
+        }
+        
+        // Add cells for each day of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const currentDate = new Date(year, month, day);
+            const dateStr = formatDateForAPI(currentDate);
+            const isToday = currentDate.toDateString() === today.toDateString();
+            
+            // Find tasks for this day
+            const dayTasks = tasks.filter(task => {
+                if (!task.due_date) return false;
+                return task.due_date.startsWith(dateStr);
+            });
+            
+            // Build day cell
+            calendarHtml += `<div class="calendar-day ${isToday ? 'today' : ''}">`;
+            calendarHtml += `<div class="day-number">${day}</div>`;
+            
+            if (dayTasks.length > 0) {
+                calendarHtml += `<div class="day-tasks">`;
+                dayTasks.forEach(task => {
+                    const priorityClass = getPriorityClass(task.priority);
+                    calendarHtml += `
+                        <div class="calendar-task ${priorityClass}-priority" data-task-id="${task.id}">
+                            <span class="badge bg-${priorityClass}">${capitalizeFirstLetter(task.priority)}</span>
+                            <span class="task-title">${task.title}</span>
+                        </div>
+                    `;
+                });
+                calendarHtml += `</div>`;
+            }
+            
+            calendarHtml += `</div>`;
+        }
+        
+        // Calculate total cells (7 columns x 6 rows = 42 cells)
+        const totalCells = 42;
+        const daysAdded = adjustedStartingDay + daysInMonth;
+        const emptyCells = totalCells - daysAdded;
+        
+        // Add empty cells to fill the grid
+        for (let i = 0; i < emptyCells; i++) {
+            calendarHtml += `<div class="calendar-day empty"></div>`;
+        }
+        
+        // Update the calendar grid
+        $('.calendar-grid').html(calendarHtml);
+        
+        // Add click handlers to tasks
+        $('.calendar-task').click(function() {
+            const taskId = $(this).data('task-id');
+            const task = tasks.find(t => t.id === taskId);
+            showTaskDetails(task);
+        });
+    }
+
+    function showTaskDetails(task) {
+        const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date';
+        const priorityClass = getPriorityClass(task.priority);
+        const statusClass = getStatusClass(task.status);
+        
+        const html = `
+            <div class="task-details">
+                <h5>${task.title}</h5>
+                <div class="task-meta mb-3">
+                    <span class="badge bg-${priorityClass} me-2">${capitalizeFirstLetter(task.priority)}</span>
+                    <span class="badge bg-${statusClass} me-2">${capitalizeFirstLetter(task.status.replace('_', ' '))}</span>
+                    <span class="badge bg-secondary">${task.type}</span>
+                </div>
+                <p><strong>Due Date:</strong> ${dueDate}</p>
+                ${task.project_name ? `<p><strong>Project:</strong> ${task.project_name}</p>` : ''}
+                ${task.description ? `<div class="mt-3"><strong>Description:</strong><p>${task.description}</p></div>` : ''}
+                ${task.delegation_notes ? `<div class="mt-3"><strong>Notes:</strong><p>${task.delegation_notes}</p></div>` : ''}
+            </div>
+        `;
+        
+        // Update modal content
+        $('#taskDetailsModal .modal-body').html(html);
+        $('.view-task-btn').attr('href', `/task/${task.id}`);
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('taskDetailsModal'));
+        modal.show();
+    }
+
+    function getPriorityClass(priority) {
+        priority = priority ? priority.toLowerCase() : 'medium';
+        return priority === 'high' ? 'danger' : 
+               priority === 'medium' ? 'warning' : 'success';
+    }
+
+    function getStatusClass(status) {
+        status = status ? status.toLowerCase() : 'pending';
+        return status === 'completed' ? 'success' :
+               status === 'in process' ? 'info' : 'secondary';
+    }
+
+    function formatDateForAPI(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function capitalizeFirstLetter(string) {
+        return string ? string.charAt(0).toUpperCase() + string.slice(1) : '';
+    }
 </script>
 @endsection

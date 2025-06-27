@@ -231,6 +231,7 @@
                             </div>
                         </div>
 
+                        <!-- Total Projects -->
                         <div class="col-md-4">
                             <div class="p-3 bg-light rounded-3">
                                 <div class="d-flex align-items-center">
@@ -238,13 +239,14 @@
                                         <i class="ti ti-clock text-success"></i>
                                     </div>
                                     <div>
-                                        <small class="text-muted">Total Project</small>
-                                        <h5 class="mb-0">{{ $totalProjects }}</h5>
+                                        <small class="text-muted">Total Projects</small>
+                                        <h5 class="mb-0" id="totalProjects">--</h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Task Completion -->
                         <div class="col-md-4">
                             <div class="p-3 bg-light rounded-3">
                                 <div class="d-flex align-items-center">
@@ -254,11 +256,9 @@
                                     <div>
                                         <small class="text-muted">Task Completion</small>
                                         <div class="d-flex justify-content-between">
-                                            <h5 class="mb-0">{{ $taskCompletion }}%</h5>
-                                            <small class="text-muted">({{ $completedTaskCount }} / {{ $taskCount }})</small>
-
+                                            <h5 class="mb-0" id="taskCompletionPercent">--%</h5>
+                                            <small class="text-muted" id="taskCompletionRatio">(0 / 0)</small>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -308,6 +308,28 @@
 
 @section('customJs')
 <script>
+    const authUserId = "{{ Auth::id() }}";
+
+    function loadTasksStat() {
+        $.ajax({
+            url: `/fetch-user-tasks/${authUserId}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const metrics = response.metrics;
+                $('#totalProjects').text(metrics.total_projects);
+                $('#taskCompletionPercent').text(`${metrics.completion_percentage}%`);
+                $('#taskCompletionRatio').text(`(${metrics.completed_tasks} / ${metrics.total_tasks})`);
+            },
+            error: function(xhr) {
+                console.error('Error fetching tasks:', xhr.responseText);
+            }
+        });
+    }
+
+    // Load tasks on page load
+    loadTasksStat();
+
     document.addEventListener('DOMContentLoaded', function() {
         // Enable tooltips
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -321,6 +343,7 @@
             el.style.transition = 'all 0.2s ease';
         });
     });
+
     $(document).on("submit", "#change_pro_pic", function(event) {
         event.preventDefault(); // Prevent default form submission
 
