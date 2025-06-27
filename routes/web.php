@@ -26,9 +26,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 // Protected routes (only accessible after login)
 Route::middleware(['auth:web'])->group(function () {
     // Dashboard
-    Route::get('/', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/', [TaskController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/profile/{user_id}', [UserController::class, 'userProfile'])->name('profile');
     Route::post('/user/change-picture/{user_id}', [UserController::class, 'changePicture'])
