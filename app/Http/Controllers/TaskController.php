@@ -858,7 +858,7 @@ class TaskController extends Controller
         ]);
     }
 
-    public function taskDetails($task_id)
+    public function taskDetails2($task_id)
     {
         $activeUser = Auth::user();
         $usercode = $activeUser->employee_code . '*' . $activeUser->employee_name;
@@ -1113,96 +1113,272 @@ class TaskController extends Controller
 
     public function dashboard()
     {
-        $proUser = Auth::user();
+        $taskLists = TaskList::latest()->get();
+        $totalTasks = TaskList::count();
+        $completedTasks = TaskList::where('status', 'Completed')->count();
+        $inProcess = TaskList::where('status', 'In Progress')->count();
+        $pending = TaskList::where('status', 'Pending')->count();
 
-        // $user = Auth::user();
-        $usercode = $proUser->employee_code . '*' . $proUser->employee_name;
+        return view('dashboard', [
+            'taskLists' => $taskLists,
+            'totalTasks' => $totalTasks,
+            'completedTasks' => $completedTasks,
+            'inProcess' => $inProcess,
+            'pending' => $pending,
+        ]);
+    }
+    public function taskDetails($task_id)
+    {
+        $activeUser = Auth::user();
+        $usercode = $activeUser->employee_code . '*' . $activeUser->employee_name;
+        $task = [];
+        $clubbedInfo = [];
+        $groupedByTask = [];
+        $groupedByUser = [];
 
-        // Step 1: Main tasks assigned to or by user
-        $mainTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })->get()->each(function ($task) {
-            $task->flag = 'Main';
-        });
+        $isDelegated = str_starts_with($task_id, 'DELTASK');
 
-        // Step 2: Direct delegated tasks
-        $directDelegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })
-            ->where(function ($query) use ($usercode) {
-                $query->whereNull('not_visible_to')
-                    ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-            })
-            ->get()
-            ->each(function ($task) {
-                $task->flag = 'Delegated';
-            });
+        if ($isDelegated) {
+            // Handle delegated task case (single task)
+            $taskItem = DelegatedTask::where('delegate_task_id', $task_id)->firstOrFail();
+            $task['task_info'] = $taskItem->toArray();
+            $allTaskIds = $task_id;
 
-        // Step 3: Delegated tasks related to main tasks and visible
-        $mainTaskIds = $mainTasks->pluck('task_id')->toArray();
+            // Extract member codes with relationship flags
+            $assignToCode = $taskItem->assign_to ? explode('*', $taskItem->assign_to)[0] : null;
+            $assignByCode = $taskItem->assign_by ? explode('*', $taskItem->assign_by)[0] : null;
+            $allMemberCodes = array_filter([$assignToCode, $assignByCode]);
 
-        $relatedDelegatedTasks = DelegatedTask::whereIn('task_id', $mainTaskIds)
-            ->where(function ($query) use ($usercode) {
-                $query->whereNull('not_visible_to')
-                    ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-            })
-            ->get()
-            ->each(function ($task) {
-                $task->flag = 'Delegated';
-            });
+            $teamMembers = User::whereIn('employee_code', $allMemberCodes)
+                ->get(['employee_code', 'employee_name', 'profile_picture'])
+                ->map(function ($member) use ($assignToCode, $assignByCode) {
+                    return [
+                        'employee_code' => $member->employee_code,
+                        'employee_name' => $member->employee_name,
+                        'profile_picture' => $member->profile_picture,
+                        'is_assigned_to' => $member->employee_code === $assignToCode,
+                        'is_assigned_by' => $member->employee_code === $assignByCode,
+                        'relationship' => $member->employee_code === $assignToCode ? 'assigned_to' : ($member->employee_code === $assignByCode ? 'assigned_by' : null)
+                    ];
+                });
 
-        // Step 4: Merge all tasks
-        $allTasks = $mainTasks->merge($directDelegatedTasks)->merge($relatedDelegatedTasks);
+            $groupedByTask[$task_id] = [
+                'each_task_info' => $taskItem->toArray(),
+                'team_members' => $teamMembers->toArray(),
+                'assign_to_code' => $assignToCode,
+                'assign_by_code' => $assignByCode
+            ];
+        } else {
+            // Handle regular task case
+            $mainTask = Task::where('task_id', $task_id)->firstOrFail();
+            $delegatedTasks = DelegatedTask::where('task_id', $task_id)->get();
 
-        // Group tasks by project name
-        $projects = $allTasks->filter(function ($task) {
-            return !empty($task->project_name);
-        })->groupBy('project_name');
+            $delegatedTaskIds = $delegatedTasks->pluck('delegate_task_id')->toArray();
+            $task['task_info'] = $mainTask->toArray();
+            $allTaskIds = array_unique(array_merge([$mainTask->task_id], $delegatedTaskIds));
 
-        $projectStatusCounts = [
-            'total' => 0,
-            'completed' => 0,
-            'in_progress' => 0,
-            'pending' => 0,
-        ];
+            // Process main task with relationship flags
+            $mainAssignToCode = $mainTask->assign_to ? explode('*', $mainTask->assign_to)[0] : null;
+            $mainAssignByCode = $mainTask->assign_by ? explode('*', $mainTask->assign_by)[0] : null;
+            $mainMemberCodes = array_filter([$mainAssignToCode, $mainAssignByCode]);
 
-        foreach ($projects as $projectName => $tasks) {
-            $statuses = $tasks->pluck('final_status')->map(fn($s) => strtolower($s));
+            $mainTeamMembers = User::whereIn('employee_code', $mainMemberCodes)
+                ->get(['employee_code', 'employee_name', 'profile_picture'])
+                ->map(function ($member) use ($mainAssignToCode, $mainAssignByCode) {
+                    return [
+                        'employee_code' => $member->employee_code,
+                        'employee_name' => $member->employee_name,
+                        'profile_picture' => $member->profile_picture,
+                        'is_assigned_to' => $member->employee_code === $mainAssignToCode,
+                        'is_assigned_by' => $member->employee_code === $mainAssignByCode,
+                        'relationship' => $member->employee_code === $mainAssignToCode ? 'assigned_to' : ($member->employee_code === $mainAssignByCode ? 'assigned_by' : null)
+                    ];
+                });
 
-            $projectStatusCounts['total']++;
+            $groupedByTask[$mainTask->task_id] = [
+                'each_task_info' => $mainTask->toArray(),
+                'team_members' => $mainTeamMembers->toArray(),
+                'assign_to_code' => $mainAssignToCode,
+                'assign_by_code' => $mainAssignByCode
+            ];
 
-            if ($statuses->contains('pending')) {
-                $projectStatusCounts['pending']++;
-            } elseif ($statuses->contains('in progress')) {
-                $projectStatusCounts['in_progress']++;
-            } elseif ($statuses->every(fn($s) => $s === 'completed')) {
-                $projectStatusCounts['completed']++;
+            // Process each delegated task with relationship flags
+            foreach ($delegatedTasks as $delegatedTask) {
+                $delegatedAssignToCode = $delegatedTask->assign_to ? explode('*', $delegatedTask->assign_to)[0] : null;
+                $delegatedAssignByCode = $delegatedTask->assign_by ? explode('*', $delegatedTask->assign_by)[0] : null;
+                $delegatedMemberCodes = array_filter([$delegatedAssignToCode, $delegatedAssignByCode]);
+
+                $delegatedTeamMembers = User::whereIn('employee_code', $delegatedMemberCodes)
+                    ->get(['employee_code', 'employee_name', 'profile_picture'])
+                    ->map(function ($member) use ($delegatedAssignToCode, $delegatedAssignByCode) {
+                        return [
+                            'employee_code' => $member->employee_code,
+                            'employee_name' => $member->employee_name,
+                            'profile_picture' => $member->profile_picture,
+                            'is_assigned_to' => $member->employee_code === $delegatedAssignToCode,
+                            'is_assigned_by' => $member->employee_code === $delegatedAssignByCode,
+                            'relationship' => $member->employee_code === $delegatedAssignToCode ? 'assigned_to' : ($member->employee_code === $delegatedAssignByCode ? 'assigned_by' : null)
+                        ];
+                    });
+
+                $groupedByTask[$delegatedTask->delegate_task_id] = [
+                    'each_task_info' => $delegatedTask->toArray(),
+                    'team_members' => $delegatedTeamMembers->toArray(),
+                    'assign_to_code' => $delegatedAssignToCode,
+                    'assign_by_code' => $delegatedAssignByCode
+                ];
             }
         }
 
-        // Optional: Calculate completion percentage based on projects
-        $projectCompletionPercentage = $projectStatusCounts['total'] > 0
-            ? round(($projectStatusCounts['completed'] / $projectStatusCounts['total']) * 100)
-            : 0;
+        // Get all unique member codes for clubbedInfo
+        $allMemberCodes = [];
+        foreach ($groupedByTask as $taskData) {
+            if (isset($taskData['each_task_info']['assign_to'])) {
+                $allMemberCodes[] = explode('*', $taskData['each_task_info']['assign_to'])[0];
+            }
+            if (isset($taskData['each_task_info']['assign_by'])) {
+                $allMemberCodes[] = explode('*', $taskData['each_task_info']['assign_by'])[0];
+            }
+        }
+        $allMemberCodes = array_values(array_unique(array_filter($allMemberCodes)));
+        $allTaskIds = (array)$allTaskIds;
 
-        $projectNames = $allTasks->pluck('project_name',)
-            ->filter()                                    
-            ->unique()                                    
-            ->values();                                   
+        // clubbedInfo
+        $teamMembers = User::whereIn('employee_code', $allMemberCodes)
+            ->get(['employee_code', 'employee_name', 'profile_picture']);
 
-        $projectCount = $projectNames->count();           
+        $clubbedInfo['teamMembers'] = $teamMembers->toArray();
+        $clubbedInfo['teamMembersCount'] = $teamMembers->count();
 
+        $taskLists = TaskList::whereIn('task_id', $allTaskIds)->get();
+        $taskLogs = TaskLog::whereIn('task_id', $allTaskIds)->get();
+        $totalActivity = $taskLogs->count();
+        $lastActivity = $taskLogs->first()?->created_at;
 
-        return view('dashboard', [
-            'proUser' => $proUser,
-            'taskCompletion' => $projectCompletionPercentage,
-            'totalProjects' => $projectStatusCounts['total'],
-            'completedProjectCount' => $projectStatusCounts['completed'],
-            'inProcessProjectCount' => $projectStatusCounts['in_progress'],
-            'pendingProjectCount' => $projectStatusCounts['pending'],
-            'projectNames' => $projectNames,
-        ]);
+        $clubbedInfo['taskListCount'] = $taskLists->count();
+        $clubbedInfo['taskListPendingCount'] = $taskLists->where('status', 'Pending')->count();
+        $clubbedInfo['taskInProcessListCount'] = $taskLists->where('status', 'In Process')->count();
+        $clubbedInfo['taskInCompletedListCount'] = $taskLists->where('status', 'Completed')->count();
+        $clubbedInfo['taskprogressPercentage'] = $clubbedInfo['taskListCount'] > 0 ? round(($clubbedInfo['taskInCompletedListCount'] / $clubbedInfo['taskListCount']) * 100, 2) : 0;
+        $clubbedInfo['totalActivity'] = $totalActivity;
+        $clubbedInfo['lastActivity'] = $lastActivity;
+        $clubbedInfo['activities'] = $taskLogs;
+
+        $task['clubbedInfo'] = $clubbedInfo;
+
+        // groupedByTask
+        $taskDocuments = TaskMedia::whereIn('task_id', $allTaskIds)
+            ->where('category', 'document')
+            ->get()
+            ->groupBy(['task_id']);
+
+        $taskVoiceNotes = TaskMedia::whereIn('task_id', $allTaskIds)
+            ->where('category', 'voice_note')
+            ->get()
+            ->groupBy(['task_id']);
+
+        $taskLinks = TaskMedia::whereIn('task_id', $allTaskIds)
+            ->where('category', 'link')
+            ->get()
+            ->groupBy(['task_id']);
+
+        $taskLists = TaskList::whereIn('task_id', $allTaskIds)
+            ->get()
+            ->groupBy('task_id');
+
+        $taskComments = TaskComment::whereIn('task_id', $allTaskIds)
+            ->get()
+            ->groupBy('task_id');
+
+        // Build the final grouped structure
+        // Build the final grouped structure
+        foreach ($allTaskIds as $taskId) {
+            $documentsForTask = $taskDocuments->get($taskId, []);
+            $voiceNotesForTask = $taskVoiceNotes->get($taskId, []);
+            $linksForTask = $taskLinks->get($taskId, []);
+            $listsForTask = $taskLists->get($taskId, []);
+            $commentsForTask = $taskComments->get($taskId, []);
+            $attachmentsCount = count($documentsForTask) + count($voiceNotesForTask) + count($linksForTask);
+
+            $existingData = $groupedByTask[$taskId] ?? [];
+
+            // Calculate task status counts for THIS SPECIFIC TASK
+            $completed = collect($listsForTask)->where('status', 'Completed')->count();
+            $pending = collect($listsForTask)->where('status', 'Pending')->count(); // Fixed typo 'Pening'
+            $totalLists = count($listsForTask);
+
+            $groupedByTask[$taskId] = array_merge($existingData, [
+                'documents' => $documentsForTask,
+                'documentsCount' => count($documentsForTask), // Fixed: was returning array instead of count
+                'voice_notes' => $voiceNotesForTask,
+                'voiceNotesCount' => count($voiceNotesForTask), // Added missing count
+                'links' => $linksForTask,
+                'linksCount' => count($linksForTask), // Added missing count
+                'lists' => $listsForTask,
+                'listsCount' => $totalLists,
+                'comments' => $commentsForTask,
+                'commentsCount' => count($commentsForTask),
+                'attachmentsCount' => $attachmentsCount,
+                'completed_task' => $completed,
+                'pending_task' => $pending,
+                'task_progress' => $totalLists > 0 ? round(($completed / $totalLists) * 100) : 0, // Calculate progress percentage
+                'total_task' => $totalLists // Added total task count
+            ]);
+        }
+        $task['groupedByTask'] = $groupedByTask;
+
+        // groupedByUser
+        foreach ($groupedByTask as $taskId => $taskData) {
+            $assignToCode = $taskData['assign_to_code'] ?? null;
+            $assignByCode = $taskData['assign_by_code'] ?? null;
+            $currentUserIsAssignee = $assignToCode === $activeUser->employee_code;
+            $currentUserIsAssigner = $assignByCode === $activeUser->employee_code;
+
+            foreach (array_filter([$assignToCode, $assignByCode]) as $userCode) {
+                if (!isset($groupedByUser[$userCode])) {
+                    $user = User::where('employee_code', $userCode)
+                        ->first(['employee_code', 'employee_name', 'profile_picture']);
+
+                    if ($user) {
+                        $groupedByUser[$userCode] = [
+                            'employee_code' => $user->employee_code,
+                            'employee_name' => $user->employee_name,
+                            'profile_picture' => $user->profile_picture,
+                            'tasks' => [],
+                            'total_task' => 0,
+                            'completed_task' => 0,
+                            'pending_task' => 0,
+                            'progress' => 0,
+
+                        ];
+                    }
+                }
+
+                if (isset($groupedByUser[$userCode])) {
+                    $lists = $taskData['lists'] ?? [];
+                    $completed = collect($lists)->where('status', 'Completed')->count();
+                    $pending = collect($lists)->where('status', 'Pending')->count();
+
+                    $groupedByUser[$userCode]['tasks'][] = [
+                        'task_id' => $taskId,
+                        'task_title' => $taskData['each_task_info']['title'] ?? 'No Title',
+                        'total_task' => count($lists),
+                        'completed_task' => $completed,
+                        'pending_task' => $pending,
+                        'assign_by' => $taskData['each_task_info']['assign_by'] ?? 'No Title',
+                    ];
+
+                    $groupedByUser[$userCode]['total_task'] += count($lists);
+                    $groupedByUser[$userCode]['completed_task'] += $completed;
+                    $groupedByUser[$userCode]['pending_task'] += $pending;
+                    $groupedByUser[$userCode]['progress'] > 0 ? round(($groupedByUser[$userCode]['completed_task'] / $groupedByUser[$userCode]['total_task']) * 100, 2) : 0;
+                }
+            }
+        }
+        // Add the groupedByUser to the final task array
+        $task['groupedByUser'] = $groupedByUser;
+        // dd($task);
+
+        return view('tasks.taskDetails', compact('task'));
     }
 }

@@ -6,16 +6,16 @@
         <div class="row mb-4 m-0 justify-content-between">
             <div class="col-md-8">
                 <!-- Header Section -->
-                <h2 class="mb-2">{{$task->title}}</h2>
-                <p class="lead mb-3 text-muted">{{$task->task_id}}</p>
+                <h2 class="mb-2">{{$task['task_info']['title']}}</h2>
+                <p class="lead mb-3 text-muted">{{$task['task_info']['task_id']}}</p>
 
                 <!-- Status Badges -->
                 <div class="d-flex gap-2">
                     <span class="badge badge-light-warning rounded-pill">
-                        <i class="bi bi-arrow-repeat me-1"></i>{{$task->final_status}}
+                        <i class="bi bi-arrow-repeat me-1"></i>{{$task['task_info']['final_status']}}
                     </span>
                     <span class="badge badge-light-danger rounded-pill">
-                        <i class="ti ti-flame me-1"></i>{{$task->priority}}
+                        <i class="ti ti-flame me-1"></i>{{$task['task_info']['priority']}}
                     </span>
                 </div>
                 <!-- Divider -->
@@ -23,9 +23,9 @@
             <div class="col align-self-center">
                 <!-- Deadline Section -->
                 <h5 class="text-muted text-end mb-2"><i class="ti ti-calendar-event me-1"></i>Deadline:
-                    {{$task->due_date}}
+                    {{$task['task_info']['due_date']}}
                 </h5>
-                <p class="text-muted text-end small mb-0"><i class="ti ti-alarm me-1"></i>Started: {{$task->created_at}}
+                <p class="text-muted text-end small mb-0"><i class="ti ti-alarm me-1"></i>Started: {{$task['task_info']['created_at']}}
                 </p>
             </div>
         </div>
@@ -37,17 +37,17 @@
                         <h6 class="text-muted">Progress</h6>
                         <div class="row m-0 justify-content-between">
                             <div class="col-auto p-0">
-                                <h5 class="card-title">{{$stats['progressPercentage']}} %</h5>
+                                <h5 class="card-title">{{$task['clubbedInfo']['taskprogressPercentage']}} %</h5>
                             </div>
                             <div class="col-auto p-0">
-                                <p class="card-text text-muted"><small>{{$stats['total']}} tasks ({{$stats['completed']}}
+                                <p class="card-text text-muted"><small>{{$task['clubbedInfo']['taskListCount']}} tasks ({{$task['clubbedInfo']['taskInCompletedListCount']}}
                                         completed)</small></p>
                             </div>
                         </div>
                         <!-- Progress bar -->
                         <div class="progress mt-2 rounded-pill" style="height: 20px;">
                             <div class="progress-bar bg-success" role="progressbar"
-                                style="width: {{ $stats['progressPercentage'] }}%;" aria-valuenow="{{ $stats['progressPercentage'] }}"
+                                style="width: {{ $task['clubbedInfo']['taskprogressPercentage'] }}%;" aria-valuenow="{{ $task['clubbedInfo']['taskprogressPercentage'] }}"
                                 aria-valuemin="0" aria-valuemax="100">
                             </div>
                         </div>
@@ -58,8 +58,8 @@
                 <div class="card h-100 bg-light border-0">
                     <div class="card-body">
                         <h6 class="text-muted">Assigned by</h6>
-                        <h5 class="card-title">{{$task->assign_by}}</h5>
-                        <p class="card-text text-muted"><small>Final status: {{$task->final_status}}</small></p>
+                        <h5 class="card-title">{{$task['task_info']['assign_by']}}</h5>
+                        <p class="card-text text-muted"><small>Final status: {{$task['task_info']['final_status']}}</small></p>
                     </div>
                 </div>
             </div>
@@ -68,21 +68,21 @@
                     <div class="card-body">
                         <h6 class="text-muted">Team</h6>
                         <div class="aspect-square-container mb-2">
-                            @foreach ($team as $teamMember)
-                            @if(!empty($teamMember->profile_picture))
+                            @foreach ($task['clubbedInfo']['teamMembers'] as $teamMember)
+                            @if(!empty($teamMember['profile_picture']))
                             <div class="aspect-square-box">
-                                <img class="aspect-square" alt="{{ $teamMember->employee_name }}"
-                                    src="../assets/images/profile_picture/{{$teamMember->profile_picture}}">
+                                <img class="aspect-square" alt="{{ $teamMember['employee_name'] }}"
+                                    src="../assets/images/profile_picture/{{$teamMember['profile_picture']}}">
                             </div>
                             @else
                             <div class="aspect-square-box">
-                                <img class="aspect-square" alt="{{ $teamMember->employee_name }}"
+                                <img class="aspect-square" alt="{{ $teamMember['employee_name'] }}"
                                     src="../assets/images/profile_picture/user.png">
                             </div>
                             @endif
                             @endforeach
                         </div>
-                        <p class="card-text text-muted"><small>{{$teamCount}} team members</small></p>
+                        <p class="card-text text-muted"><small>{{$task['clubbedInfo']['teamMembersCount']}} team members</small></p>
                     </div>
                 </div>
             </div>
@@ -90,8 +90,8 @@
                 <div class="card h-100 bg-light border-0">
                     <div class="card-body">
                         <h6 class="text-muted">Activity</h6>
-                        <h5 class="card-title">{{$totalActivity}}</h5>
-                        <p class="card-text text-muted"><small>Last updated: {{$lastActivity->created_at}}</small></p>
+                        <h5 class="card-title">{{$task['clubbedInfo']['totalActivity']}}</h5>
+                        <p class="card-text text-muted"><small>Last updated: {{$task['clubbedInfo']['lastActivity']}}</small></p>
                     </div>
                 </div>
             </div>
@@ -109,13 +109,13 @@
                     <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
                         type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
                             class="ti ti-notes me-1"></i> Overview</button>
-                    <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
+                    <button class="nav-link active" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
                         role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
                         Tasks</button>
                     <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
                         role="tab" aria-controls="nav-team" aria-selected="false"><i class="ti ti-users-group me-1"></i>
                         Team</button>
-                    <button class="nav-link active" id="nav-discussion-tab" data-bs-toggle="tab"
+                    <button class="nav-link" id="nav-discussion-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-discussion" type="button" role="tab" aria-controls="nav-discussion"
                         aria-selected="false"><i class="ti ti-message me-1"></i> Discussion</button>
                     <button class="nav-link" id="nav-analytics-tab" data-bs-toggle="tab" data-bs-target="#nav-analytics"
@@ -127,7 +127,7 @@
         <div class="col-auto">
             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                 <button type="button" class="btn btn-sm btn-inverse-primary">Update Status</button>
-                <a href="/delegate-tasks/{{$task->task_id}}" class="btn btn-sm btn-inverse-primary">Delegate Tasks</a>
+                <a href="/delegate-tasks/{{$task['task_info']['task_id']}}" class="btn btn-sm btn-inverse-primary">Delegate Tasks</a>
             </div>
         </div>
     </div>
@@ -139,21 +139,21 @@
                     <div class="card bg-white">
                         <div class="card-body">
                             <h4 class="card-title mb-3 text-decoration-underline">Task Description</h4>
-                            {!! $task->description !!}
+                            {!! $task['task_info']['description'] !!}
                         </div>
                     </div>
                     <div class="card bg-white mt-4">
                         <div class="card-body">
                             <h4 class="card-title mb-3 text-decoration-underline">Timeline</h4>
                             <div class="timeline p-4 block mb-4">
-                                @foreach ($activities as $activity)
-                                @if(!empty($activity->log_description))
+                                @foreach ($task['clubbedInfo']['activities'] as $activity)
+                                @if(!empty($activity['log_description']))
                                 <div class="tl-item">
                                     <div class="tl-dot b-primary"></div>
                                     <div class="tl-content">
-                                        <h6 class="">{{$activity->log_description}}</h6>
-                                        <div class="tl-date text-muted mt-1">{{$activity->created_at}} |
-                                            {{$activity->added_by}}
+                                        <h6 class="">{{$activity['log_description']}}</h6>
+                                        <div class="tl-date text-muted mt-1">{{$activity['created_at']}} |
+                                            {{$activity['added_by']}}
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                                 </div>
                                 <div class="col-auto p-0">
                                     @php
-                                    $reminders = json_decode($task->reminders, true);
+                                    $reminders = json_decode($task['task_info']['reminders'], true);
                                     @endphp
                                     @foreach ($reminders as $reminder)
                                     @if($reminder === "Email")
@@ -202,12 +202,12 @@
                                     <p class="card-title fw-bold text-muted">Frequency: </p>
                                 </div>
                                 <div class="col-auto p-0">
-                                    <p class="card-title fw-medium text-muted">{{$task->frequency}}</p>
+                                    <p class="card-title fw-medium text-muted">{{$task['task_info']['frequency']}}</p>
                                 </div>
                             </div>
                             <div class="row m-0 mt-4 justify-content-between">
                                 @php
-                                $frequencies = json_decode($task->frequency_duration, true);
+                                $frequencies = json_decode($task['task_info']['frequency_duration'], true);
                                 $badgeColors = ['bg-primary-light text-primary', 'bg-success-light text-success',
                                 'bg-warning-light text-warning', 'bg-danger-light text-danger', 'bg-secondary-light
                                 text-secondary', 'bg-dark-light text-dark', 'bg-dark text-light'];
@@ -226,8 +226,8 @@
                                     <p class="card-title fw-bold text-muted">Rating: </p>
                                 </div>
                                 <div class="col-auto p-0">
-                                    @for ($i = 1; $i <= 5; $i++) <i
-                                        class="ti ti-star-filled{{ $i <= $task->ratings ? ' text-warning' : ' text-muted' }} me-1">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <i class="ti ti-star-filled{{ $i <= $task['task_info']['ratings'] ? ' text-warning' : ' text-muted' }} me-1">
                                         </i>
                                         @endfor
                                 </div>
@@ -239,26 +239,35 @@
                             <h4 class="card-title mb-3 text-decoration-underline">Attachments</h4>
                             <div class="row m-0 justify-content-between">
                                 <div class="col p-0">
+                                    @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
                                     @php
-                                    $grouped = $taskMedias->where('category', 'document')->groupBy('task_title');
+                                    $hasLinks = false;
+                                    foreach ($taskIdData['documents'] as $docs) {
+                                    if (!empty($docs['file_name'])) {
+                                    $hasLinks = true;
+                                    break;
+                                    }
+                                    }
                                     @endphp
 
-                                    @foreach ($grouped as $taskId => $docs)
+                                    @if($hasLinks)
                                     <p class="card-title mt-3 mb-2 fw-medium">{{ $taskId }}</p>
-
                                     <div class="border p-3">
-                                        @foreach ($docs as $taskMedia)
+                                        @foreach ($taskIdData['documents'] as $docs)
+                                        @if(!empty($docs['file_name']))
                                         <div
                                             class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
                                             <div class="d-flex align-items-center">
                                                 <i class="ti ti-file-text me-1 text-secondary"></i>
-                                                <span class="small">{{ $taskMedia->file_name }}</span>
+                                                <span class="small">{{ $docs['file_name'] }}</span>
                                             </div>
-                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}"
+                                            <a href="../assets/uploads/{{ $docs['file_name'] }}"
                                                 class="ti ti-download border-0 bg-transparent ps-3" download></a>
                                         </div>
+                                        @endif
                                         @endforeach
                                     </div>
+                                    @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -269,22 +278,31 @@
                             <h4 class="card-title mb-3 text-decoration-underline">Links</h4>
                             <div class="row m-0 justify-content-between">
                                 <div class="col p-0">
+                                    @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
                                     @php
-                                    $grouped = $taskMedias->where('category', 'link')->groupBy('task_title');
+                                    $hasLinks = false;
+                                    foreach ($taskIdData['links'] as $docs) {
+                                    if (!empty($docs['file_name'])) {
+                                    $hasLinks = true;
+                                    break;
+                                    }
+                                    }
                                     @endphp
 
-                                    @foreach ($grouped as $taskId => $docs)
+                                    @if($hasLinks)
                                     <p class="card-title mt-3 mb-2 fw-medium">{{ $taskId }}</p>
-
                                     <div class="border p-3">
-                                        @foreach ($docs as $taskMedia)
+                                        @foreach ($taskIdData['links'] as $docs)
+                                        @if(!empty($docs['file_name']))
                                         <div class="d-flex align-items-center bg-light px-1 py-2 rounded document-box">
                                             <i class="ti ti-link me-2 text-secondary"></i>
-                                            <a href="{{ $taskMedia->file_name }}"
-                                                class="small text-break text-decoration-underline">{{ $taskMedia->file_name }}</a>
+                                            <a href="{{ $docs['file_name'] }}"
+                                                class="small text-break text-decoration-underline">{{ $docs['file_name'] }}</a>
                                         </div>
+                                        @endif
                                         @endforeach
                                     </div>
+                                    @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -295,27 +313,35 @@
                             <h4 class="card-title mb-3 text-decoration-underline">Voice Notes</h4>
                             <div class="row m-0 justify-content-between">
                                 <div class="col p-0">
+                                    @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
                                     @php
-                                    $grouped = $taskMedias->where('category', 'voice_note')->groupBy('task_title');
+                                    $hasVoiceNotes = false;
+                                    foreach ($taskIdData['voice_notes'] as $docs) {
+                                    if (!empty($docs['file_name'])) {
+                                    $hasVoiceNotes = true;
+                                    break;
+                                    }
+                                    }
                                     @endphp
 
-                                    @foreach ($grouped as $taskId => $docs)
+                                    @if($hasVoiceNotes)
                                     <p class="card-title mt-3 mb-2 fw-medium">{{ $taskId }}</p>
-
                                     <div class="border p-3">
-                                        @foreach ($docs as $taskMedia)
-                                        <div
-                                            class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
+                                        @foreach ($taskIdData['voice_notes'] as $docs)
+                                        @if(!empty($docs['file_name']))
+                                        <div class="d-flex justify-content-between align-items-center bg-light px-1 py-2 rounded document-box">
                                             <div class="d-flex align-items-center">
-                                                <i class="ti ti-speakerphone me-1 text-secondary"></i>
-                                                <span class="small">{{ $taskMedia->file_name }}</span>
+                                                <i class="ti ti-microphone me-1 text-secondary"></i>
+                                                <span class="small">{{ $docs['file_name'] }}</span>
                                             </div>
-                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}"
+                                            <a href="../assets/uploads/{{ $docs['file_name'] }}"
                                                 class="ti ti-circle-caret-right border-0 bg-transparent ps-3"
                                                 download></a>
                                         </div>
+                                        @endif
                                         @endforeach
                                     </div>
+                                    @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -324,7 +350,8 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
+
+        <div class="tab-pane fade active show" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
             <div class="row row-cols-2 row-cols-md-4 g-4">
                 <div class="col">
                     <div class="card h-100">
@@ -332,75 +359,90 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Pending</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($stats['individualStats'] as $taskStat)
-                            @if ($taskStat['status'] === "Pending")
-                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
-                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}"
+                            @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                            @if ($taskIdData['each_task_info']['status'] === "Pending")
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskId }}"
                                 style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
-                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                            {{ $taskId == $task['task_info']['task_id'] ? 'Main Task' : 'Delegated Task' }}
                                         </p>
                                         <div class="col-auto p-0">
-                                            @if($taskStat['priority'] === "high")
+                                            @if($taskIdData['each_task_info']['priority'] === "high")
                                             <span class="badge badge-light-danger rounded">
-                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-flame me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
-                                            @elseif($taskStat['priority'] === "medium")
+                                            @elseif($taskIdData['each_task_info']['priority'] === "medium")
                                             <span class="badge badge-light-warning rounded">
-                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @else
                                             <span class="badge badge-light-success rounded">
-                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @endif
                                         </div>
                                     </div>
 
-                                    <h5 class="card-title">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
 
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
-                                            style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
                                             aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
                                         </p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
-                                            @foreach ($taskStat['teamMembers'] as $member)
-                                            @if(!empty($member->profile_picture))
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
-                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
                                             </div>
                                             @else
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
                                                     src="../assets/images/profile_picture/user.png">
                                             </div>
+                                            @endif
                                             @endif
                                             @endforeach
                                         </div>
@@ -421,74 +463,90 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Progress</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($stats['individualStats'] as $taskStat)
-                            @if ($taskStat['status'] === "In Progress")
-                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
-                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
+                            @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                            @if ($taskIdData['each_task_info']['status'] === "In Progress")
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskId }}"
+                                style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
-                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                            {{ $taskId == $task['task_info']['task_id'] ? 'Main Task' : 'Delegated Task' }}
                                         </p>
                                         <div class="col-auto p-0">
-                                            @if($taskStat['priority'] === "high")
+                                            @if($taskIdData['each_task_info']['priority'] === "high")
                                             <span class="badge badge-light-danger rounded">
-                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-flame me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
-                                            @elseif($taskStat['priority'] === "medium")
+                                            @elseif($taskIdData['each_task_info']['priority'] === "medium")
                                             <span class="badge badge-light-warning rounded">
-                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @else
                                             <span class="badge badge-light-success rounded">
-                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @endif
                                         </div>
                                     </div>
 
-                                    <h5 class="card-title mt-2">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
 
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
-                                            style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
                                             aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
                                         </p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
-                                            @foreach ($taskStat['teamMembers'] as $member)
-                                            @if(!empty($member->profile_picture))
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
-                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
                                             </div>
                                             @else
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
                                                     src="../assets/images/profile_picture/user.png">
                                             </div>
+                                            @endif
                                             @endif
                                             @endforeach
                                         </div>
@@ -501,7 +559,6 @@
                             @endif
                             @endforeach
                         </div>
-
                     </div>
                 </div>
                 <div class="col">
@@ -510,74 +567,90 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> In Review</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($stats['individualStats'] as $taskStat)
-                            @if ($taskStat['status'] === "In Review")
-                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
-                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
+                            @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                            @if ($taskIdData['each_task_info']['status'] === "In Review")
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskId }}"
+                                style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
-                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                            {{ $taskId == $task['task_info']['task_id'] ? 'Main Task' : 'Delegated Task' }}
                                         </p>
                                         <div class="col-auto p-0">
-                                            @if($taskStat['priority'] === "high")
+                                            @if($taskIdData['each_task_info']['priority'] === "high")
                                             <span class="badge badge-light-danger rounded">
-                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-flame me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
-                                            @elseif($taskStat['priority'] === "medium")
+                                            @elseif($taskIdData['each_task_info']['priority'] === "medium")
                                             <span class="badge badge-light-warning rounded">
-                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @else
                                             <span class="badge badge-light-success rounded">
-                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @endif
                                         </div>
                                     </div>
 
-                                    <h5 class="card-title mt-2">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
 
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
-                                            style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
                                             aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
                                         </p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
-                                            @foreach ($taskStat['teamMembers'] as $member)
-                                            @if(!empty($member->profile_picture))
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
-                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
                                             </div>
                                             @else
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
                                                     src="../assets/images/profile_picture/user.png">
                                             </div>
+                                            @endif
                                             @endif
                                             @endforeach
                                         </div>
@@ -586,9 +659,9 @@
                                     </div>
                                 </div>
                             </div>
+                            @include('modalEditTask')
                             @endif
                             @endforeach
-                            @include('modalEditTask')
                         </div>
 
                     </div>
@@ -599,74 +672,90 @@
                             <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Completed</h5>
                         </div>
                         <div class="card-body">
-                            @foreach ($stats['individualStats'] as $taskStat)
-                            @if ($taskStat['status'] === "Completed")
-                            <div class="card mb-3 task-card" data-task-id="{{ $taskStat['task_id'] }}"
-                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskStat['task_id'] }}" style="cursor: pointer;">
+                            @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                            @if ($taskIdData['each_task_info']['status'] === "Completed")
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskId }}"
+                                style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto fw-medium p-0 m-0">
-                                            {{ $taskStat['task_id'] == $task->task_id ? 'Main Task' : 'Delegated Task' }}
+                                            {{ $taskId == $task['task_info']['task_id'] ? 'Main Task' : 'Delegated Task' }}
                                         </p>
                                         <div class="col-auto p-0">
-                                            @if($taskStat['priority'] === "high")
+                                            @if($taskIdData['each_task_info']['priority'] === "high")
                                             <span class="badge badge-light-danger rounded">
-                                                <i class="ti ti-flame me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-flame me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
-                                            @elseif($taskStat['priority'] === "medium")
+                                            @elseif($taskIdData['each_task_info']['priority'] === "medium")
                                             <span class="badge badge-light-warning rounded">
-                                                <i class="ti ti-sun-high me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @else
                                             <span class="badge badge-light-success rounded">
-                                                <i class="ti ti-leaf me-1"></i>{{ $taskStat['priority'] }}
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
                                             </span>
                                             @endif
                                         </div>
                                     </div>
 
-                                    <h5 class="card-title mt-2">{{ $taskStat['title'] ?? 'Untitled Task' }}</h5>
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
 
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskStat['progress'] }}%</div>
+                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
                                         <div class="progress-bar bg-dark" role="progressbar"
-                                            style="width: {{ $taskStat['progress'] }}%;"
-                                            aria-valuenow="{{ $taskStat['progress'] }}" aria-valuemin="0"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
                                             aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     {{-- Optional Description or Action --}}
                                     <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-calendar-event me-1"></i>{{ $taskStat['assign_at'] }}</p>
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-paperclip me-1"></i>{{ $taskStat['totalMedias'] }}</p>
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
                                         <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-messages me-1"></i>{{ $taskStat['totalComments'] }}</p>
-                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
-                                                class="ti ti-checkbox me-1"></i>{{ $taskStat['completed'] }}/{{ $taskStat['total'] }}
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
                                         </p>
                                     </div>
 
                                     <div class="row mt-2 m-0 justify-content-between">
                                         <div class="aspect-square-container p-0 w-auto">
-                                            @foreach ($taskStat['teamMembers'] as $member)
-                                            @if(!empty($member->profile_picture))
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
-                                                    src="../assets/images/profile_picture/{{$member->profile_picture}}">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
                                             </div>
                                             @else
                                             <div class="aspect-square-box">
-                                                <img class="aspect-square" alt="{{ $member->employee_name }}"
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
                                                     src="../assets/images/profile_picture/user.png">
                                             </div>
+                                            @endif
                                             @endif
                                             @endforeach
                                         </div>
@@ -675,15 +764,16 @@
                                     </div>
                                 </div>
                             </div>
+                            @include('modalEditTask')
                             @endif
                             @endforeach
-                            @include('modalEditTask')
                         </div>
 
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="tab-pane fade" id="nav-team" role="tabpanel" aria-labelledby="nav-team-tab">
             <div class="card bg-white">
                 <div class="card-body">
@@ -698,21 +788,35 @@
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
-                            @foreach ($userWiseStats as $userStat)
+                            @foreach ($task['groupedByUser'] as $taskId => $userData)
                             <tr>
-                                <td>{{$userStat['employee_code']}}*{{$userStat['employee_name']}}</td>
+                                <td>{{$userData['employee_code']}}*{{$userData['employee_name']}}</td>
                                 <td>
-                                    @foreach($userStat['tasks'] as $usertask)
+                                    @php
+                                    $employee = $userData['employee_code'].'*'.$userData['employee_name'];
+                                    @endphp
+                                    @foreach($userData['tasks'] as $usertask)
+                                    @php
+                                    $assign_by = $usertask['assign_by'];
+                                    @endphp
+                                    @if($assign_by !== $employee)
                                     <a href="/task/{{$usertask['task_id']}}">
-                                        <span class="badge badge-outline-primary rounded">
-                                            {{$usertask['title']}}
+                                        <span class="badge badge-light-primary rounded">
+                                            {{$usertask['task_title']}}
                                         </span>
                                     </a>
+                                    @else
+                                    <a href="/task/{{$usertask['task_id']}}">
+                                        <span class="badge badge-light-danger rounded">
+                                            {{$usertask['task_title']}}
+                                        </span>
+                                    </a>
+                                    @endif
                                     @endforeach
                                 </td>
-                                <td><b>{{ $userStat['total_tasks'] }}</b> ({{ $userStat['completed_tasks'] }}/
+                                <td><b>{{ $userData['total_task'] }}</b> ({{ $userData['completed_task'] }}/
                                     completed)</td>
-                                <td>{{ $userStat['progress'] }}% </td>
+                                <td>{{ $userData['progress'] }}% </td>
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                         <button type="button" class="btn btn-transparent shadow-none py-0"><i
@@ -730,7 +834,8 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade active show" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
+
+        <div class="tab-pane fade" id="nav-discussion" role="tabpanel" aria-labelledby="nav-discussion-tab">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4">
                 <div>
                     <h2 class="h5 fw-bold mb-1">Discussions</h2>
@@ -739,115 +844,127 @@
                 <div class="dropdown">
                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                       + New Discussion
+                        + New Discussion
                     </button>
-
                     <ul class="dropdown-menu" id="newDiscussionDropdown">
-                        @foreach ($stats['individualStats'] as $taskStat)
+                        @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                        @foreach ($taskIdData['comments'] as $comment)
                         <li>
                             <a class="dropdown-item new-discussion-link" href="javascript:void(0);"
-                                data-task-id="{{ $taskStat['task_id'] }}" data-task-title="{{ $taskStat['title'] }}"
-                                data-added-by="{{ $taskStat['added_by'] ?? 'Unknown' }}"
-                                data-created-at="{{ \Carbon\Carbon::parse($taskStat['assign_at'])->diffForHumans() }}">
-                                {{ $taskStat['title'] }}
+                                data-task-id="{{ $comment['task_id'] ?? $taskId }}"
+                                data-task-title="{{ $comment['title'] ?? 'Untitled' }}"
+                                data-added-by="{{ $comment['added_by'] ?? 'Unknown' }}"
+                                data-created-at="{{ isset($comment['created_at']) ? \Carbon\Carbon::parse($comment['created_at'])->diffForHumans() : 'Recently' }}">
+                                {{ $comment['title'] ?? 'Untitled Discussion' }}
                             </a>
                         </li>
+                        @endforeach
                         @endforeach
                     </ul>
                 </div>
             </div>
 
-            <div class="d-flex align-items-start comment-box">
-                @php
-                $groupedComments = collect($stats['individualStats'])
-                ->flatMap(fn($stat) => $stat['comment_list_items'])
-                ->groupBy('task_id');
-                @endphp
-
-                <div class="tab-content col-lg-8" id="v-pills-tabContent">
-                    @foreach ($groupedComments as $taskId => $comments)
+            <div class="d-flex align-items-start comment-box flex-column flex-lg-row">
+                <!-- Main Content Column -->
+                <div class="tab-content col-lg-8 pe-lg-3" id="v-pills-tabContent">
+                    @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                    @if(!empty($taskIdData['comments']))
                     @php
-                    $firstComment = $comments->first();
+                    $firstComment = collect($taskIdData['comments'])->first();
                     $tabId = 'tab-comment-' . $taskId;
                     @endphp
+
                     <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel"
                         aria-labelledby="{{ $tabId }}-tab" tabindex="0">
                         <div class="card">
                             <div class="card-body d-flex flex-column">
                                 <div class="mb-3">
                                     <h4 class="card-title mb-3 text-decoration-underline">
-                                        {{ $firstComment->task_title ?? 'Timeline' }}
+                                        {{ $firstComment['title'] ?? $taskIdData['each_task_info']['title'] ?? 'Discussion' }}
                                     </h4>
-                                    <small class="text-muted">Started by {{ $firstComment->added_by ?? 'Unknown' }} •
-                                        {{ $firstComment->created_at->diffForHumans() ?? '' }}</small>
+                                    <small class="text-muted">
+                                        Started by {{ $firstComment['added_by'] ?? 'Unknown' }} •
+                                        {{ isset($firstComment['created_at']) ? \Carbon\Carbon::parse($firstComment['created_at'])->diffForHumans() : 'Recently' }}
+                                    </small>
                                     <hr>
                                 </div>
+
                                 <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
-                                    @foreach ($comments as $comment)
+                                    @foreach ($taskIdData['comments'] as $comment)
                                     <div class="d-flex mb-4">
-                                        <img src="{{ asset('assets/images/profile_picture/' . ($comment->added_by_picture ?? 'user.png')) }}"
-                                            alt="{{ $comment->added_by }}" class="rounded-circle me-3" width="40"
+                                        <img src="{{ asset('assets/images/profile_picture/' . ($comment['added_by_picture'] ?? 'user.png')) }}"
+                                            alt="{{ $comment['added_by'] ?? 'User' }}" class="rounded-circle me-3" width="40"
                                             height="40">
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center mb-1">
-                                                <strong>{{ $comment->added_by }}</strong>
+                                                <strong>{{ $comment['added_by'] ?? 'Unknown' }}</strong>
                                                 <span class="mx-2 text-muted">•</span>
-                                                <small
-                                                    class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+                                                <small class="text-muted">
+                                                    {{ isset($comment['created_at']) ? \Carbon\Carbon::parse($comment['created_at'])->diffForHumans() : 'Recently' }}
+                                                </small>
                                             </div>
-                                            <p>{{ $comment->comment }}</p>
+                                            <p>{{ $comment['comment'] ?? 'No comment text' }}</p>
                                         </div>
                                     </div>
                                     @endforeach
                                 </div>
 
-                                <div class="d-flex">
+                                <div class="d-flex mt-3">
                                     <img src="{{ asset('assets/images/profile_picture/' . ($activeUser->profile_picture ?? 'user.png')) }}"
-                                        alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                        alt="Your Profile" class="rounded-circle me-3" width="40" height="40">
                                     <form class="flex-grow-1 comment-form" id="comment-form-{{ $taskId }}"
                                         data-task-id="{{ $taskId }}">
+                                        @csrf
                                         <textarea class="form-control mb-2" name="comment"
-                                            placeholder="Write a reply..." rows="3"></textarea>
-                                        <input hidden type="text" name="task_id" value="{{ $taskId }}" />
+                                            placeholder="Write a reply..." rows="3" required></textarea>
+                                        <input type="hidden" name="task_id" value="{{ $taskId }}" />
                                         <div class="text-end">
-                                            <button class="btn btn-primary">Post Reply</button>
+                                            <button type="submit" class="btn btn-primary">Post Reply</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @endif
                     @endforeach
                 </div>
 
-                <div class="nav flex-column nav-pills col-lg-4 ps-3" id="v-pills-tab" role="tablist">
+                <!-- Sidebar Column -->
+                <div class="nav flex-column nav-pills col-lg-4 ps-lg-3 mt-4 mt-lg-0" id="v-pills-tab" role="tablist">
                     <div class="card p-3">
                         <h4 class="card-title mb-3 text-decoration-underline">Recent Discussions</h4>
-                        @foreach ($groupedComments as $taskId => $comments)
+                        @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                        @if(!empty($taskIdData['comments']))
                         @php
-                        $firstComment = $comments->first();
+                        $firstComment = collect($taskIdData['comments'])->first();
                         $tabId = 'tab-comment-' . $taskId;
+                        $commentCount = count($taskIdData['comments']);
                         @endphp
-                        <button class="nav-link bg-light text-start text-muted mb-2" id="{{ $tabId }}-tab"
-                            data-bs-toggle="pill" data-bs-target="#{{ $tabId }}" type="button" role="tab"
-                            aria-controls="{{ $tabId }}" aria-selected="false">
+
+                        <button class="nav-link bg-light text-start text-muted mb-2 {{ $loop->first ? 'active' : '' }}"
+                            id="{{ $tabId }}-tab" data-bs-toggle="pill" data-bs-target="#{{ $tabId }}"
+                            type="button" role="tab" aria-controls="{{ $tabId }}"
+                            aria-selected="{{ $loop->first ? 'true' : 'false' }}">
                             <h6 class="card-title mb-2 text-decoration-underline text-dark">
-                                {{ $firstComment->task_title ?? 'Untitled' }}
+                                {{ $firstComment['title'] ?? $taskIdData['each_task_info']['title'] ?? 'Untitled Discussion' }}
                             </h6>
                             <div class="d-flex mb-2 small">
-                                <p>Started by {{ $firstComment->added_by ?? 'Unknown' }}</p>
+                                <p>Started by {{ $firstComment['added_by'] ?? 'Unknown' }}</p>
                                 <p class="mx-2">•</p>
-                                <p>{{ $firstComment->created_at->diffForHumans() ?? 'N/A' }}</p>
+                                <p>{{ $firstComment->created_at->diffForHumans() ?? 'Now' }}</p>
                             </div>
                             <div class="d-flex small">
-                                <p>{{ $comments->count() }} replies</p>
+                                <p>{{ $commentCount }} {{ Str::plural('reply', $commentCount) }}</p>
                             </div>
                         </button>
+                        @endif
                         @endforeach
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="tab-pane fade" id="nav-analytics" role="tabpanel" aria-labelledby="nav-analytics-tab">
             <div class="row g-4">
                 <!-- Task Completion Trend Card -->
@@ -878,17 +995,16 @@
                     </div>
                 </div>
             </div>
-            <input hidden id="totalTasks" value="{{$stats['total']}}" />
-            <input hidden id="completedTasks" value="{{$stats['completed']}}" />
-            <input hidden id="inProcessTasks" value="{{$stats['inProcess']}}" />
-            <input hidden id="userLabels" value='{!! json_encode(array_column($userWiseStats, "employee_name")) !!}' />
-            <input hidden id="totalTasksData" value="{!!json_encode(array_column($userWiseStats, 'total_tasks')) !!}" />
-            <input hidden id="completedTasksData"
-                value="{!!json_encode(array_column($userWiseStats, 'completed_tasks')) !!}" />
+            <!-- Hidden inputs for chart data -->
+            <input type="hidden" id="totalTasks" value="{{ $task['clubbedInfo']['taskListCount'] }}" />
+            <input type="hidden" id="completedTasks" value="{{ $task['clubbedInfo']['taskInCompletedListCount'] }}" />
+            <input type="hidden" id="inProcessTasks" value="{{ $task['clubbedInfo']['taskInProcessListCount'] }}" />
+            <input type="hidden" id="userLabels" value='@json(array_column($task[' clubbedInfo']['teamMembers'] ?? [], 'employee_name' ))' />
+            <input type="hidden" id="totalTasksData" value='@json(array_column($task[' groupedByUser'] ?? [], 'total_task' ))' />
+            <input type="hidden" id="completedTasksData" value='@json(array_column($task[' groupedByUser'] ?? [], 'completed_task' ))' />
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('customJs')
