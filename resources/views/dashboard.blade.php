@@ -447,5 +447,23 @@
 @endsection
 
 @section('customJs')
+<script>
+    const authUserId = "{{ Auth::id() }}";
+    $(document).ready(function() {
+            loadUserStat();
+    });
+
+    function loadUserStat() {
+        $.ajax({
+            url: `/fetch-user-tasks/${authUserId}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {},
+            error: function(xhr) {
+                console.error('Error fetching tasks:', xhr.responseText);
+            }
+        });
+    }
+</script>
 
 @endsection
