@@ -21,20 +21,17 @@ class TeamController extends Controller
             // Decode team_members JSON string
             $teamMembers = json_decode($team->team_members, true) ?? [];
 
-            $isPublic = $team->team_visibilty === 'public';
-            $isTeamMember = false;
+            $isPrivate = $team->team_visibilty === 'private';
+            $isTeamMember = in_array($employeeIdentity, $teamMembers);
 
-            if (is_array($teamMembers)) {
-                foreach ($teamMembers as $member) {
-                    if ($member === $employeeIdentity) {
-                        $isTeamMember = true;
-                        break;
-                    }
-                }
+            // ✅ New Logic:
+            // - Public team: visible to all
+            // - Private team: only leader or team member can view
+            if ($team->team_visibilty === 'public') {
+                return true;
             }
 
-            // Leader sees all, or member sees if team is public
-            return $isLeader || ($isPublic && $isTeamMember);
+            return $isLeader || $isTeamMember;
         });
 
         // dd($teams);
