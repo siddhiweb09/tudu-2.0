@@ -1,7 +1,7 @@
 <div class="modal fade" id="taskDetailModal-{{ $taskId }}" tabindex="-1"
     aria-labelledby="taskDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0">
+        <div class="modal-content bg-light border-0">
             <!-- Modern header with gradient and better spacing -->
             <div class="modal-header border-0 primary-gradient-effect">
                 <div class="w-100 d-flex justify-content-between align-items-center">
@@ -15,24 +15,20 @@
             </div>
 
             <!-- Modern body with subtle background and better spacing -->
-            <div class="modal-body p-4 pt-3" style="
-                            overflow-y: auto;
-                            background-color: #f8fafc;
-                        ">
+            <div class="modal-body p-4 pt-3">
                 <div id="taskDetailContent">
                     <div class="row g-4">
                         <!-- Task Title -->
                         <div class="col-12">
                             <label for="taskTitle" class="form-label fw-medium text-muted">TASK TITLE</label>
-                            <input type="text" class="form-control border-2 py-2 px-3" id="taskTitle"
-                                value="{{ $taskIdData['each_task_info']['title'] }}" style="border-color: #e2e8f0;">
+                            <input type="text" class="form-control border py-2 px-3" id="taskTitle"
+                                value="{{ $taskIdData['each_task_info']['title'] }}">
                         </div>
 
                         <!-- Subtasks - Modern card style -->
                         <div class="col-12">
                             <label class="form-label fw-medium text-muted">SUBTASKS</label>
-                            <div class="border rounded p-3"
-                                style="background-color: white; border-color: #e2e8f0 !important;">
+                            <div class="border rounded p-3 bg-white">
                                 @foreach ($taskIdData['lists'] as $task)
                                 @if($task->status === 'Completed')
                                 <div class="form-check mb-3 d-flex align-items-center">
@@ -47,9 +43,19 @@
                                 </div>
                                 @endif
                                 @endforeach
-                                <button class="btn btn-sm btn-outline-primary w-100 mt-1 py-2" style="border-color: #e2e8f0;">
-                                    <i class="ti ti-plus me-2"></i>Add Subtask
-                                </button>
+                                <div class="task-container">
+                                    <!-- Initial Task Field -->
+                                    <div class="task-item mb-3" data-task-id="1">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control task-input me-3" name="tasks[]"
+                                                placeholder="Enter task" required>
+                                            <button type="button"
+                                                class="btn btn-inverse-primary rounded-circle add-task-btn">
+                                                <i class="ti ti-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -68,17 +74,15 @@
                                 @if($assign_by !== $employee)
                                 @if(!empty($member['profile_picture']))
                                 <!-- User Badge 1 -->
-                                <div class="d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-xs"
-                                    style="border: 1px solid #e2e8f0; height: 32px;">
+                                <div class="d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-xs">
                                     <img src="../assets/images/profile_picture/{{$member['profile_picture']}}" class="rounded-circle me-2"
-                                        width="20" height="20" style="object-fit: cover;">
+                                        width="20" height="20">
                                     <span class="text-dark fs-6 fw-medium">{{ $member['employee_name'] }} </span>
                                 </div>
                                 @else
-                                <div class="d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-xs"
-                                    style="border: 1px solid #e2e8f0; height: 32px;">
+                                <div class="d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-xs">
                                     <img src="../assets/images/profile_picture/user.png" class="rounded-circle me-2"
-                                        width="20" height="20" style="object-fit: cover;">
+                                        width="20" height="20">
                                     <span class="text-dark fs-6 fw-medium">{{ $member['employee_name'] }} </span>
                                 </div>
                                 @endif
@@ -87,10 +91,9 @@
 
                                 <!-- Add Button -->
                                 <button
-                                    class="btn btn-sm btn-outline-primary d-flex align-items-center rounded-pill px-3"
-                                    style="height: 32px;">
-                                    <i class="ti ti-plus me-1" style="font-size: 0.75rem;"></i>
-                                    <span style="font-size: 0.8125rem;">Add</span>
+                                    class="btn btn-sm btn-outline-primary d-flex align-items-center rounded-pill px-3">
+                                    <i class="ti ti-plus me-1"></i>
+                                    <span>Add</span>
                                 </button>
                             </div>
                         </div>
@@ -110,7 +113,7 @@
                                                 <i class="ti ti-file-text fs-5"></i>
                                             </div>
                                             <div class="ms-3">
-                                                <p class="mb-0 fw-medium text-truncate" style="max-width: 250px;">
+                                                <p class="mb-0 fw-medium text-truncate">
                                                     {{ $docs['file_name'] }}
                                                 </p>
                                                 <small
@@ -135,7 +138,7 @@
                                     </button>
                                 </div>
 
-                                <!-- Link Attachments -->
+                                <!-- Links -->
                                 <h6 class="text-muted mb-3"><i class="ti ti-link me-2"></i> Links</h6>
                                 <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
                                     @foreach ($taskIdData['links'] as $docs)
@@ -146,7 +149,7 @@
                                                 <i class="ti ti-paperclip fs-5"></i>
                                             </div>
                                             <div class="ms-3">
-                                                <p class="mb-0 fw-medium text-truncate" style="max-width: 250px;">
+                                                <p class="mb-0 fw-medium text-break">
                                                     {{ $docs['file_name'] }}
                                                 </p>
                                                 <small
@@ -171,7 +174,7 @@
                                     </button>
                                 </div>
 
-                                <!-- Link Attachments -->
+                                <!-- Voice Notes -->
                                 <h6 class="text-muted mb-3"><i class="ti ti-microphone me-2"></i> Voice Notes</h6>
                                 <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
                                     @foreach ($taskIdData['voice_notes'] as $docs)
@@ -190,7 +193,7 @@
                                                 </div>
                                             </div>
                                             <div class="d-flex">
-                                                <audio controls class="me-2" style="height: 36px;">
+                                                <audio controls class="me-2">
                                                     <source src="../assets/uploads/{{ $docs['file_name'] }}"
                                                         type="audio/mpeg">
                                                     Your browser does not support the audio element.
@@ -222,7 +225,7 @@
             </div>
 
             <!-- Modern footer with better buttons -->
-            <div class="modal-footer border-0 px-4 pb-4 pt-3" style="background-color: #f8fafc;">
+            <div class="modal-footer border-0 px-4 pb-4 pt-3">
                 <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
                     Close
                 </button>

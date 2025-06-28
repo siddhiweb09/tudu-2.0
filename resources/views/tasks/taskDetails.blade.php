@@ -106,10 +106,10 @@
         <div class="col-auto">
             <nav>
                 <div class="nav nav-tabs task-details-tab" id="nav-tab" role="tablist">
-                    <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
+                    <button class="nav-link" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview"
                         type="button" role="tab" aria-controls="nav-overview" aria-selected="true"><i
                             class="ti ti-notes me-1"></i> Overview</button>
-                    <button class="nav-link" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
+                    <button class="nav-link active" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button"
                         role="tab" aria-controls="nav-tasks" aria-selected="false"><i class="ti ti-checkbox me-1"></i>
                         Tasks</button>
                     <button class="nav-link" id="nav-team-tab" data-bs-toggle="tab" data-bs-target="#nav-team" type="button"
@@ -133,7 +133,7 @@
     </div>
 
     <div class="tab-content mt-4" id="nav-tabContent">
-        <div class="tab-pane fade active show" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+        <div class="tab-pane fade" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
             <div class="row m-0">
                 <div class="col-md-6 col-lg-8 ps-0">
                     <div class="card bg-white">
@@ -351,7 +351,7 @@
             </div>
         </div>
 
-        <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
+        <div class="tab-pane fade active show" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab">
             <div class="row row-cols-2 row-cols-md-4 g-4">
                 <div class="col">
                     <div class="card h-100">
