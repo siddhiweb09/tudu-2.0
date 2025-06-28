@@ -26,15 +26,31 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 // Protected routes (only accessible after login)
 Route::middleware(['auth:web'])->group(function () {
     // Dashboard
-    Route::get('/', function () {
-        return view('dashboard');
-    })->name('dashboard');
-    Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTasks');
-    Route::match(['get', 'post'], '/pending-tasks', [TaskController::class, 'pendingTask'])->name('tasks.pendingTasks');
-    Route::match(['get', 'post'], '/in-process-tasks', [TaskController::class, 'inProcessTask'])->name('tasks.inProcessTasks');
-    Route::match(['get', 'post'], '/in-review-tasks', [TaskController::class, 'inReviewTask'])->name('tasks.inReviewTasks');
-    Route::match(['get', 'post'], '/overdue-tasks', [TaskController::class, 'overdueTask'])->name('tasks.overdueTasks');
+    Route::get('/', [TaskController::class, 'dashboard'])->name('dashboard');
 
+    Route::get('/profile/{user_id}', [UserController::class, 'userProfile'])->name('profile');
+    Route::post('/user/change-picture/{user_id}', [UserController::class, 'changePicture'])
+        ->where('id', '.*')
+        ->name('user.changepicture');
+
+    Route::get('/pending-tasks', function () {
+        return view('tasks.pendingTask');
+    })->name('tasks.pendingTask');
+    Route::get('/in-process-tasks', function () {
+        return view('tasks.inProcessTask');
+    })->name('tasks.inProcessTask');
+    Route::get('/in-review-tasks', function () {
+        return view('tasks.inReviewTask');
+    })->name('tasks.inReviewTask');
+    Route::get('/overdue-tasks', function () {
+        return view('tasks.overdueTask');
+    })->name('tasks.overdueTask');
+
+    Route::match(['get', 'post'], '/all-task', [TaskController::class, 'allTask'])->name('tasks.allTasks');
+    Route::match(['get', 'post'], '/all-tasks', [TaskController::class, 'allTask'])->name('tasks.allTask');
+
+    Route::get('/tasks/{type}', [TaskController::class, 'getTasksByType']);
+    Route::get('/fetch-user-tasks/{id}', [TaskController::class, 'getUserTasks']);
     // Tasks
     Route::get('/tasks-calender', function () {
         return view('tasks.calender');

@@ -58,10 +58,10 @@
                         <!-- Example single danger button -->
                         <div class="dropdown-center">
                             <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="assets/images/logo.png" class="rounded-circle profile-pic" />
+                                <img src="{{ asset('assets/images/profile_picture/' . ($user->profile_picture ?: 'user.png')) }}" class="rounded-circle profile-pic" />
                             </button>
                             <ul class="dropdown-menu profile-menu">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="/profile/{{ Auth::user()->id}}">Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
@@ -87,11 +87,11 @@
                                     <span class="menu-title">My Tasks</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="{{ route('tasks.allTasks') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTasks') }}">Pending Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTasks') }}">In Process Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTasks') }}">In Review Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTasks') }}">Overdiew Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.allTask') }}">Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTask') }}">Pending Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTask') }}">In Process Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTask') }}">In Review Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTask') }}">Overdiew Tasks</a></li>
                                     <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do List</a></li>
                                 </ul>
                             </li>

@@ -1,4 +1,4 @@
-<div class="modal fade" id="taskDetailModal-{{ $taskStat['task_id'] }}" tabindex="-1"
+<div class="modal fade" id="taskDetailModal-{{ $taskId }}" tabindex="-1"
     aria-labelledby="taskDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0">
@@ -25,7 +25,7 @@
                         <div class="col-12">
                             <label for="taskTitle" class="form-label fw-medium text-muted">TASK TITLE</label>
                             <input type="text" class="form-control border-2 py-2 px-3" id="taskTitle"
-                                value="{{ $taskStat['title'] }}" style="border-color: #e2e8f0;">
+                                value="{{ $taskIdData['each_task_info']['title'] }}" style="border-color: #e2e8f0;">
                         </div>
 
                         <!-- Subtasks - Modern card style -->
@@ -33,29 +33,21 @@
                             <label class="form-label fw-medium text-muted">SUBTASKS</label>
                             <div class="border rounded p-3"
                                 style="background-color: white; border-color: #e2e8f0 !important;">
-                                @php
-                                    $taskList = $taskStat['task_list_items']->where('task_id', $taskStat['task_id'])->groupBy('task_id');
-                                @endphp
-                                @if($taskList->isNotEmpty())
-                                    @foreach ($taskList as $taskId => $taskValue)
-                                        @foreach ($taskValue as $task)
-                                            @if($task->status === 'Completed')
-                                                <div class="form-check mb-3 d-flex align-items-center">
-                                                    <input class="form-check-input me-3" value="{{ $task->tasks }}" type="checkbox"
-                                                        id="subtask1" checked>
-                                                    <label class="form-check-label text-dark" for="subtask1">{{ $task->tasks }}</label>
-                                                </div>
-                                            @else
-                                                <div class="form-check mb-3 d-flex align-items-center">
-                                                    <input class="form-check-input me-3" type="checkbox" id="subtask1">
-                                                    <label class="form-check-label text-dark" for="subtask1">{{ $task->tasks }}</label>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endforeach
+                                @foreach ($taskIdData['lists'] as $task)
+                                @if($task->status === 'Completed')
+                                <div class="form-check mb-3 d-flex align-items-center">
+                                    <input class="form-check-input me-3" value="{{ $task->tasks }}" type="checkbox"
+                                        id="subtask1" checked>
+                                    <label class="form-check-label text-dark" for="subtask1">{{ $task->tasks }}</label>
+                                </div>
+                                @else
+                                <div class="form-check mb-3 d-flex align-items-center">
+                                    <input class="form-check-input me-3" type="checkbox" id="subtask1">
+                                    <label class="form-check-label text-dark" for="subtask1">{{ $task->tasks }}</label>
+                                </div>
                                 @endif
-
-                                <button class="btn btn-outline-primary w-100 mt-1 py-2" style="border-color: #e2e8f0;">
+                                @endforeach
+                                <button class="btn btn-sm btn-outline-primary w-100 mt-1 py-2" style="border-color: #e2e8f0;">
                                     <i class="ti ti-plus me-2"></i>Add Subtask
                                 </button>
                             </div>
@@ -65,18 +57,34 @@
                         <div class="col-12">
                             <label class="form-label fw-medium text-muted mb-2">ASSIGNEES</label>
                             <div class="d-flex flex-wrap align-items-center gap-2">
-                                @foreach ($team as $teamMember)
-                                    @if(!empty($teamMember->profile_picture))
-                                        <!-- User Badge 1 -->
-                                        <div class="d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-xs"
-                                            style="border: 1px solid #e2e8f0; height: 32px;">
-                                            <img src="../assets/images/profile_picture/{{$teamMember->profile_picture}}" class="rounded-circle me-2"
-                                                width="20" height="20" style="object-fit: cover;">
-                                            <span class="text-dark fs-6 fw-medium">{{ $teamMember->employee_name }} </span>
-                                        </div>
-                                    @endif
+                                @php
+                                $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                @endphp
+
+                                @foreach ($taskIdData['team_members'] as $member)
+                                @php
+                                $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                @endphp
+                                @if($assign_by !== $employee)
+                                @if(!empty($member['profile_picture']))
+                                <!-- User Badge 1 -->
+                                <div class="d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-xs"
+                                    style="border: 1px solid #e2e8f0; height: 32px;">
+                                    <img src="../assets/images/profile_picture/{{$member['profile_picture']}}" class="rounded-circle me-2"
+                                        width="20" height="20" style="object-fit: cover;">
+                                    <span class="text-dark fs-6 fw-medium">{{ $member['employee_name'] }} </span>
+                                </div>
+                                @else
+                                <div class="d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-xs"
+                                    style="border: 1px solid #e2e8f0; height: 32px;">
+                                    <img src="../assets/images/profile_picture/user.png" class="rounded-circle me-2"
+                                        width="20" height="20" style="object-fit: cover;">
+                                    <span class="text-dark fs-6 fw-medium">{{ $member['employee_name'] }} </span>
+                                </div>
+                                @endif
+                                @endif
                                 @endforeach
-                                
+
                                 <!-- Add Button -->
                                 <button
                                     class="btn btn-sm btn-outline-primary d-flex align-items-center rounded-pill px-3"
@@ -92,124 +100,121 @@
                             <label class="form-label fw-medium text-muted">ATTACHMENTS</label>
                             <div class="border rounded p-3 bg-white border-gray-200">
                                 <!-- Document Attachments -->
-                                @php
-                                    $documentAttachments = $taskMedias->where('category', 'document')->where('task_id', $taskStat['task_id'])->groupBy('task_id');
-                                @endphp
-                                @if($documentAttachments->isNotEmpty())
-                                    <h6 class="text-muted mb-3"><i class="ti ti-files me-2"></i> Documents</h6>
-                                    @foreach ($documentAttachments as $taskId => $docs)
-                                        <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
-                                            @foreach ($docs as $taskMedia)
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="attachment-icon bg-blue-50 text-blue-500">
-                                                            <i class="ti ti-file fs-5"></i>
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <p class="mb-0 fw-medium text-truncate" style="max-width: 250px;">
-                                                                {{ $taskMedia->file_name }}
-                                                            </p>
-                                                            <small
-                                                                class="text-muted">{{ $taskMedia->created_at->format('M d, Y h:i A') }}</small>
-                                                        </div>
-                                                    </div>
-                                                    <a href="../assets/uploads/{{ $taskMedia->file_name }}"
-                                                        class="btn btn-sm btn-light text-primary" download
-                                                        title="Download {{ $taskMedia->file_name }}">
-                                                        <i class="ti ti-download"></i>
-                                                    </a>
-                                                </div>
-                                            @endforeach
+                                <h6 class="text-muted mb-3"><i class="ti ti-file-text me-2"></i> Documents</h6>
+                                <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
+                                    @foreach ($taskIdData['documents'] as $docs)
+                                    @if(!empty($docs['file_name']))
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="attachment-icon bg-green-50 text-green-500">
+                                                <i class="ti ti-file-text fs-5"></i>
+                                            </div>
+                                            <div class="ms-3">
+                                                <p class="mb-0 fw-medium text-truncate" style="max-width: 250px;">
+                                                    {{ $docs['file_name'] }}
+                                                </p>
+                                                <small
+                                                    class="text-muted">{{ $docs['created_at']->format('M d, Y h:i A') }}</small>
+                                            </div>
                                         </div>
-                                    @endforeach
-                                @endif
-
-                                <!-- Link Attachments -->
-                                @php
-                                    $linkAttachments = $taskMedias->where('category', 'link')->where('task_id', $taskStat['task_id'])->groupBy('task_id');
-                                @endphp
-                                @if($linkAttachments->isNotEmpty())
-                                    <h6 class="text-muted mb-3"><i class="ti ti-link me-2"></i> Links</h6>
-                                    @foreach ($linkAttachments as $taskId => $links)
-                                        <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
-                                            @foreach ($links as $taskMedia)
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="attachment-icon bg-green-50 text-green-500">
-                                                            <i class="ti ti-paperclip fs-5"></i>
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <p class="mb-0 fw-medium text-truncate" style="max-width: 250px;">
-                                                                {{ $taskMedia->file_name }}
-                                                            </p>
-                                                            <small
-                                                                class="text-muted">{{ $taskMedia->created_at->format('M d, Y h:i A') }}</small>
-                                                        </div>
-                                                    </div>
-                                                    <a href="{{ $taskMedia->file_path }}" class="btn btn-sm btn-light text-success"
-                                                        target="_blank" title="Open {{ $taskMedia->file_name }}">
-                                                        <i class="ti ti-external-link"></i>
-                                                    </a>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endforeach
-                                @endif
-
-                                <!-- Link Attachments -->
-                                @php
-                                    $voiceNotes = $taskMedias->where('category', 'voice_note')->where('task_id', $taskStat['task_id'])->groupBy('task_id');
-                                @endphp
-                                @if($voiceNotes->isNotEmpty())
-                                    <h6 class="text-muted mb-3"><i class="ti ti-microphone me-2"></i> Voice Notes</h6>
-                                    @foreach ($voiceNotes as $taskId => $notes)
-                                        <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
-                                            @foreach ($notes as $taskMedia)
-                                                <div class="voice-note-container mb-3">
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="attachment-icon bg-purple-50 text-purple-500">
-                                                                <i class="ti ti-microphone fs-5"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <p class="mb-0 fw-medium">Voice Note</p>
-                                                                <small class="text-muted">
-                                                                    {{ $taskMedia->created_at->format('M d, Y h:i A') }}
-                                                                    {{ $taskMedia->duration ? $taskMedia->duration . ' sec' : '' }}
-                                                                </small>
-                                                            </div>
-                                                        </div>
-                                                        <div class="d-flex">
-                                                            <audio controls class="me-2" style="height: 36px;">
-                                                                <source src="../assets/uploads/{{ $taskMedia->file_name }}"
-                                                                    type="audio/mpeg">
-                                                                Your browser does not support the audio element.
-                                                            </audio>
-                                                            <a href="../assets/uploads/{{ $taskMedia->file_name }}"
-                                                                class="btn btn-sm btn-light text-purple-500 align-self-center"
-                                                                download title="Download Voice Note">
-                                                                <i class="ti ti-download"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endforeach
-                                @endif
-
-                                @if($documentAttachments->isEmpty() && $linkAttachments->isEmpty() && $voiceNoteAttachments->isEmpty())
+                                        <a href="../assets/uploads/{{ $docs['file_name'] }}" class="btn btn-sm btn-light text-success"
+                                            target="_blank" title="Open {{ $docs['file_name'] }}">
+                                            <i class="ti ti-download"></i>
+                                        </a>
+                                    </div>
+                                    @else
                                     <div class="text-center py-4 text-muted">
                                         <i class="ti ti-files-off fs-5"></i>
-                                        <p class="mt-2 mb-0">No attachments found</p>
-                                        <small class="d-block mt-1">Upload documents, links or voice notes to get
-                                            started</small>
+                                        <p class="mt-2 mb-0">No documents found</p>
+                                        <small class="d-block mt-1">Upload documents to get started</small>
                                     </div>
-                                @endif
+                                    @endif
+                                    @endforeach
+                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2">
+                                        <i class="ti ti-file-text me-2"></i>Add Documents
+                                    </button>
+                                </div>
 
-                                <button class="btn btn-outline-primary w-100 mt-3 py-2">
-                                    <i class="ti ti-paperclip me-2"></i>Add Attachment
-                                </button>
+                                <!-- Link Attachments -->
+                                <h6 class="text-muted mb-3"><i class="ti ti-link me-2"></i> Links</h6>
+                                <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
+                                    @foreach ($taskIdData['links'] as $docs)
+                                    @if(!empty($docs['file_name']))
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="attachment-icon bg-green-50 text-green-500">
+                                                <i class="ti ti-paperclip fs-5"></i>
+                                            </div>
+                                            <div class="ms-3">
+                                                <p class="mb-0 fw-medium text-truncate" style="max-width: 250px;">
+                                                    {{ $docs['file_name'] }}
+                                                </p>
+                                                <small
+                                                    class="text-muted">{{ $docs['created_at']->format('M d, Y h:i A') }}</small>
+                                            </div>
+                                        </div>
+                                        <a href="../assets/uploads/{{ $docs['file_name'] }}" class="btn btn-sm btn-light text-success"
+                                            target="_blank" title="Open {{ $docs['file_name'] }}">
+                                            <i class="ti ti-external-link"></i>
+                                        </a>
+                                    </div>
+                                    @else
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="ti ti-files-off fs-5"></i>
+                                        <p class="mt-2 mb-0">No documents found</p>
+                                        <small class="d-block mt-1">Upload documents to get started</small>
+                                    </div>
+                                    @endif
+                                    @endforeach
+                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2">
+                                        <i class="ti ti-link me-2"></i>Add Links
+                                    </button>
+                                </div>
+
+                                <!-- Link Attachments -->
+                                <h6 class="text-muted mb-3"><i class="ti ti-microphone me-2"></i> Voice Notes</h6>
+                                <div class="attachment-group mb-3 p-3 rounded bg-gray-50 shadow-sm">
+                                    @foreach ($taskIdData['voice_notes'] as $docs)
+                                    @if(!empty($docs['file_name']))
+                                    <div class="voice-note-container mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="attachment-icon bg-purple-50 text-purple-500">
+                                                    <i class="ti ti-microphone fs-5"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <p class="mb-0 fw-medium">Voice Note</p>
+                                                    <small class="text-muted">
+                                                        {{ $docs['created_at']->format('M d, Y h:i A') }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex">
+                                                <audio controls class="me-2" style="height: 36px;">
+                                                    <source src="../assets/uploads/{{ $docs['file_name'] }}"
+                                                        type="audio/mpeg">
+                                                    Your browser does not support the audio element.
+                                                </audio>
+                                                <a href="../assets/uploads/{{ $docs['file_name'] }}"
+                                                    class="btn btn-sm btn-light text-purple-500 align-self-center"
+                                                    download title="Download Voice Note">
+                                                    <i class="ti ti-download"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="ti ti-files-off fs-5"></i>
+                                        <p class="mt-2 mb-0">No voice notes found</p>
+                                        <small class="d-block mt-1">Upload voice notes to get started</small>
+                                    </div>
+                                    @endif
+                                    @endforeach
+                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2">
+                                        <i class="ti ti-microphone me-2"></i>Add Voice Notes
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

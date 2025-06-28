@@ -11,18 +11,12 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                                <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                                <path d="M10 9H8" />
-                                <path d="M16 13H8" />
-                                <path d="M16 17H8" />
-                            </svg>
+                            <i class="ti ti-file-text text-white"></i>
                         </div>
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Total Projects</h6>
-                        <h3 class="fw-bold text-dark mt-1"></h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$totalProjects}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -35,15 +29,12 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg>
+                            <i class="ti ti-clock text-white"></i>
                         </div>
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">In Progress</h6>
-                        <h3 class="fw-bold text-dark mt-1"></h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$inProcessProjectCount}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -56,15 +47,12 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M21.801 10A10 10 0 1 1 17 3.335" />
-                                <path d="m9 11 3 3L22 4" />
-                            </svg>
+                            <i class="ti ti-circle-check text-white"></i>
                         </div>
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Completed</h6>
-                        <h3 class="fw-bold text-dark mt-1"></h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$completedProjectCount}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -77,16 +65,12 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10" />
-                                <line x1="12" x2="12" y1="8" y2="12" />
-                                <line x1="12" x2="12.01" y1="16" y2="16" />
-                            </svg>
+                            <i class="ti ti-info-circle-filled text-white"></i>
                         </div>
                     </div>
                     <div class="mt-3">
                         <h6 class="text-muted mb-0">Pending</h6>
-                        <h3 class="fw-bold text-dark mt-1"></h3>
+                        <h3 class="fw-bold text-dark mt-1">{{$pendingProjectCount}}</h3>
                         <small class="text-muted">from last month</small>
                     </div>
                 </div>
@@ -101,9 +85,7 @@
         <h2 class="h5 fw-semibold text-dark">Project Overview</h2>
         <div class="d-flex align-items-center gap-2">
             <button class="btn btn-outline-secondary btn-sm d-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z" />
-                </svg>
+                <i class="ti ti-filter" style="font-size: 16px;"></i>
                 Filter
             </button>
             <button class="btn btn-outline-secondary btn-sm">View All</button>
@@ -112,6 +94,7 @@
 
     <div class="row g-3">
         <!-- Card -->
+        @foreach($projectNames as $project)
         <div class="col-12 col-md-6 col-xxl-4">
             <div class="card border shadow-sm h-100">
                 <div class="card-body pb-2">
@@ -120,34 +103,23 @@
                             <div class="me-2" style="width: 4px; background-color: #facc15; border-radius: 2px;"></div>
                             <div>
                                 <h5 class="card-title d-flex align-items-center mb-1">
-                                    Figma Design System
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="ms-2 text-warning" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-                                    </svg>
+                                    {{ $project }}
+                                    <i class="ti ti-star-filled ms-2 text-warning" style="font-size: 16px;"></i>
                                 </h5>
-                                <p class="card-subtitle text-muted small">UI component library for design system</p>
+                                <p class="card-subtitle text-muted small"></p>
                             </div>
                         </div>
-                        <span class="badge bg-warning text-dark align-self-start">In Progress</span>
+                        <span class="badge bg-warning text-dark align-self-start"></span>
                     </div>
                 </div>
                 <div class="card-body pt-0">
                     <div class="d-flex justify-content-between text-muted small mb-2">
                         <div class="d-flex align-items-center">
-                            <svg class="me-1" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 2v4"></path>
-                                <path d="M16 2v4"></path>
-                                <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                                <path d="M3 10h18"></path>
-                            </svg>
-                            Deadline: Nov 15, 2023
+                            <i class="ti ti-calendar me-1" style="font-size: 16px;"></i>
+                            Deadline:
                         </div>
                         <button class="btn btn-sm btn-light p-1">
-                            <svg class="text-secondary" width="16" height="16" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="19" cy="12" r="1" />
-                                <circle cx="5" cy="12" r="1" />
-                            </svg>
+                            <i class="ti ti-dots text-secondary" style="font-size: 16px;"></i>
                         </button>
                     </div>
                     <div class="mb-3">
@@ -171,21 +143,11 @@
                         </div>
                         <div class="d-flex gap-3 small text-muted">
                             <div class="d-flex align-items-center">
-                                <svg class="me-1" width="14" height="14" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                                    <path d="M10 9H8" />
-                                    <path d="M16 13H8" />
-                                    <path d="M16 17H8" />
-                                </svg>
+                                <i class="ti ti-file-description me-1" style="font-size: 14px;"></i>
                                 24 tasks
                             </div>
                             <div class="d-flex align-items-center">
-                                <svg class="me-1" width="14" height="14" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <line x1="18" x2="18" y1="20" y2="10"></line>
-                                    <line x1="12" x2="12" y1="20" y2="4"></line>
-                                    <line x1="6" x2="6" y1="20" y2="14"></line>
-                                </svg>
+                                <i class="ti ti-chart-bar me-1" style="font-size: 14px;"></i>
                                 128 activities
                             </div>
                         </div>
@@ -193,168 +155,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-xxl-4">
-            <div class="card border shadow-sm h-100">
-                <div class="card-body pb-2">
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex">
-                            <div class="me-2" style="width: 4px; background-color: #facc15; border-radius: 2px;"></div>
-                            <div>
-                                <h5 class="card-title d-flex align-items-center mb-1">
-                                    Figma Design System
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="ms-2 text-warning" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-                                    </svg>
-                                </h5>
-                                <p class="card-subtitle text-muted small">UI component library for design system</p>
-                            </div>
-                        </div>
-                        <span class="badge bg-warning text-dark align-self-start">In Progress</span>
-                    </div>
-                </div>
-                <div class="card-body pt-0">
-                    <div class="d-flex justify-content-between text-muted small mb-2">
-                        <div class="d-flex align-items-center">
-                            <svg class="me-1" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 2v4"></path>
-                                <path d="M16 2v4"></path>
-                                <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                                <path d="M3 10h18"></path>
-                            </svg>
-                            Deadline: Nov 15, 2023
-                        </div>
-                        <button class="btn btn-sm btn-light p-1">
-                            <svg class="text-secondary" width="16" height="16" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="19" cy="12" r="1" />
-                                <circle cx="5" cy="12" r="1" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between small mb-1">
-                            <span class="text-muted">Progress</span><span class="fw-medium">65%</span>
-                        </div>
-                        <div class="progress" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-primary" style="width: 65%"></div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="aspect-square-container mb-2">
-                            <div class="aspect-square-box">
-                                <img class="aspect-square"
-                                    src="../assets/images/profile_picture/user.png">
-                            </div>
-                            <div class="aspect-square-box">
-                                <img class="aspect-square"
-                                    src="../assets/images/profile_picture/user.png">
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3 small text-muted">
-                            <div class="d-flex align-items-center">
-                                <svg class="me-1" width="14" height="14" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                                    <path d="M10 9H8" />
-                                    <path d="M16 13H8" />
-                                    <path d="M16 17H8" />
-                                </svg>
-                                24 tasks
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <svg class="me-1" width="14" height="14" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <line x1="18" x2="18" y1="20" y2="10"></line>
-                                    <line x1="12" x2="12" y1="20" y2="4"></line>
-                                    <line x1="6" x2="6" y1="20" y2="14"></line>
-                                </svg>
-                                128 activities
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6 col-xxl-4">
-            <div class="card border shadow-sm h-100">
-                <div class="card-body pb-2">
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex">
-                            <div class="me-2" style="width: 4px; background-color: #facc15; border-radius: 2px;"></div>
-                            <div>
-                                <h5 class="card-title d-flex align-items-center mb-1">
-                                    Figma Design System
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="ms-2 text-warning" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-                                    </svg>
-                                </h5>
-                                <p class="card-subtitle text-muted small">UI component library for design system</p>
-                            </div>
-                        </div>
-                        <span class="badge bg-warning text-dark align-self-start">In Progress</span>
-                    </div>
-                </div>
-                <div class="card-body pt-0">
-                    <div class="d-flex justify-content-between text-muted small mb-2">
-                        <div class="d-flex align-items-center">
-                            <svg class="me-1" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 2v4"></path>
-                                <path d="M16 2v4"></path>
-                                <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                                <path d="M3 10h18"></path>
-                            </svg>
-                            Deadline: Nov 15, 2023
-                        </div>
-                        <button class="btn btn-sm btn-light p-1">
-                            <svg class="text-secondary" width="16" height="16" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="19" cy="12" r="1" />
-                                <circle cx="5" cy="12" r="1" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between small mb-1">
-                            <span class="text-muted">Progress</span><span class="fw-medium">65%</span>
-                        </div>
-                        <div class="progress" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-primary" style="width: 65%"></div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="aspect-square-container mb-2">
-                            <div class="aspect-square-box">
-                                <img class="aspect-square"
-                                    src="../assets/images/profile_picture/user.png">
-                            </div>
-                            <div class="aspect-square-box">
-                                <img class="aspect-square"
-                                    src="../assets/images/profile_picture/user.png">
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3 small text-muted">
-                            <div class="d-flex align-items-center">
-                                <svg class="me-1" width="14" height="14" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                                    <path d="M10 9H8" />
-                                    <path d="M16 13H8" />
-                                    <path d="M16 17H8" />
-                                </svg>
-                                24 tasks
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <svg class="me-1" width="14" height="14" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <line x1="18" x2="18" y1="20" y2="10"></line>
-                                    <line x1="12" x2="12" y1="20" y2="4"></line>
-                                    <line x1="6" x2="6" y1="20" y2="14"></line>
-                                </svg>
-                                128 activities
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
 </section>
 
@@ -372,10 +173,7 @@
                         </div>
                         <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
                             This Month
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
-                                <path d="M6 9l6 6 6-6" />
-                            </svg>
+                            <i class="ti ti-chevron-down" style="font-size: 16px;"></i>
                         </button>
                     </div>
                     <!-- Chart Placeholder -->
@@ -397,12 +195,7 @@
                             <div class="text-muted small">Your task completion rate</div>
                         </div>
                         <button type="button" class="btn btn-light btn-sm p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="19" cy="12" r="1" />
-                                <circle cx="5" cy="12" r="1" />
-                            </svg>
+                            <i class="ti ti-dots" style="font-size: 16px;"></i>
                         </button>
                     </div>
 

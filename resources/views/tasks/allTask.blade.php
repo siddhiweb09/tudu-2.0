@@ -176,15 +176,16 @@
 <!-- Blade View -->
 <div class="container-xxl py-4">
     <!-- User Status Ring Section -->
+
     <div class="mt-2 px-4 py-2">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h4 class="card-title mb-0 fw-bold">In Review Tasks </h4>
-                <p class="text-muted mb-0">Track your in review tasks.</p>
+                <h4 class="card-title mb-0 fw-bold">All Tasks </h4>
+                <p class="text-muted mb-0">Track your all tasks.</p>
             </div>
         </div>
 
-         <div class="kanban-board">
+        <div class="kanban-board">
             <div class="row g-4">
                 @foreach(['High', 'Medium', 'Low'] as $priority)
                 @php

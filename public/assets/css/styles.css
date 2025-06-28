@@ -1607,10 +1607,6 @@ img.aspect-square {
     box-shadow: var(--bs-box-shadow) !important;
 }
 
-.badge {
-    height: 20px;
-}
-
 .document-box {
     margin-bottom: 1rem;
 }
