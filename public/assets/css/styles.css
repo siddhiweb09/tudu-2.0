@@ -1040,6 +1040,11 @@ li.select2-selection__choice {
     color: white !important;
 }
 
+.select2-container--default .select2-selection--single {
+    height: auto !important;
+    padding: 0.50rem 0.25rem !important;
+}
+
 /* task form end */
 
 /* personal tasks csss */

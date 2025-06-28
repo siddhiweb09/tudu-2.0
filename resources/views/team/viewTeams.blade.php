@@ -221,7 +221,7 @@
                                                         @endphp
                                                         <div class="aspect-square-container p-0 w-auto aspect-gap">
                                                             <div class="aspect-square-box">
-                                                                @if (!empty($profile))
+                                                                @if (!empty($member->profile_picture))
                                                                     <img class="aspect-square rounded-circle" alt="{{ $name }}"
                                                                         src="{{ asset('assets/images/profile_picture/' . $member->profile_picture) }}">
                                                                 @else
@@ -324,7 +324,7 @@
                             </div>
                             <div class="mb-3 col-lg-6 col-12">
                                 <label for="teamLeader" class="form-label">Team Leader</label>
-                                <select class="form-control" id="teamLeader" name="team_leader">
+                                <select class="form-control select2" id="teamLeader" name="team_leader">
                                     <option value="">Select Team Leader</option>
                                     @if ($authusers->isEmpty())
                                         <option value="">No Users Found</option>
@@ -442,6 +442,12 @@
                 placeholder: "Select Team Members",
                 allowClear: true,
                 width: '100%' // Ensures it takes full container width
+            });
+
+            $('#teamLeader').select2({
+                placeholder: 'Select Team Leader',
+                allowClear: true,
+                width: '100%'
             });
             // Update team visibility state + show/hide Members Visibility section
             function updateVisibilityNote() {
