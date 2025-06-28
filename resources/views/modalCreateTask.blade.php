@@ -40,7 +40,7 @@
                         </div>
 
                         <!-- Form Sections -->
-                        <form id="form1" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
+                        <form id="form4" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
                             @csrf
 
                             <!-- Step 1: Task Info -->

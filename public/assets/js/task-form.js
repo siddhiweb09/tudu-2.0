@@ -150,8 +150,11 @@ function initializeTaskForm(formId) {
 
     let taskCounter = 1;
 
+    console.log(formId);
+
     // Add new task field
     $(document).on("click", `#${formId} .add-task-btn`, function () {
+        alert(formId);
         taskCounter++;
         const newTask = `
             <div class="task-item mb-3" data-task-id="${taskCounter}">
