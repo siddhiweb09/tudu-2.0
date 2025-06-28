@@ -1040,6 +1040,11 @@ li.select2-selection__choice {
     color: white !important;
 }
 
+.select2-container--default .select2-selection--single {
+    height: auto !important;
+    padding: 0.50rem 0.25rem !important;
+}
+
 /* task form end */
 
 /* personal tasks csss */
@@ -1582,3 +1587,31 @@ img.aspect-square {
 }
 
 /* task details modal end */
+
+/* teams css start */
+
+.small-text {
+    font-size: 0.80rem;
+}
+
+/* teams css start */
+
+.dropdown-item::before {
+    content: none !important;
+}
+
+.dropdown-menu .dropdown-item {
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 0.375rem; /* slightly rounded */
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: #f8f9fa;
+    color: #000;
+}
+
+.dropdown-menu .dropdown-item:active {
+    background-color: #e9ecef;
+    color: #000;
+}
