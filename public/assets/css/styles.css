@@ -1595,3 +1595,23 @@ img.aspect-square {
 }
 
 /* teams css start */
+
+.dropdown-item::before {
+    content: none !important;
+}
+
+.dropdown-menu .dropdown-item {
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 0.375rem; /* slightly rounded */
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: #f8f9fa;
+    color: #000;
+}
+
+.dropdown-menu .dropdown-item:active {
+    background-color: #e9ecef;
+    color: #000;
+}
