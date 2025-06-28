@@ -443,11 +443,17 @@
                 allowClear: true,
                 width: '100%' // Ensures it takes full container width
             });
+            
+            $(document).on("shown.bs.modal", ".modal", function () {
+                const modalId = $(this).attr("id");
 
-            $('#teamLeader').select2({
-                placeholder: 'Select Team Leader',
-                allowClear: true,
-                width: '100%'
+                // Re-initialize select2 inside this modal
+                $('#teamLeader').select2({
+                    placeholder: 'Select Team Leader',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#' + modalId) // Ensure dropdown is not clipped
+                });
             });
             // Update team visibility state + show/hide Members Visibility section
             function updateVisibilityNote() {
