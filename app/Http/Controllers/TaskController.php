@@ -505,6 +505,10 @@ class TaskController extends Controller
             return $tasks->count();
         });
 
+        $tasksByProject = $allTasks->filter(fn($task) => !empty($task->project_name))
+            ->groupBy('project_name')
+            ->map->count();
+
         return response()->json([
             'user' => [
                 'id' => $proUser->id,
@@ -519,7 +523,7 @@ class TaskController extends Controller
             'breakdown' => [
                 'by_status' => $tasksByStatus,
                 'by_priority' => $tasksByPriority,
-                'by_project' => $allTasks->groupBy('project_name')->map->count(),
+                'by_project' =>  $tasksByProject,
             ],
             'all_tasks' => $allTasks->map(function ($task) {
                 // Common fields for both Task and DelegatedTask
