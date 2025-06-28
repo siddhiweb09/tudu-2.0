@@ -36,20 +36,30 @@ class TeamController extends Controller
 
         // dd($teams);
 
-        // ✅ Collect all unique member codes from visible teams
+        // ✅ Collect all unique member codes
         $memberCodes = collect($teams)
             ->flatMap(function ($team) {
                 return json_decode($team->team_members, true) ?? [];
             })
-            ->map(function ($member) {
-                return explode('*', $member)[0]; // Get employee_code only
-            })
+            ->map(fn($member) => explode('*', $member)[0])
+            ->unique();
+
+        // ✅ Collect all unique leader codes
+        $leaderCodes = $teams
+            ->pluck('team_leader')
+            ->filter()
+            ->map(fn($leader) => explode('*', $leader)[0])
+            ->unique();
+
+        // ✅ Merge all codes (members + leaders)
+        $allUserCodes = $memberCodes
+            ->merge($leaderCodes)
             ->unique()
             ->values();
 
-        // ✅ Fetch only team members with profile pictures
-        $users = User::whereIn('employee_code', $memberCodes)
-            ->select('employee_code', 'employee_name', 'profile_picture')
+        // ✅ Fetch users with their profile_picture
+        $users = User::whereIn('employee_code', $allUserCodes)
+            ->select('employee_code', 'employee_name', 'profile_picture', 'department', 'branch')
             ->get()
             ->keyBy('employee_code');
 
@@ -110,6 +120,7 @@ class TeamController extends Controller
             return response()->json([], 404);
         }
 
+        // Parse team members
         $membersRaw = json_decode($team->team_members, true);
         $members = [];
 
@@ -130,8 +141,29 @@ class TeamController extends Controller
             }
         }
 
-        return response()->json($members);
+        // Parse team leader
+        $leader = null;
+        if ($team->team_leader) {
+            [$leaderCode, $leaderName] = explode('*', $team->team_leader);
+            $leaderUser = User::where('employee_code', $leaderCode)->first();
+
+            if ($leaderUser) {
+                $leader = [
+                    'employee_code' => $leaderUser->employee_code,
+                    'employee_name' => $leaderUser->employee_name,
+                    'profile_picture' => $leaderUser->profile_picture,
+                    'department' => $leaderUser->department,
+                    'branch' => $leaderUser->branch
+                ];
+            }
+        }
+
+        return response()->json([
+            'leader' => $leader,
+            'members' => $members
+        ]);
     }
+
 
     public function deleteTeam(Request $request)
     {

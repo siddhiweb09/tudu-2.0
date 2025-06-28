@@ -151,8 +151,8 @@
                         <div class="row">
                             @forelse ($group as $team)
                                 @php
-                                    $teamMembers = json_decode($team->team_members, true);
-                                    $memberCount = is_array($teamMembers) ? count($teamMembers) : 0;
+                                        $teamMembers = json_decode($team->team_members, true) ?? [];
+                                        $memberCount = count($teamMembers) + 1; // +1 for leader
                                 @endphp
 
                                 <div class="col-lg-4 col-md-6 mb-4">
@@ -184,20 +184,31 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <i class="ti ti-crown text-warning me-2"></i>
-                                                    <div>
-                                                        <small class="text-muted d-block">Leader</small>
+                                                @php
+                                                    [$leaderCode, $leaderName] = explode('*', $team->team_leader);
+                                                    $leader = $users[$leaderCode] ?? null; 
+                                                @endphp
+
+                                                @if($leader)
+                                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                                        @if (!empty($leader->profile_picture))
+                                                            <img src="{{ asset('assets/images/profile_picture/' . $leader->profile_picture) }}"
+                                                                alt="{{ $leaderName }}" class="aspect-square rounded-circle" width="32" height="32">
+                                                        @else
+                                                            <img src="{{ asset('assets/images/profile_picture/user.png') }}"
+                                                                alt="{{ $leaderName }}" class="aspect-square rounded-circle" width="32" height="32">
+                                                        @endif
+
                                                         <span class="fw-medium">{{ $team->team_leader }}</span>
+                                                        <i class="ti ti-crown text-warning" title="Team Leader"></i>
                                                     </div>
-                                                </div>
+                                                @endif
 
                                                 <div class="d-flex align-items-center">
                                                     <i class="ti ti-users text-primary me-2"></i>
                                                     <div>
                                                         <small class="text-muted d-block">Members</small>
-                                                        <span class="fw-medium">{{ $memberCount }}
-                                                            {{ $memberCount === 1 ? 'member' : 'members' }}</span>
+                                                        <span class="fw-medium">{{ $memberCount }} {{ $memberCount === 1 ? 'member' : 'members' }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -391,6 +402,7 @@
         </div>
     </div>
 
+    <!-- Edit Teams Modal -->
     <div class="modal fade" id="editTeamModal" tabindex="-1" aria-labelledby="editTeamLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content rounded-4">
@@ -522,33 +534,61 @@
                     method: 'GET',
                     dataType: 'json',
                     success: function (data) {
-                        if (data.length === 0) {
-                            $container.html(
-                                '<p class="text-muted text-center">No members found.</p>');
+                        const { leader, members } = data;
+
+                        if (!leader && members.length === 0) {
+                            $container.html('<p class="text-muted text-center">No members found.</p>');
                             return;
                         }
 
-                        let cards = `
-                                                                                                                            <div class="row row-cols-1 row-cols-md-2 g-3">
-                                                                                                                                ${data.map(member => `
-                                                                                                                                    <div class="col">
-                                                                                                                                        <div class="card border-0 shadow-sm rounded-4">
-                                                                                                                                            <div class="card-body d-flex align-items-center gap-3">
-                                                                                                                                                <img src="/assets/images/profile_picture/${member.profile_picture || 'user.png'}"
-                                                                                                                                                        class="rounded-circle border" width="48" height="48" alt="${member.employee_name}">
-                                                                                                                                                <div>
-                                                                                                                                                    <h6 class="mb-0 fw-semibold">${member.employee_name}</h6>
-                                                                                                                                                    <small class="text-muted d-block">Department: ${member.department || 'N/A'}</small>
-                                                                                                                                                    <small class="text-muted">Branch: ${member.branch || 'Team Member'}</small>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                `).join("")}
-                                                                                                                            </div>
-                                                                                                                        `;
+                        let cards = `<div class="row row-cols-1 row-cols-md-2 g-3">`;
+
+                        // Leader card (with crown)
+                        if (leader) {
+                            cards += `
+                            <div class="col">
+                                <div class="card border-0 shadow-sm rounded-4 position-relative">
+                                    <div class="card-body d-flex align-items-center gap-3">
+                                        <div class="position-relative">
+                                            <img src="/assets/images/profile_picture/${leader.profile_picture || 'user.png'}"
+                                                 class="rounded-circle border" width="48" height="48" alt="${leader.employee_name}">
+                                            <span class="position-absolute top-0 start-100 translate-middle badge bg-warning p-1" title="Team Leader" style="font-size: 0.65rem;">
+                                                <i class="ti ti-crown"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">${leader.employee_code}*${leader.employee_name}</h6>
+                                            <div class="text-muted small-text">Department: ${leader.department || 'N/A'}</div>
+                                            <div class="text-muted small-text">Branch: ${leader.branch || 'Team Leader'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
+
+                        // Members cards
+                        members.forEach(member => {
+                            cards += `
+                            <div class="col">
+                                <div class="card border-0 shadow-sm rounded-4">
+                                    <div class="card-body d-flex align-items-center gap-3">
+                                        <img src="/assets/images/profile_picture/${member.profile_picture || 'user.png'}"
+                                             class="rounded-circle border" width="48" height="48" alt="${member.employee_name}">
+                                        <div>
+                                            <h6 class="mb-0 fw-medium">${member.employee_code}*${member.employee_name}</h6>
+                                            <div class="text-muted small-text">Department: ${member.department || 'N/A'}</div>
+                                            <div class="text-muted small-text">Branch: ${member.branch || 'Team Member'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        });
+
+                        cards += `</div>`;
 
                         $container.html(cards);
+
+
                     },
                     error: function () {
                         $container.html(
@@ -621,12 +661,12 @@
 
                 // Show loader
                 $('#editTeamsContainer').html(`
-                                                                <div class="d-flex justify-content-center align-items-center p-5">
-                                                                    <div class="spinner-border text-primary" role="status">
-                                                                        <span class="visually-hidden">Loading...</span>
-                                                                    </div>
-                                                                </div>
-                                                            `);
+                                                                                <div class="d-flex justify-content-center align-items-center p-5">
+                                                                                    <div class="spinner-border text-primary" role="status">
+                                                                                        <span class="visually-hidden">Loading...</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            `);
 
                 $.ajax({
                     url: `/fetch-team-data/${teamCode}`,
@@ -666,57 +706,57 @@
                                 : 'Public (Visible to all)';
 
                             const formHtml = `
-                                                                                <form id="editTeamForm" enctype="multipart/form-data" method="post">
+                                                                                                <form id="editTeamForm" enctype="multipart/form-data" method="post">
 
-                                                                                    <input type="hidden" name="team_code" value="${team.team_code}">
+                                                                                                    <input type="hidden" name="team_code" value="${team.team_code}">
 
-                                                                                        <div class="mb-3 col-12">
-                                                                                            <label for="editTeamName" class="form-label">Team Name</label>
-                                                                                            <input type="text" class="form-control" id="editTeamName" name="team_name" value="${team.team_name}">
-                                                                                        </div>
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamName" class="form-label">Team Name</label>
+                                                                                                            <input type="text" class="form-control" id="editTeamName" name="team_name" value="${team.team_name}">
+                                                                                                        </div>
 
-                                                                                        <div class="mb-3 col-12">
-                                                                                            <label for="editTeamLeader" class="form-label">Team Leader</label>
-                                                                                            <select class="form-control" id="editTeamLeader" name="team_leader">
-                                                                                                ${leaderOptions}
-                                                                                            </select>
-                                                                                        </div>
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamLeader" class="form-label">Team Leader</label>
+                                                                                                            <select class="form-control" id="editTeamLeader" name="team_leader">
+                                                                                                                ${leaderOptions}
+                                                                                                            </select>
+                                                                                                        </div>
 
-                                                                                        <div class="mb-3 col-12">
-                                                                                            <label for="editTeamAvatar" class="form-label">Team Avatar</label>
-                                                                                            ${avatarPreview}
-                                                                                            <input type="file" class="form-control" id="editTeamAvatar" name="team_avatar" accept="image/png, image/jpeg, image/jpg">
-                                                                                        </div>
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamAvatar" class="form-label">Team Avatar</label>
+                                                                                                            ${avatarPreview}
+                                                                                                            <input type="file" class="form-control" id="editTeamAvatar" name="team_avatar" accept="image/png, image/jpeg, image/jpg">
+                                                                                                        </div>
 
-                                                                                        <div class="mb-3 col-12">
-                                                                                            <label for="editTeamMembers" class="form-label">Select Team Members</label>
-                                                                                            <select class="form-select select2" id="editTeamMembers" name="team_members[]" multiple>
-                                                                                                ${memberOptions}
-                                                                                            </select>
-                                                                                        </div>
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamMembers" class="form-label">Select Team Members</label>
+                                                                                                            <select class="form-select select2" id="editTeamMembers" name="team_members[]" multiple>
+                                                                                                                ${memberOptions}
+                                                                                                            </select>
+                                                                                                        </div>
 
-                                                                                        <div class="mb-3 col-12">
-                                                                                            <div class="select-card active-on-hover p-3">
-                                                                                                <label class="form-label d-block">Team Visibility</label>
-                                                                                                <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="editTeamVisibility" ${visibilityChecked}>
-            <label class="form-check-label mb-1" for="editTeamVisibility">${visibilityLabel}</label>
-            <input type="hidden" name="team_visibility" id="editTeamVisibilityValue" value="${visibilityValue}">
-        </div>
-        <div id="editTeamVisibilityNote" class="mt-1 small text-muted">
-            ${visibilityNote}
-        </div>
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <div class="select-card active-on-hover p-3">
+                                                                                                                <label class="form-label d-block">Team Visibility</label>
+                                                                                                                <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="editTeamVisibility" ${visibilityChecked}>
+                            <label class="form-check-label mb-1" for="editTeamVisibility">${visibilityLabel}</label>
+                            <input type="hidden" name="team_visibility" id="editTeamVisibilityValue" value="${visibilityValue}">
+                        </div>
+                        <div id="editTeamVisibilityNote" class="mt-1 small text-muted">
+                            ${visibilityNote}
+                        </div>
 
-                                                                                            </div>
-                                                                                        </div>
+                                                                                                            </div>
+                                                                                                        </div>
 
-                                                                                        <div class="modal-footer border-top-0 mt-3 px-0">
-                                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                                            <button type="submit" class="btn btn-primary">Update Team</button>
-                                                                                        </div>
+                                                                                                        <div class="modal-footer border-top-0 mt-3 px-0">
+                                                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                                                            <button type="submit" class="btn btn-primary">Update Team</button>
+                                                                                                        </div>
 
-                                                                                </form>
-                                                                            `;
+                                                                                                </form>
+                                                                                            `;
 
                             $('#editTeamsContainer').html(formHtml);
                             $('.select2').select2(); // re-initialize if you're using Select2
@@ -762,8 +802,8 @@
                     },
                     beforeSend: function () {
                         $(form).find('button[type="submit"]').prop('disabled', true).html(`
-                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Updating...
-                                `);
+                                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Updating...
+                                                `);
                     },
                     success: function (res) {
                         if (res.status === 'success') {
