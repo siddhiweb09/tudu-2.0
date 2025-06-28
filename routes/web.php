@@ -99,6 +99,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/get-departments', [UserController::class, 'getDepartments']);
     Route::get('/get-users-by-department/{department}', [UserController::class, 'getUsersByDepartment']);
     Route::get('/get-task-visibility/{task_id}', [UserController::class, 'getTaskVisibilityUsers']);
+    Route::get('/get-team-members/{code}', [TeamController::class, 'getMembers']);
 
 
     // Personal Tasks Fetch Functions
@@ -111,7 +112,12 @@ Route::middleware(['auth:web'])->group(function () {
     //teams 
     Route::match(['get', 'post'], 'teams', [TeamController::class, 'teams'])->name('team.viewTeams');
     Route::post('/create-team', [TeamController::class, 'createTeam'])->name('store.createTeam');
-    Route::get('/projects', [UserController::class, 'project']);
+    Route::post('/delete-team', [TeamController::class, 'deleteTeam'])->name('teams.delete');
+    Route::get('/fetch-team-data/{code}', [TeamController::class, 'fetchTeamData'])->name('teams.fetchTeamData');
+    Route::post('/update-team', [TeamController::class, 'updateTeam'])->name('teams.update');
+
+
+    Route::get('/projects', [UserController::class,'project']);
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');
