@@ -174,7 +174,7 @@ class TaskController extends Controller
             $assignChatId = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('telegram_chat_id');
 
             if ($assignChatId) {
-                $message  = "📢 <b>New Task Assigned</b>\n\n";
+                $message = "📢 <b>New Task Assigned</b>\n\n";
                 $message .= "📌 <b>Title:</b> " . e($request->task_title) . "\n";
                 $message .= "⚠️ <b>Priority:</b> " . e($request->priority) . "\n";
                 $message .= "⏰ <b>Due Date:</b> " . ($request->due_date ?: 'Not Set') . "\n";
@@ -523,7 +523,7 @@ class TaskController extends Controller
             'breakdown' => [
                 'by_status' => $tasksByStatus,
                 'by_priority' => $tasksByPriority,
-                'by_project' =>  $tasksByProject,
+                'by_project' => $tasksByProject,
             ],
             'all_tasks' => $allTasks->map(function ($task) {
                 // Common fields for both Task and DelegatedTask
@@ -737,7 +737,7 @@ class TaskController extends Controller
             $assignChatId = DB::table('users')->where('employee_code', $assign_to_employee_code)->value('telegram_chat_id');
 
             if ($assignChatId) {
-                $message  = "📢 <b>New Task Delegated</b>\n\n";
+                $message = "📢 <b>New Task Delegated</b>\n\n";
                 $message .= "📌 <b>Title:</b> " . e($request->delegate_task_title) . "\n";
                 $message .= "⚠️ <b>Priority:</b> " . e($request->priority) . "\n";
                 $message .= "⏰ <b>Due Date:</b> " . ($request->due_date ?: 'Not Set') . "\n";
@@ -991,7 +991,8 @@ class TaskController extends Controller
 
     private function getTaskTitle($id, $task, $delegatedTasks)
     {
-        if ($id == $task->task_id) return $task->title;
+        if ($id == $task->task_id)
+            return $task->title;
 
         return optional($delegatedTasks->firstWhere('delegate_task_id', $id))->title ?? 'Untitled';
     }
@@ -1245,7 +1246,7 @@ class TaskController extends Controller
             }
         }
         $allMemberCodes = array_values(array_unique(array_filter($allMemberCodes)));
-        $allTaskIds = (array)$allTaskIds;
+        $allTaskIds = (array) $allTaskIds;
 
         // clubbedInfo
         $teamMembers = User::whereIn('employee_code', $allMemberCodes)
@@ -1474,4 +1475,136 @@ class TaskController extends Controller
             'all_completed' => $incompleteCount === 0
         ]);
     }
+    public function deleteTask(Request $request)
+    {
+        $taskId = $request->task_id;
+
+        if (!$taskId) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No task ID provided.'
+            ], 400);
+        }
+
+        // If the task is a delegated task
+        if (Str::startsWith($taskId, 'DELTASK-')) {
+            $task = DelegatedTask::where('delegate_task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Delegated task not found.'
+                ], 404);
+            }
+
+            // Delete all related records by delegate_task_id
+            TaskSchedule::where('task_id', $taskId)->delete();
+            TaskMedia::where('task_id', $taskId)->delete();
+            TaskLog::where('task_id', $taskId)->delete();
+            TaskList::where('task_id', $taskId)->delete();
+            TaskComment::where('task_id', $taskId)->delete();
+
+            $task->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delegated task and all its associated data were deleted successfully.'
+            ]);
+        }
+        // Else, it's a main task
+        else {
+            $task = Task::where('task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Task not found.'
+                ], 404);
+            }
+
+            // Delete all related records by task_id
+            DelegatedTask::where('task_id', $taskId)->delete();
+            TaskSchedule::where('task_id', $taskId)->delete();
+            TaskMedia::where('task_id', $taskId)->delete();
+            TaskLog::where('task_id', $taskId)->delete();
+            TaskList::where('task_id', $taskId)->delete();
+            TaskComment::where('task_id', $taskId)->delete();
+
+            $task->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Task and all its associated data were deleted successfully.'
+            ]);
+        }
+    }
+
+    public function updateTaskPriority(Request $request)
+    {
+        $activeUser = Auth::user();
+        $usercode = $activeUser->employee_code . '*' . $activeUser->employee_name;
+
+        $request->validate([
+            'task_id' => 'required|string',
+            'priority' => 'required|in:low,medium,high',
+        ]);
+
+        $taskId = $request->input('task_id');
+        $newPriority = strtolower($request->input('priority'));
+
+        if (Str::startsWith($taskId, 'DELTASK-')) {
+            $task = DelegatedTask::where('delegate_task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Delegated task not found.',
+                ], 404);
+            }
+
+            $oldPriority = $task->priority;
+
+            $task->priority = $newPriority;
+            $task->save();
+
+            TaskLog::create([
+                'task_id' => $taskId,
+                'log_description' => 'Delegated task priority changed from ' . ucfirst($oldPriority) . ' to ' . ucfirst($newPriority) . ' by ' . $usercode,
+                'added_by' => $usercode
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delegated task priority updated successfully.',
+            ]);
+
+        } else {
+            $task = Task::where('task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Main task not found.',
+                ], 404);
+            }
+
+            $oldPriority = $task->priority;
+
+            $task->priority = $newPriority;
+            $task->save();
+
+            TaskLog::create([
+                'task_id' => $taskId,
+                'log_description' => 'Task priority changed from ' . ucfirst($oldPriority) . ' to ' . ucfirst($newPriority) . ' by ' . $usercode,
+                'added_by' => $usercode
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Main task priority updated successfully.',
+            ]);
+        }
+    }
+
+
 }

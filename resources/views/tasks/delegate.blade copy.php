@@ -79,7 +79,7 @@
                                                     <!-- Initial Task Field -->
                                                     <div class="task-item mb-3" data-task-id="1">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control task-input me-3"
+                                                            <input type="text" class="form-control task-input"
                                                                 name="tasks[]" placeholder="Enter task" required>
                                                             <button type="button"
                                                                 class="btn btn-inverse-primary rounded-circle add-task-btn">

@@ -137,7 +137,7 @@ $(document).ready(function () {
         const newTask = `
                         <div class="task-item mb-3" data-task-id="${taskCounter}">
                             <div class="input-group">
-                            <input type="text" class="form-control task-input me-3" name="tasks[]" placeholder="Enter task" required>
+                            <input type="text" class="form-control task-input" name="tasks[]" placeholder="Enter task" required>
                             <button type="button" class="btn btn-inverse-danger remove-task-btn">
                                 <i class="ti ti-minus"></i>
                             </button>
