@@ -8,6 +8,9 @@ use App\Http\Controllers\PersonalTaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaskController;
+use Illuminate\Http\Request;
+use App\Models\User;
+
 use Illuminate\Console\View\Components\Task;
 
 // Login page (GET)
@@ -27,6 +30,30 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth:web'])->group(function () {
     // Dashboard
     Route::get('/', [TaskController::class, 'dashboard'])->name('dashboard');
+
+    Route::post('/users/profile-pictures', function (Request $request) {
+        $codes = $request->input('codes', []);
+
+        // Validate input
+        if (empty($codes)) {
+            return response()->json(['error' => 'No employee codes provided'], 400);
+        }
+
+        // Fetch users with their profile pictures
+        $users = User::whereIn('employee_code', $codes)
+            ->select('employee_code', 'profile_picture')
+            ->get()
+            ->mapWithKeys(function ($user) {
+                return [
+                    $user->employee_code => $user->profile_picture
+                        ? asset('storage/' . $user->profile_picture)
+                        : asset('assets/images/profile_picture/user.jpg')
+                ];
+            });
+
+        return response()->json($users);
+    });
+
 
     Route::get('/profile/{user_id}', [UserController::class, 'userProfile'])->name('profile');
     Route::post('/user/change-picture/{user_id}', [UserController::class, 'changePicture'])
@@ -58,6 +85,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
     Route::match(['get', 'post'], '/task/{task_id}', [TaskController::class, 'taskDetails'])->name('tasks.taskDetails');
     Route::match(['get', 'post'], '/add-comment', [TaskController::class, 'addComment'])->name('addComment');
+    Route::post('delete-task', [TaskController::class, 'deleteTask'])->name('deleteTask');
 
 
     // Delegated Tasks
@@ -117,7 +145,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/update-team', [TeamController::class, 'updateTeam'])->name('teams.update');
 
 
-    Route::get('/projects', [UserController::class,'project']);
+    Route::get('/projects', [UserController::class, 'project']);
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');
