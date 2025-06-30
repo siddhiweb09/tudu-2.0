@@ -40,9 +40,8 @@
                         </div>
 
                         <!-- Form Sections -->
-                        <form id="form4" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
+                        <form id="create-form" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
                             @csrf
-
                             <!-- Step 1: Task Info -->
                             <div class="form-step active" data-step="1">
                                 <h2 class="h5 fw-semibold mb-4">Task Information</h2>
@@ -69,10 +68,10 @@
                                     <!-- Initial Task Field -->
                                     <div class="task-item mb-3" data-task-id="1">
                                         <div class="input-group">
-                                            <input type="text" class="form-control task-input me-3" name="tasks[]"
+                                            <input type="text" class="form-control task-input" name="tasks[]"
                                                 placeholder="Enter task" required>
                                             <button type="button"
-                                                class="btn btn-inverse-primary rounded-circle add-task-btn">
+                                                class="btn btn-inverse-primary add-task-btn">
                                                 <i class="ti ti-plus"></i>
                                             </button>
                                         </div>

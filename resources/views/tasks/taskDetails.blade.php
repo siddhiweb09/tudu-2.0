@@ -362,7 +362,7 @@
                             @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
                             @if ($taskIdData['each_task_info']['status'] === "Pending")
                             <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
-                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal_{{ $taskId }}"
                                 style="cursor: pointer;">
                                 <div class="card-body">
                                     <div class="row m-0 justify-content-between">
@@ -391,7 +391,7 @@
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
@@ -495,7 +495,7 @@
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
@@ -599,7 +599,7 @@
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
@@ -704,7 +704,7 @@
                                     {{-- Progress Info --}}
                                     <div class="row m-0 justify-content-between">
                                         <p class="text-muted w-auto m-0 p-0">Progress</p>
-                                        <div class="col-auto">{{ $taskIdData['task_progress'] }}%</div>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
                                     </div>
 
                                     <div class="progress mt-1 rounded-pill" style="height: 10px;">
