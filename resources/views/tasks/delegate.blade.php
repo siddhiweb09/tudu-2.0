@@ -7,7 +7,7 @@
             <div class="col-xl-10 col-lg-11 col-md-12">
 
                 <div class="card border-1 shadow-5 mt-3">
-                    <form id="form2" method="POST" enctype="multipart/form-data">
+                    <form id="delegate-tasks-form" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-header bg-animated-gradient text-white py-4">
                             <div class="d-flex align-items-center">
@@ -80,10 +80,10 @@
                                                 <!-- Initial Task Field -->
                                                 <div class="task-item mb-3" data-task-id="1">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control task-input me-3"
+                                                        <input type="text" class="form-control task-input"
                                                             name="tasks[]" placeholder="Enter task" required>
                                                         <button type="button"
-                                                            class="btn btn-inverse-primary rounded-circle add-task-btn">
+                                                            class="btn btn-inverse-primary add-task-btn">
                                                             <i class="ti ti-plus"></i>
                                                         </button>
                                                     </div>

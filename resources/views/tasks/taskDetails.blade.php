@@ -35,23 +35,96 @@
                 <div class="col">
                     <div class="card h-100 bg-light border-0">
                         <div class="card-body">
-                            <h6 class="text-muted">Progress</h6>
-                            <div class="row m-0 justify-content-between">
-                                <div class="col-auto p-0">
-                                    <h5 class="card-title">{{$task['clubbedInfo']['taskprogressPercentage']}} %</h5>
-                                </div>
-                                <div class="col-auto p-0">
-                                    <p class="card-text text-muted"><small>{{$task['clubbedInfo']['taskListCount']}} tasks
-                                            ({{$task['clubbedInfo']['taskInCompletedListCount']}}
-                                            completed)</small></p>
-                                </div>
-                            </div>
-                            <!-- Progress bar -->
-                            <div class="progress mt-2 rounded-pill" style="height: 20px;">
-                                <div class="progress-bar bg-success" role="progressbar"
-                                    style="width: {{ $task['clubbedInfo']['taskprogressPercentage'] }}%;"
-                                    aria-valuenow="{{ $task['clubbedInfo']['taskprogressPercentage'] }}" aria-valuemin="0"
-                                    aria-valuemax="100">
+                            @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                            @if ($taskIdData['each_task_info']['status'] === "Pending")
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal_{{ $taskId }}"
+                                style="cursor: pointer;">
+                                <div class="card-body">
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto fw-medium p-0 m-0">
+                                            {{ $taskId == $task['task_info']['task_id'] ? 'Main Task' : 'Delegated Task' }}
+                                        </p>
+                                        <div class="col-auto p-0">
+                                            @if($taskIdData['each_task_info']['priority'] === "high")
+                                            <span class="badge badge-light-danger rounded">
+                                                <i class="ti ti-flame me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @elseif($taskIdData['each_task_info']['priority'] === "medium")
+                                            <span class="badge badge-light-warning rounded">
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-light-success rounded">
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
+                                    </div>
+
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
+                                        </p>
+                                    </div>
+
+                                    <div class="row mt-2 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i
+                                                class="ti ti-dots-vertical"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -60,10 +133,101 @@
                 <div class="col">
                     <div class="card h-100 bg-light border-0">
                         <div class="card-body">
-                            <h6 class="text-muted">Assigned by</h6>
-                            <h5 class="card-title">{{$task['task_info']['assign_by']}}</h5>
-                            <p class="card-text text-muted"><small>Final status:
-                                    {{$task['task_info']['final_status']}}</small></p>
+                            @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                            @if ($taskIdData['each_task_info']['status'] === "In Progress")
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskId }}"
+                                style="cursor: pointer;">
+                                <div class="card-body">
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto fw-medium p-0 m-0">
+                                            {{ $taskId == $task['task_info']['task_id'] ? 'Main Task' : 'Delegated Task' }}
+                                        </p>
+                                        <div class="col-auto p-0">
+                                            @if($taskIdData['each_task_info']['priority'] === "high")
+                                            <span class="badge badge-light-danger rounded">
+                                                <i class="ti ti-flame me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @elseif($taskIdData['each_task_info']['priority'] === "medium")
+                                            <span class="badge badge-light-warning rounded">
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-light-success rounded">
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
+                                    </div>
+
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
+                                        </p>
+                                    </div>
+
+                                    <div class="row mt-2 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i
+                                                class="ti ti-dots-vertical"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            @include('modalEditTask')
+                            @endif
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -78,6 +242,219 @@
                                             <img class="aspect-square" alt="{{ $teamMember['employee_name'] }}"
                                                 src="../assets/images/profile_picture/{{$teamMember['profile_picture']}}">
                                         </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
+                                    </div>
+
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
+                                        </p>
+                                    </div>
+
+                                    <div class="row mt-2 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i
+                                                class="ti ti-dots-vertical"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            @include('modalEditTask')
+                            @endif
+                            @endforeach
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 py-2"><i class="ti ti-checklist"></i> Completed</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach ($task['groupedByTask'] as $taskId => $taskIdData)
+                            @if ($taskIdData['each_task_info']['status'] === "Completed")
+                            <div class="card mb-3 task-card" data-task-id="{{ $taskId }}"
+                                data-bs-toggle="modal" data-bs-target="#taskDetailModal-{{ $taskId }}"
+                                style="cursor: pointer;">
+                                <div class="card-body">
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto fw-medium p-0 m-0">
+                                            {{ $taskId == $task['task_info']['task_id'] ? 'Main Task' : 'Delegated Task' }}
+                                        </p>
+                                        <div class="col-auto p-0">
+                                            @if($taskIdData['each_task_info']['priority'] === "high")
+                                            <span class="badge badge-light-danger rounded">
+                                                <i class="ti ti-flame me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @elseif($taskIdData['each_task_info']['priority'] === "medium")
+                                            <span class="badge badge-light-warning rounded">
+                                                <i class="ti ti-sun-high me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-light-success rounded">
+                                                <i class="ti ti-leaf me-1"></i>{{ $taskIdData['each_task_info']['priority'] }}
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">{{ $taskIdData['each_task_info']['title'] ?? 'Untitled Task' }}</h5>
+
+                                    {{-- Progress Info --}}
+                                    <div class="row m-0 justify-content-between">
+                                        <p class="text-muted w-auto m-0 p-0">Progress</p>
+                                        <p class="col-auto fw-medium">{{ $taskIdData['task_progress'] }}%</p>
+                                    </div>
+
+                                    <div class="progress mt-1 rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-dark" role="progressbar"
+                                            style="width: {{ $taskIdData['task_progress'] }}%;"
+                                            aria-valuenow="{{ $taskIdData['task_progress'] }}" aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    {{-- Optional Description or Action --}}
+                                    <div class="row mt-2 m-0">
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0">
+                                            <i class="ti ti-calendar-event me-1"></i>
+                                            @php
+                                            $createdAt = \Carbon\Carbon::parse($taskIdData['each_task_info']['created_at'] ?? now());
+                                            $formattedDate = $createdAt->isToday() ? 'Today' : $createdAt->format('F j');
+                                            @endphp
+                                            {{ $formattedDate }}
+                                        </p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-paperclip me-1"></i>{{ $taskIdData['attachmentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-messages me-1"></i>{{ $taskIdData['commentsCount'] }}</p>
+                                        <p class="text-muted text-end small w-auto mb-0 ps-0"><i
+                                                class="ti ti-checkbox me-1"></i>{{ $taskIdData['completed_task'] }}/{{ $taskIdData['total_task'] }}
+                                        </p>
+                                    </div>
+
+                                    <div class="row mt-2 m-0 justify-content-between">
+                                        <div class="aspect-square-container p-0 w-auto">
+                                            @php
+                                            $assign_by = $taskIdData['each_task_info']['assign_by'];
+                                            @endphp
+
+                                            @foreach ($taskIdData['team_members'] as $member)
+                                            @php
+                                            $employee = $member['employee_code'].'*'.$member['employee_name'];
+                                            @endphp
+                                            @if($assign_by !== $employee)
+                                            @if(!empty($member['profile_picture']))
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/{{$member['profile_picture']}}">
+                                            </div>
+                                            @else
+                                            <div class="aspect-square-box">
+                                                <img class="aspect-square" alt="{{ $member['employee_name'] }}"
+                                                    src="../assets/images/profile_picture/user.png">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <button class="w-auto bg-transparent border-0"><i
+                                                class="ti ti-dots-vertical"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            @include('modalEditTask')
+                            @endif
+                            @endforeach
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-team" role="tabpanel" aria-labelledby="nav-team-tab">
+            <div class="card bg-white">
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Tasks</th>
+                                <th scope="col">Sub-Tasks</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            @foreach ($task['groupedByUser'] as $taskId => $userData)
+                            <tr>
+                                <td>{{$userData['employee_code']}}*{{$userData['employee_name']}}</td>
+                                <td>
+                                    @php
+                                    $employee = $userData['employee_code'].'*'.$userData['employee_name'];
+                                    @endphp
+                                    @foreach($userData['tasks'] as $usertask)
+                                    @php
+                                    $assign_by = $usertask['assign_by'];
+                                    @endphp
+                                    @if($assign_by !== $employee)
+                                    <a href="/task/{{$usertask['task_id']}}">
+                                        <span class="badge badge-light-primary rounded">
+                                            {{$usertask['task_title']}}
+                                        </span>
+                                    </a>
                                     @else
                                         <div class="aspect-square-box">
                                             <img class="aspect-square" alt="{{ $teamMember['employee_name'] }}"

@@ -1,4 +1,4 @@
-<div class="modal fade" id="taskDetailModal-{{ $taskId }}" tabindex="-1"
+<div class="modal fade" id="taskDetailModal_{{ $taskId }}" tabindex="-1"
     aria-labelledby="taskDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content bg-light border-0">
@@ -16,7 +16,8 @@
 
             <!-- Modern body with subtle background and better spacing -->
             <div class="modal-body p-4 pt-3">
-                <div id="taskDetailContent">
+                <form id="edit-form-{{ $taskId }}" method="POST" enctype="multipart/form-data" class="pt-3 px-0">
+                    @csrf
                     <div class="row g-4">
                         <!-- Task Title -->
                         <div class="col-12">
@@ -43,26 +44,18 @@
                                 </div>
                                 @endif
                                 @endforeach
-                                <div class="task-container">
-                                    <!-- Initial Task Field -->
-                                    <div class="task-item mb-3" data-task-id="1">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control task-input me-3" name="tasks[]"
-                                                placeholder="Enter task" required>
-                                            <button type="button"
-                                                class="btn btn-inverse-primary rounded-circle add-task-btn">
-                                                <i class="ti ti-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="task-container"></div>
+                                <!-- Add Button -->
+                                <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2 add-task-btn">
+                                    <i class="ti ti-plus me-2"></i>Add
+                                </button>
                             </div>
                         </div>
 
                         <!-- Assignees - Modern badge style -->
                         <div class="col-12">
                             <label class="form-label fw-medium text-muted mb-2">ASSIGNEES</label>
-                            <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2 assignees">
                                 @php
                                 $assign_by = $taskIdData['each_task_info']['assign_by'];
                                 @endphp
@@ -90,8 +83,7 @@
                                 @endforeach
 
                                 <!-- Add Button -->
-                                <button
-                                    class="btn btn-sm btn-outline-primary d-flex align-items-center rounded-pill px-3">
+                                <button class="btn btn-sm btn-outline-primary d-flex align-items-center px-3 add-assignees">
                                     <i class="ti ti-plus me-1"></i>
                                     <span>Add</span>
                                 </button>
@@ -133,7 +125,8 @@
                                     </div>
                                     @endif
                                     @endforeach
-                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2">
+                                    <div id="documentsContainer"></div>
+                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="addDocument">
                                         <i class="ti ti-file-text me-2"></i>Add Documents
                                     </button>
                                 </div>
@@ -169,7 +162,8 @@
                                     </div>
                                     @endif
                                     @endforeach
-                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2">
+                                    <div id="linksContainer"></div>
+                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="addMoreLinks">
                                         <i class="ti ti-link me-2"></i>Add Links
                                     </button>
                                 </div>
@@ -214,14 +208,30 @@
                                     </div>
                                     @endif
                                     @endforeach
-                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2">
+                                    <div id="recordedContainer" class="d-none">
+                                        <div id="recordedNotesList" class="mb-3"></div>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-sm btn-primary" id="startButton">
+                                                <i class="ti ti-microphone"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-secondary" id="stopButton"
+                                                disabled>
+                                                <i class="ti ti-player-stop"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" id="cancelButton"
+                                                disabled>
+                                                <i class="ti ti-cancel"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="add-recording">
                                         <i class="ti ti-microphone me-2"></i>Add Voice Notes
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
 
             <!-- Modern footer with better buttons -->

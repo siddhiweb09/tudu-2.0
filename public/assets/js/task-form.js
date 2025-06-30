@@ -1,11 +1,25 @@
+var modalId = "";
+$(document).on("shown.bs.modal", ".modal", function () {
+    modalId = $(this).attr("id");
+    var form = $(`#` + modalId).find("form"); // Find the form inside modal
+    var formId = form.attr("id");
+    initializeTaskForm(formId);
+});
+
 $(document).ready(function () {
-    // Initialize all forms
-    initializeTaskForm("form1");
-    initializeTaskForm("form2");
-    initializeTaskForm("form3");
+    const currentUrl = window.location.href;
+    console.log(currentUrl);
+    var parts = currentUrl.split("/");
+    var page = parts[parts.length - 2];
+    console.log(page);
+
+    var formId = page + "-form";
+    initializeTaskForm(formId);
 });
 
 function initializeTaskForm(formId) {
+    console.log("initializeTaskForm Form ID:", formId);
+
     // Fetch Users Departments
     $.ajax({
         url: "/get-departments",
@@ -150,16 +164,13 @@ function initializeTaskForm(formId) {
 
     let taskCounter = 1;
 
-    console.log(formId);
-
     // Add new task field
     $(document).on("click", `#${formId} .add-task-btn`, function () {
-        alert(formId);
         taskCounter++;
         const newTask = `
             <div class="task-item mb-3" data-task-id="${taskCounter}">
                 <div class="input-group">
-                    <input type="text" class="form-control task-input me-3" name="tasks[]" placeholder="Enter task" required>
+                    <input type="text" class="form-control task-input" name="tasks[]" placeholder="Enter task">
                     <button type="button" class="btn btn-inverse-danger remove-task-btn">
                         <i class="ti ti-minus"></i>
                     </button>
@@ -167,6 +178,12 @@ function initializeTaskForm(formId) {
             </div>
         `;
         $(`#${formId} .task-container`).append(newTask);
+    });
+
+    //Add Voice Notes
+    $(document).on("click", `#${formId} #add-recording`, function () {
+        $(`#${formId} #recordedContainer`).removeClass("d-none");
+        $(`#${formId} #add-recording`).addClass("d-none");
     });
 
     // Remove task field
@@ -432,12 +449,14 @@ function initializeTaskForm(formId) {
     // Documents
     var documentsContainer = $(`#${formId} #documentsContainer`);
     var addDocumentButton = $(`#${formId} #addDocument`);
+    console.log(documentsContainer);
+    console.log(formId);
 
     addDocumentButton.on("click", function () {
         const newDocument = $(`
             <div class="document-item mb-3">
                 <div class="input-group">
-                    <input type="file" name="documents[]" class="form-control document-file" required>
+                    <input type="file" name="documents[]" class="form-control document-file">
                     <button type="button" class="btn btn-outline-danger remove-document">
                         <i class="ti ti-trash"></i>
                     </button>
@@ -484,12 +503,33 @@ function initializeTaskForm(formId) {
 
     // Update priority input more reliably
     function updatePriorityInput(formId) {
-        const priority = $(`#${formId} input[name="btnradio"]:checked`).attr(
-            "id"
-        );
-        $(`#${formId} #priorityInput`).val(
-            priority.replace("btnradio", "").toLowerCase()
-        );
+        // 1. Safely get the selected radio value
+        const selectedRadio = $(`#${formId} input[name="btnradio"]:checked`);
+
+        // 2. Check if radio exists and has a value
+        if (!selectedRadio.length) {
+            console.warn(`No priority radio selected in form ${formId}`);
+            return; // Exit early if no radio selected
+        }
+
+        const priorityValue = selectedRadio.val();
+
+        // 3. Safely handle the value
+        if (typeof priorityValue !== "string") {
+            console.error(
+                `Invalid priority value in form ${formId}`,
+                priorityValue
+            );
+            return;
+        }
+
+        // 4. Now safely use .replace()
+        try {
+            const formattedPriority = priorityValue.replace(/[^0-9]/g, "");
+            $(`#${formId} #priority`).val(formattedPriority);
+        } catch (e) {
+            console.error(`Error processing priority in form ${formId}:`, e);
+        }
     }
 
     // Update tasks input
@@ -646,7 +686,7 @@ function initializeTaskForm(formId) {
         updateRemindersInput(formId);
         updateFrequencyDuration(formId);
         updateFinalProjectName(formId);
-        if (formId !== "form1") {
+        if (formId === "delegate-form") {
             updateVisibilityInputs(formId);
         }
 
