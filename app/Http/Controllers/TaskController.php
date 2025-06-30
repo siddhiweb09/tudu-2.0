@@ -1147,6 +1147,7 @@ class TaskController extends Controller
             // Handle delegated task case (single task)
             $taskItem = DelegatedTask::where('delegate_task_id', $task_id)->firstOrFail();
             $task['task_info'] = $taskItem->toArray();
+            $task['task_info']['flag'] = 'Delegated';
             $allTaskIds = $task_id;
 
             // Extract member codes with relationship flags
@@ -1180,6 +1181,7 @@ class TaskController extends Controller
 
             $delegatedTaskIds = $delegatedTasks->pluck('delegate_task_id')->toArray();
             $task['task_info'] = $mainTask->toArray();
+            $task['task_info']['flag'] = 'Main';
             $allTaskIds = array_unique(array_merge([$mainTask->task_id], $delegatedTaskIds));
 
             // Process main task with relationship flags
@@ -1387,6 +1389,94 @@ class TaskController extends Controller
         return view('tasks.taskDetails', compact('task'));
     }
 
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'task_id' => 'required',
+            'status' => 'required|in:Pending,In Progress,Completed'
+        ]);
+
+        try {
+            $taskId = $request->task_id;
+            $status = $request->status;
+            $currentUser = session('employee_code') . '*' . session('employee_name');
+            $updated = false;
+
+            if (Str::startsWith($taskId, 'TASK-')) {
+                $task = DB::table('tasks')->where('task_id', $taskId)->first();
+
+                if ($task) {
+                    $finalStatus = null;
+
+                    if ($status == 'Completed') {
+                        if ($currentUser == $task->assign_by) {
+                            $finalStatus = 'Completed';
+                        } else {
+                            $finalStatus = 'In Review';
+                        }
+                    }
+
+                    $updateData = [
+                        'status' => $status,
+                        'updated_at' => now()
+                    ];
+
+                    if ($finalStatus) {
+                        $updateData['final_status'] = $finalStatus;
+                    }
+
+                    $updated = DB::table('tasks')->where('task_id', $taskId)->update($updateData);
+                }
+            } elseif (Str::startsWith($taskId, 'DELTASK-')) {
+                $task = DB::table('delegated_tasks')->where('delegate_task_id', $taskId)->first();
+
+                if ($task) {
+                    $finalStatus = null;
+
+                    if ($status == 'Completed') {
+                        if ($currentUser == $task->assign_by) {
+                            $finalStatus = 'Completed';
+                        } else {
+                            $finalStatus = 'In Review';
+                        }
+                    }
+
+                    $updateData = [
+                        'status' => $status,
+                        'updated_at' => now()
+                    ];
+
+                    if ($finalStatus) {
+                        $updateData['final_status'] = $finalStatus;
+                    }
+
+                    $updated = DB::table('delegated_tasks')->where('delegate_task_id', $taskId)->update($updateData);
+                }
+            }
+
+            if ($updated) {
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'error' => 'Task not found or not updated.']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function checkDelegatedFinalStatus(Request $request)
+    {
+        $taskId = $request->task_id;
+
+        $incompleteCount = DB::table('delegated_tasks')
+            ->where('task_id', $taskId)
+            ->where('final_status', '!=', 'Completed')
+            ->count();
+
+        return response()->json([
+            'all_completed' => $incompleteCount === 0
+        ]);
+    }
     public function deleteTask(Request $request)
     {
         $taskId = $request->task_id;
@@ -1489,7 +1579,6 @@ class TaskController extends Controller
                 'status' => 'success',
                 'message' => 'Delegated task priority updated successfully.',
             ]);
-
         } else {
             $task = Task::where('task_id', $taskId)->first();
 

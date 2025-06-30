@@ -1688,7 +1688,6 @@
                 $modal.find(`input[name="btnradio-${taskId}"][value="${currentPriority}"]`).prop('checked', true);
             });
 
-
             $(document).on('submit', '.change-priority-form', function (e) {
                 e.preventDefault();
 
