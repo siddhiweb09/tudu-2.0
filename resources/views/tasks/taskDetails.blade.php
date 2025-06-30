@@ -223,7 +223,7 @@
                                             'bg-warning-light text-warning',
                                             'bg-danger-light text-danger',
                                             'bg-secondary-light
-                                                                                                                                                                                                                                                                                                                                                                                                        text-secondary',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        text-secondary',
                                             'bg-dark-light text-dark',
                                             'bg-dark text-light'
                                         ];
@@ -505,10 +505,14 @@
 
                                                             <!-- Change Priority -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-task-priority="{{ $taskIdData['each_task_info']['priority'] }}"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#ChangePriorityModal-{{ $taskId }}">
                                                                     <i class="ti ti-alert-circle fs-5"></i> Change Priority
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Delete Task -->
@@ -526,6 +530,7 @@
                                             </div>
                                         </div>
                                         @include('modalEditTask')
+                                        @include('modalUpdateStatus')
                                     @endif
                                 @endforeach
                             </div>
@@ -665,10 +670,14 @@
 
                                                             <!-- Change Priority -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-task-priority="{{ $taskIdData['each_task_info']['priority'] }}"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#ChangePriorityModal-{{ $taskId }}">
                                                                     <i class="ti ti-alert-circle fs-5"></i> Change Priority
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Delete Task -->
@@ -685,6 +694,7 @@
                                             </div>
                                         </div>
                                         @include('modalEditTask')
+                                        @include('modalUpdateStatus')
                                     @endif
                                 @endforeach
                             </div>
@@ -824,10 +834,14 @@
 
                                                             <!-- Change Priority -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-task-priority="{{ $taskIdData['each_task_info']['priority'] }}"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#ChangePriorityModal-{{ $taskId }}">
                                                                     <i class="ti ti-alert-circle fs-5"></i> Change Priority
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Delete Task -->
@@ -844,6 +858,7 @@
                                             </div>
                                         </div>
                                         @include('modalEditTask')
+                                        @include('modalUpdateStatus')
                                     @endif
                                 @endforeach
                             </div>
@@ -976,18 +991,23 @@
 
                                                             <!-- Change Due Date -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
                                                                     href="#">
                                                                     <i class="ti ti-clock fs-5"></i> Change Due Date
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Change Priority -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-task-priority="{{ $taskIdData['each_task_info']['priority'] }}"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#ChangePriorityModal-{{ $taskId }}">
                                                                     <i class="ti ti-alert-circle fs-5"></i> Change Priority
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Delete Task -->
@@ -1004,6 +1024,7 @@
                                             </div>
                                         </div>
                                         @include('modalEditTask')
+                                        @include('modalUpdateStatus')
                                     @endif
                                 @endforeach
                             </div>
@@ -1247,6 +1268,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('customJs')
@@ -1385,50 +1407,50 @@
                 } else {
                     // Create new nav tab
                     const navTab = `
-                                                        <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
-                                                            data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
-                                                            aria-controls="${tabId}" aria-selected="false">
-                                                            <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
-                                                            <div class="d-flex mb-2 small">
-                                                                <p>Started by ${addedBy}</p>
-                                                                <p class="mx-2">•</p>
-                                                                <p>${createdAt}</p>
-                                                            </div>
-                                                            <div class="d-flex small">
-                                                                <p>0 replies</p>
-                                                            </div>
-                                                        </button>
-                                                    `;
+                                                                                        <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
+                                                                                            data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
+                                                                                            aria-controls="${tabId}" aria-selected="false">
+                                                                                            <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
+                                                                                            <div class="d-flex mb-2 small">
+                                                                                                <p>Started by ${addedBy}</p>
+                                                                                                <p class="mx-2">•</p>
+                                                                                                <p>${createdAt}</p>
+                                                                                            </div>
+                                                                                            <div class="d-flex small">
+                                                                                                <p>0 replies</p>
+                                                                                            </div>
+                                                                                        </button>
+                                                                                    `;
                     $("#v-pills-tab .card").append(navTab);
 
                     // Create new content pane (note: initially not active)
                     const contentTab = `
-                                                        <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
-                                                            <div class="card">
-                                                                <div class="card-body d-flex flex-column">
-                                                                    <div class="mb-3">
-                                                                        <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
-                                                                        <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
-                                                                        <hr>
-                                                                    </div>
-                                                                    <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
-                                                                        <p class="text-muted">No comments yet.</p>
-                                                                    </div>
-                                                                    <div class="d-flex">
-                                                                        <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
-                                                                            alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                                                                        <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
-                                                                            <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
-                                                                            <input hidden type="text" name="task_id" value="${taskId}" />
-                                                                            <div class="text-end">
-                                                                                <button class="btn btn-primary">Post Reply</button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    `;
+                                                                                        <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
+                                                                                            <div class="card">
+                                                                                                <div class="card-body d-flex flex-column">
+                                                                                                    <div class="mb-3">
+                                                                                                        <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
+                                                                                                        <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
+                                                                                                        <hr>
+                                                                                                    </div>
+                                                                                                    <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
+                                                                                                        <p class="text-muted">No comments yet.</p>
+                                                                                                    </div>
+                                                                                                    <div class="d-flex">
+                                                                                                        <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
+                                                                                                            alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                                                                                        <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
+                                                                                                            <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
+                                                                                                            <input hidden type="text" name="task_id" value="${taskId}" />
+                                                                                                            <div class="text-end">
+                                                                                                                <button class="btn btn-primary">Post Reply</button>
+                                                                                                            </div>
+                                                                                                        </form>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    `;
                     $("#v-pills-tabContent").append(contentTab);
 
                     // Activate newly created tab using Bootstrap's Tab API
@@ -1513,6 +1535,87 @@
                     }
                 });
             });
+
+            $(document).on('click', '[data-bs-target^="#ChangePriorityModal-"]', function () {
+                const taskId = $(this).data('task-id');
+                const currentPriority = $(this).data('task-priority'); // e.g., 'high'
+
+                const $modal = $(`#ChangePriorityModal-${taskId}`);
+
+                // Clear all radio buttons first
+                $modal.find(`input[name="btnradio-${taskId}"]`).prop('checked', false);
+
+                // Check the correct one
+                $modal.find(`input[name="btnradio-${taskId}"][value="${currentPriority}"]`).prop('checked', true);
+            });
+
+
+            $(document).on('submit', '.change-priority-form', function (e) {
+                e.preventDefault();
+
+                const $form = $(this);
+                const taskId = $form.data('task-id');
+
+                // Get the selected radio button value
+                const newPriority = $form.find(`input[name="btnradio-${taskId}"]:checked`).val();
+
+                if (!newPriority) {
+                    Swal.fire('Select Priority', 'Please select a priority before submitting.', 'warning');
+                    return;
+                }
+
+                const isDelegated = taskId.startsWith('DELTASK-');
+                const alertTitle = isDelegated ? 'Change Priority of Delegated Task?' : 'Change Task Priority?';
+                const alertText = isDelegated
+                    ? 'This will update the priority of the delegated task.'
+                    : 'This will update the priority for the main task and may affect assigned users.';
+
+                Swal.fire({
+                    title: alertTitle,
+                    text: alertText,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, update it',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#3a56e0',
+                    cancelButtonColor : '#e01a6f',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/update-task-priority',
+                            type: 'POST',
+                            data: {
+                                task_id: taskId,
+                                priority: newPriority.toLowerCase(),
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Updated!',
+                                        text: response.message || 'Priority updated successfully.',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+
+                                    // Optional: Refresh UI
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1200);
+                                } else {
+                                    Swal.fire('Error', response.message || 'Could not update priority.', 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Something went wrong.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+
         });
     </script>
 @endsection

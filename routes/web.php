@@ -86,6 +86,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::match(['get', 'post'], '/task/{task_id}', [TaskController::class, 'taskDetails'])->name('tasks.taskDetails');
     Route::match(['get', 'post'], '/add-comment', [TaskController::class, 'addComment'])->name('addComment');
     Route::post('delete-task', [TaskController::class, 'deleteTask'])->name('deleteTask');
+    Route::post('update-task-priority', [TaskController::class, 'updateTaskPriority'])->name('updateTaskPriority');
 
 
     // Delegated Tasks

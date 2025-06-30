@@ -1451,4 +1451,72 @@ class TaskController extends Controller
         }
     }
 
+    public function updateTaskPriority(Request $request)
+    {
+        $activeUser = Auth::user();
+        $usercode = $activeUser->employee_code . '*' . $activeUser->employee_name;
+
+        $request->validate([
+            'task_id' => 'required|string',
+            'priority' => 'required|in:low,medium,high',
+        ]);
+
+        $taskId = $request->input('task_id');
+        $newPriority = strtolower($request->input('priority'));
+
+        if (Str::startsWith($taskId, 'DELTASK-')) {
+            $task = DelegatedTask::where('delegate_task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Delegated task not found.',
+                ], 404);
+            }
+
+            $oldPriority = $task->priority;
+
+            $task->priority = $newPriority;
+            $task->save();
+
+            TaskLog::create([
+                'task_id' => $taskId,
+                'log_description' => 'Delegated task priority changed from ' . ucfirst($oldPriority) . ' to ' . ucfirst($newPriority) . ' by ' . $usercode,
+                'added_by' => $usercode
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delegated task priority updated successfully.',
+            ]);
+
+        } else {
+            $task = Task::where('task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Main task not found.',
+                ], 404);
+            }
+
+            $oldPriority = $task->priority;
+
+            $task->priority = $newPriority;
+            $task->save();
+
+            TaskLog::create([
+                'task_id' => $taskId,
+                'log_description' => 'Task priority changed from ' . ucfirst($oldPriority) . ' to ' . ucfirst($newPriority) . ' by ' . $usercode,
+                'added_by' => $usercode
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Main task priority updated successfully.',
+            ]);
+        }
+    }
+
+
 }
