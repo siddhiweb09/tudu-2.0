@@ -1518,5 +1518,119 @@ class TaskController extends Controller
         }
     }
 
+    public function markTaskAsCompleted(Request $request)
+    {
+        $request->validate([
+            'task_id' => 'required|string'
+        ]);
+
+        $taskId = $request->input('task_id');
+        $user = Auth::user();
+        $usercode = $user->employee_code . '*' . $user->employee_name;
+
+        if (Str::startsWith($taskId, 'DELTASK-')) {
+            // 1. Delegated Task Handling
+            $task = DelegatedTask::where('delegate_task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Delegated task not found.'
+                ], 404);
+            }
+
+            $task->status = 'Completed';
+            $task->save();
+
+            // 2. Update TaskList (if exists)
+            $lists = TaskList::where('task_id', $taskId)->get();
+
+            foreach ($lists as $list) {
+                $list->status = 'Completed';
+                $list->save();
+            }
+
+            // 3. Check all delegated tasks
+            $allDelegatedTasks = DelegatedTask::where('task_id', $task->task_id)->get();
+            $allCompleted = $allDelegatedTasks->every(fn($t) => $t->status === 'Completed');
+
+            if ($allCompleted) {
+                $mainTask = Task::where('task_id', $task->task_id)->first();
+                if ($mainTask) {
+                    $mainTask->status = 'Completed';
+                    $mainTask->final_status = 'In-Review';
+                    $mainTask->save();
+
+                    TaskLog::create([
+                        'task_id' => $mainTask->task_id,
+                        'log_description' => "All delegated tasks completed. Main task marked as Completed and In-Review by $usercode",
+                        'added_by' => $usercode,
+                    ]);
+                }
+            }
+
+            TaskLog::create([
+                'task_id' => $taskId,
+                'log_description' => "$taskId marked as completed by $usercode",
+                'added_by' => $usercode,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delegated task marked as completed.'
+            ]);
+
+        } else {
+            // Main Task Handling
+            $task = Task::where('task_id', $taskId)->first();
+
+            if (!$task) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Main task not found.'
+                ], 404);
+            }
+
+            // Get all delegated tasks under this main task
+            $associatedTasks = DelegatedTask::where('task_id', $taskId)->get();
+
+            // If any exist and not all are completed, reject the action
+            if ($associatedTasks->count() > 0) {
+                $allCompleted = $associatedTasks->every(fn($t) => $t->status === 'Completed');
+
+                if (!$allCompleted) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Cannot complete main task until all delegated tasks are completed.'
+                    ], 400);
+                }
+            }
+
+            // All delegated tasks are completed (or none exist), proceed to mark main task
+            $task->status = 'Completed';
+            $task->final_status = 'In-Review';
+            $task->save();
+
+            $lists = TaskList::where('task_id', $taskId)->get();
+
+            foreach ($lists as $list) {
+                $list->status = 'Completed';
+                $list->save();
+            }
+
+            TaskLog::create([
+                'task_id' => $taskId,
+                'log_description' => "$taskId marked as completed and set to In-Review by $usercode",
+                'added_by' => $usercode,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Main task marked as completed and moved to In-Review.'
+            ]);
+        }
+    }
+
+
 
 }
