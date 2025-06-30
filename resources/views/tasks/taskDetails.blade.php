@@ -149,14 +149,13 @@
 
         <div class="col-auto">
             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                <button type="button" class="btn btn-sm btn-inverse-primary"
+                <button type="button"
+                    class="btn btn-sm btn-inverse-primary markCompletedBtn"
                     data-task-id="{{ $UpdateTaskId }}"
-                    data-bs-toggle="modal"
-                    data-bs-target="#updateTaskStatusModal-{{ $UpdateTaskId }}"
-                    {{ !$isAuthorized ? 'disabled' : '' }}>
-                    Update Status
+                    data-assign-by="{{ $task['task_info']['assign_by'] }}"
+                    data-current-user="{{ $currentUser }}">
+                    Mark as Completed
                 </button>
-
                 <a href="/delegate-tasks/{{ $task['task_info']['task_id'] }}"
                     class="btn btn-sm btn-inverse-primary {{ !$isAuthorized ? 'disabled pointer-events-none opacity-50' : '' }}">
                     Delegate Tasks
@@ -1260,59 +1259,7 @@
     </div>
 </div>
 
-@php
 
-$updateTaskId = $UpdateTaskId;
-$assignBy = $task['task_info']['assign_by'];
-$updateTaskStatus = $task['task_info']['status'];
-$currentUser = session('employee_code') . '*' . session('employee_name');
-@endphp
-
-<div class="modal fade" id="updateTaskStatusModal-{{ $updateTaskId }}" tabindex="-1"
-    data-assign-by="{{ $assignBy }}"
-    data-task-id="{{ $updateTaskId }}"
-    data-current-user="{{ $currentUser }}"
-    aria-labelledby="updateTaskStatusModalLabel" aria-hidden="true">
-
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content bg-light border-0">
-            <div class="modal-header border-0 primary-gradient-effect">
-                <div class="w-100 d-flex justify-content-between align-items-center">
-                    <h5 class="modal-title fs-5 fw-semibold text-white">Update Task Status</h5>
-                    <button type="button"
-                        class="btn btn-sm btn-icon rounded-circle bg-white bg-opacity-20 hover-bg-opacity-30 transition-all text-white"
-                        data-bs-dismiss="modal" aria-label="Close">
-                        <i class="ti ti-x fs-4 text-primary fw-bold"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="modal-body p-4 pt-3">
-                <div class="row g-4">
-                    <div class="col-12">
-                        <input type="hidden" id="updateTaskId-{{ $updateTaskId }}" value="{{ $updateTaskId }}">
-                        <label for="taskStatus-{{ $updateTaskId }}" class="form-label fw-medium text-muted">TASK STATUS</label>
-                        <select class="form-select border py-2 px-3 taskStatus" id="taskStatus-{{ $updateTaskId }}">
-                            <option value="">Select Status</option>
-                            <option value="Pending" {{ $updateTaskStatus == 'Pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="In Progress" {{ $updateTaskStatus == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                            <option value="Completed" {{ $updateTaskStatus == 'Completed' ? 'selected' : '' }}>Completed</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer border-0 px-4 pb-4 pt-3">
-                <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
-                    Close
-                </button>
-                <button type="button" class="btn btn-primary px-4 py-2 shadow-sm saveTaskStatusBtn"
-                    data-task-id="{{ $updateTaskId }}"
-                    id="saveTaskStatusBtn-{{ $updateTaskId }}">
-                    Save Changes
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('customJs')
@@ -1431,72 +1378,63 @@ $currentUser = session('employee_code') . '*' . session('employee_name');
 
     $(document).ready(function() {
 
-        $('.modal').on('show.bs.modal', function() {
-            const $modal = $(this);
-            const assignBy = $modal.data('assign-by');
-            const taskId = $modal.data('task-id');
-            const currentUser = "{{ session('employee_code') }}*{{ session('employee_name') }}";
+        $('.markCompletedBtn').on('click', function() {
+            const taskId = $(this).data('task-id');
+            const assignBy = $(this).data('assign-by');
+            const currentUser = $(this).data('current-user');
 
-            const taskStatusSelect = $modal.find(`#tasStatus-${taskId}`);
-            const saveBtn = $modal.find(`#saveTaskStatuksBtn-${taskId}`);
+            if (!confirm("Are you sure you want to mark this task as Completed?")) {
+                return;
+            }
 
-            // Reset
-            taskStatusSelect.find('option[value="Completed"]').prop('disabled', false);
-            saveBtn.prop('disabled', false);
-
-            // Only for task creator with TASK-* pattern
-            if (assignBy && taskId.startsWith('TASK-') && assignBy === currentUser) {
+            // ✅ If main task and assign_by === current user, check delegated status first
+            if ( assignBy === currentUser && taskId.startsWith('TASK-')) {
                 $.ajax({
                     url: "{{ route('checkDelegatedFinalStatus') }}",
-                    method: "POST",
+                    type: "POST",
                     data: {
                         _token: "{{ csrf_token() }}",
                         task_id: taskId
                     },
                     success: function(res) {
-                        if (!res.all_completed) {
-                            taskStatusSelect.find('option[value="Completed"]').prop('disabled', true);
-                            saveBtn.prop('disabled', true);
+                        if (res.all_completed) {
+                            updateTaskStatus(taskId);
+                        } else {
+                            alert("All delegated tasks must be completed first.");
                         }
                     },
                     error: function() {
-                        console.error("Error validating delegation status.");
+                        alert("Error checking delegated task status.");
                     }
                 });
+            } else {
+                // ✅ Directly update if not the main task creator
+                updateTaskStatus(taskId);
             }
         });
 
-        // Save status
-        $('.saveTaskStatusBtn').on('click', function() {
-            const taskId = $(this).data('task-id');
-            const status = $(`#taskStatus-${taskId}`).val();
-
-            if (status === '') {
-                alert('Please select a task status.');
-                return;
-            }
-
+        function updateTaskStatus(taskId) {
             $.ajax({
                 url: "{{ route('updateTaskStatus') }}",
                 type: "POST",
                 data: {
                     _token: "{{ csrf_token() }}",
                     task_id: taskId,
-                    status: status
+                    status: "Completed"
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert("Task status updated successfully.");
+                        alert("Task marked as Completed.");
                         location.reload();
                     } else {
-                        alert("Failed: " + (response.error || "Unable to update status."));
+                        alert("Update failed: " + (response.error || "Unknown error"));
                     }
                 },
                 error: function() {
-                    alert("Something went wrong.");
+                    alert("Something went wrong while updating status.");
                 }
             });
-        });
+        }
 
         $(".new-discussion-link").on("click", function() {
             const taskId = $(this).data("task-id");
