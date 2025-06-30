@@ -1506,6 +1506,7 @@ class TaskController extends Controller
             'all_completed' => $incompleteCount === 0
         ]);
     }
+    
     public function deleteTask(Request $request)
     {
         $taskId = $request->task_id;

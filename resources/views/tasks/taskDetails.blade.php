@@ -1434,7 +1434,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('customJs')
@@ -1563,7 +1562,7 @@
             }
 
             // ✅ If main task and assign_by === current user, check delegated status first
-            if ( assignBy === currentUser && taskId.startsWith('TASK-')) {
+            if (assignBy === currentUser && taskId.startsWith('TASK-')) {
                 $.ajax({
                     url: "{{ route('checkDelegatedFinalStatus') }}",
                     type: "POST",
@@ -1611,7 +1610,7 @@
             });
         }
 
-        
+
         $(".new-discussion-link").on("click", function() {
             const taskId = $(this).data("task-id");
             const taskTitle = $(this).data("task-title");
