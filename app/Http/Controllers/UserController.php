@@ -15,72 +15,72 @@ class UserController extends Controller
     {
         $proUser = User::findOrFail($id);
 
-        // $user = Auth::user();
-        $usercode = $proUser->employee_code . '*' . $proUser->employee_name;
+        // // $user = Auth::user();
+        // $usercode = $proUser->employee_code . '*' . $proUser->employee_name;
 
-        // Step 1: Main tasks assigned to or by user
-        $mainTasks = Task::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })->get()->each(function ($task) {
-            $task->flag = 'Main';
-        });
+        // // Step 1: Main tasks assigned to or by user
+        // $mainTasks = Task::where(function ($query) use ($usercode) {
+        //     $query->where('assign_to', $usercode)
+        //         ->orWhere('assign_by', $usercode);
+        // })->get()->each(function ($task) {
+        //     $task->flag = 'Main';
+        // });
 
-        // Step 2: Direct delegated tasks
-        $directDelegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
-            $query->where('assign_to', $usercode)
-                ->orWhere('assign_by', $usercode);
-        })
-            ->where(function ($query) use ($usercode) {
-                $query->whereNull('not_visible_to')
-                    ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-            })
-            ->get()
-            ->each(function ($task) {
-                $task->flag = 'Delegated';
-            });
+        // // Step 2: Direct delegated tasks
+        // $directDelegatedTasks = DelegatedTask::where(function ($query) use ($usercode) {
+        //     $query->where('assign_to', $usercode)
+        //         ->orWhere('assign_by', $usercode);
+        // })
+        //     ->where(function ($query) use ($usercode) {
+        //         $query->whereNull('not_visible_to')
+        //             ->orWhereJsonDoesntContain('not_visible_to', $usercode);
+        //     })
+        //     ->get()
+        //     ->each(function ($task) {
+        //         $task->flag = 'Delegated';
+        //     });
 
-        // Step 3: Delegated tasks related to main tasks and visible
-        $mainTaskIds = $mainTasks->pluck('task_id')->toArray();
+        // // Step 3: Delegated tasks related to main tasks and visible
+        // $mainTaskIds = $mainTasks->pluck('task_id')->toArray();
 
-        $relatedDelegatedTasks = DelegatedTask::whereIn('task_id', $mainTaskIds)
-            ->where(function ($query) use ($usercode) {
-                $query->whereNull('not_visible_to')
-                    ->orWhereJsonDoesntContain('not_visible_to', $usercode);
-            })
-            ->get()
-            ->each(function ($task) {
-                $task->flag = 'Delegated';
-            });
+        // $relatedDelegatedTasks = DelegatedTask::whereIn('task_id', $mainTaskIds)
+        //     ->where(function ($query) use ($usercode) {
+        //         $query->whereNull('not_visible_to')
+        //             ->orWhereJsonDoesntContain('not_visible_to', $usercode);
+        //     })
+        //     ->get()
+        //     ->each(function ($task) {
+        //         $task->flag = 'Delegated';
+        //     });
 
-        // Step 4: Merge all tasks
-        $allTasks = $mainTasks->merge($directDelegatedTasks)->merge($relatedDelegatedTasks);
+        // // Step 4: Merge all tasks
+        // $allTasks = $mainTasks->merge($directDelegatedTasks)->merge($relatedDelegatedTasks);
 
-        // Step 5: Calculate completion percentage
-        $completedTasks = $allTasks->filter(function ($task) {
-            return strtolower($task->final_status) === 'completed';
-        });
+        // // Step 5: Calculate completion percentage
+        // $completedTasks = $allTasks->filter(function ($task) {
+        //     return strtolower($task->final_status) === 'completed';
+        // });
 
-        $totalTasksCount = $allTasks->count();
-        $completedTasksCount = $completedTasks->count();
+        // $totalTasksCount = $allTasks->count();
+        // $completedTasksCount = $completedTasks->count();
 
-        $completionPercentage = $totalTasksCount > 0
-            ? round(($completedTasksCount / $totalTasksCount) * 100)
-            : 0;
+        // $completionPercentage = $totalTasksCount > 0
+        //     ? round(($completedTasksCount / $totalTasksCount) * 100)
+        //     : 0;
 
-        // Step 6: Count distinct project names
-        $projectCount = $allTasks->pluck('project_name')
-            ->filter() // removes null/empty
-            ->unique()
-            ->count();
+        // // Step 6: Count distinct project names
+        // $projectCount = $allTasks->pluck('project_name')
+        //     ->filter() // removes null/empty
+        //     ->unique()
+        //     ->count();
 
         // Return to profile view
         return view('profile', [
             'proUser' => $proUser,
-            'taskCompletion' => $completionPercentage,
-            'totalProjects' => $projectCount,
-            'taskCount' => $totalTasksCount,
-            'completedTaskCount' => $completedTasksCount,
+            // 'taskCompletion' => $completionPercentage,
+            // 'totalProjects' => $projectCount,
+            // 'taskCount' => $totalTasksCount,
+            // 'completedTaskCount' => $completedTasksCount,
         ]);
 
         // return view('profile', compact('proUser'));

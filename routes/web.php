@@ -8,6 +8,9 @@ use App\Http\Controllers\PersonalTaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaskController;
+use Illuminate\Http\Request;
+use App\Models\User;
+
 use Illuminate\Console\View\Components\Task;
 
 // Login page (GET)
@@ -27,6 +30,30 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth:web'])->group(function () {
     // Dashboard
     Route::get('/', [TaskController::class, 'dashboard'])->name('dashboard');
+
+    Route::post('/users/profile-pictures', function (Request $request) {
+        $codes = $request->input('codes', []);
+
+        // Validate input
+        if (empty($codes)) {
+            return response()->json(['error' => 'No employee codes provided'], 400);
+        }
+
+        // Fetch users with their profile pictures
+        $users = User::whereIn('employee_code', $codes)
+            ->select('employee_code', 'profile_picture')
+            ->get()
+            ->mapWithKeys(function ($user) {
+                return [
+                    $user->employee_code => $user->profile_picture
+                        ? asset('storage/' . $user->profile_picture)
+                        : asset('assets/images/profile_picture/user.jpg')
+                ];
+            });
+
+        return response()->json($users);
+    });
+
 
     Route::get('/profile/{user_id}', [UserController::class, 'userProfile'])->name('profile');
     Route::post('/user/change-picture/{user_id}', [UserController::class, 'changePicture'])
@@ -99,6 +126,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/get-departments', [UserController::class, 'getDepartments']);
     Route::get('/get-users-by-department/{department}', [UserController::class, 'getUsersByDepartment']);
     Route::get('/get-task-visibility/{task_id}', [UserController::class, 'getTaskVisibilityUsers']);
+    Route::get('/get-team-members/{code}', [TeamController::class, 'getMembers']);
 
 
     // Personal Tasks Fetch Functions
@@ -111,6 +139,11 @@ Route::middleware(['auth:web'])->group(function () {
     //teams 
     Route::match(['get', 'post'], 'teams', [TeamController::class, 'teams'])->name('team.viewTeams');
     Route::post('/create-team', [TeamController::class, 'createTeam'])->name('store.createTeam');
+    Route::post('/delete-team', [TeamController::class, 'deleteTeam'])->name('teams.delete');
+    Route::get('/fetch-team-data/{code}', [TeamController::class, 'fetchTeamData'])->name('teams.fetchTeamData');
+    Route::post('/update-team', [TeamController::class, 'updateTeam'])->name('teams.update');
+
+
     Route::get('/projects', [UserController::class, 'project']);
 });
 

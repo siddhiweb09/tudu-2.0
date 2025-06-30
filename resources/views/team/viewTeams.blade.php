@@ -151,8 +151,8 @@
                         <div class="row">
                             @forelse ($group as $team)
                                 @php
-                                    $teamMembers = json_decode($team->team_members, true);
-                                    $memberCount = is_array($teamMembers) ? count($teamMembers) : 0;
+                                        $teamMembers = json_decode($team->team_members, true) ?? [];
+                                        $memberCount = count($teamMembers) + 1; // +1 for leader
                                 @endphp
 
                                 <div class="col-lg-4 col-md-6 mb-4">
@@ -184,20 +184,31 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <i class="ti ti-crown text-warning me-2"></i>
-                                                    <div>
-                                                        <small class="text-muted d-block">Leader</small>
+                                                @php
+                                                    [$leaderCode, $leaderName] = explode('*', $team->team_leader);
+                                                    $leader = $users[$leaderCode] ?? null; 
+                                                @endphp
+
+                                                @if($leader)
+                                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                                        @if (!empty($leader->profile_picture))
+                                                            <img src="{{ asset('assets/images/profile_picture/' . $leader->profile_picture) }}"
+                                                                alt="{{ $leaderName }}" class="aspect-square rounded-circle" width="32" height="32">
+                                                        @else
+                                                            <img src="{{ asset('assets/images/profile_picture/user.png') }}"
+                                                                alt="{{ $leaderName }}" class="aspect-square rounded-circle" width="32" height="32">
+                                                        @endif
+
                                                         <span class="fw-medium">{{ $team->team_leader }}</span>
+                                                        <i class="ti ti-crown text-warning" title="Team Leader"></i>
                                                     </div>
-                                                </div>
+                                                @endif
 
                                                 <div class="d-flex align-items-center">
                                                     <i class="ti ti-users text-primary me-2"></i>
                                                     <div>
                                                         <small class="text-muted d-block">Members</small>
-                                                        <span class="fw-medium">{{ $memberCount }}
-                                                            {{ $memberCount === 1 ? 'member' : 'members' }}</span>
+                                                        <span class="fw-medium">{{ $memberCount }} {{ $memberCount === 1 ? 'member' : 'members' }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -207,13 +218,12 @@
                                                     @foreach ($teamMembers as $member)
                                                         @php
                                                             [$code, $name] = explode('*', $member);
-                                                            $profile = $users->firstWhere('employee_code', $code)?->profile_picture;
                                                         @endphp
                                                         <div class="aspect-square-container p-0 w-auto aspect-gap">
                                                             <div class="aspect-square-box">
-                                                                @if (!empty($profile))
+                                                                @if (!empty($member->profile_picture))
                                                                     <img class="aspect-square rounded-circle" alt="{{ $name }}"
-                                                                        src="{{ asset('assets/images/profile_picture/' . $profile) }}">
+                                                                        src="{{ asset('assets/images/profile_picture/' . $member->profile_picture) }}">
                                                                 @else
                                                                     <img class="aspect-square rounded-circle" alt="{{ $name }}"
                                                                         src="{{ asset('assets/images/profile_picture/user.png') }}">
@@ -228,29 +238,39 @@
                                         <!-- Card Footer -->
                                         <div
                                             class="card-footer bg-white border-top-0 mt-auto d-flex justify-content-between align-items-center px-4 py-3">
-                                            <small class="text-muted">Created {{ $team->created_at->diffForHumans() }}</small>
+                                            <small class="text-muted"> {{ $team->created_at->diffForHumans() }}</small>
                                             <div class="dropdown">
-                                                <button class="btn btn-sm btn-outline-primary rounded-circle p-2 icon-btn"
+                                                <button class="btn btn-sm btn-primary rounded-circle p-2 icon-btn"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="ti ti-dots-vertical fs-5"></i>
+                                                    <i class="ti ti-dots-vertical fs-6"></i>
                                                 </button>
-                                                <div class="dropdown-menu dropdown-menu-end p-2 shadow border-0">
+                                                <div class="dropdown-menu dropdown-menu-end p-2 border-0">
                                                     <div class="d-flex gap-2 justify-content-center">
-                                                        <a class="btn btn-sm btn-outline-primary rounded-circle p-2 icon-btn"
-                                                            href="#" title="Edit">
-                                                            <i class="ti ti-edit fs-5"></i>
+                                                        @php
+                                                            $authUser = auth()->user();
+                                                            $isTeamCreator = $team->created_by == ($authUser->employee_code . '*' .
+                                                                $authUser->employee_name);
+                                                            $isTeamLeader = $team->team_leader == ($authUser->employee_code . '*' .
+                                                                $authUser->employee_name);
+                                                            $isAuthorized = $isTeamCreator || $isTeamLeader;
+                                                        @endphp
+
+                                                        <button
+                                                            class="btn btn-sm btn-outline-primary rounded-circle p-2 icon-btn edit-team-btn"
+                                                            data-bs-toggle="modal" data-teamcode="{{ $team->team_code }}"
+                                                            title="Edit">
+                                                            <i class="ti ti-edit fs-6"></i>
+                                                        </button>
+                                                        <a class="btn btn-sm btn-outline-danger rounded-circle p-2 icon-btn delete-team-btn {{ !$isAuthorized ? 'disabled pointer-none opacity-50' : '' }}"
+                                                            href="#" title="Delete"
+                                                            aria-disabled="{{ !$isAuthorized ? 'true' : 'false' }}"
+                                                            data-teamcode="{{ $team->team_code }}">
+                                                            <i class="ti ti-trash fs-6"></i>
                                                         </a>
-                                                        <a class="btn btn-sm btn-outline-danger rounded-circle p-2 icon-btn"
-                                                            href="#" title="Delete">
-                                                            <i class="ti ti-trash fs-5"></i>
-                                                        </a>
-                                                        <a class="btn btn-sm btn-outline-success rounded-circle p-2 icon-btn"
-                                                            href="#" title="Add Members">
-                                                            <i class="ti ti-users-plus fs-5"></i>
-                                                        </a>
-                                                        <a class="btn btn-sm btn-outline-info rounded-circle p-2 icon-btn" href="#"
-                                                            title="View Members">
-                                                            <i class="ti ti-eye fs-5"></i>
+                                                        <a class="btn btn-sm btn-outline-info rounded-circle p-2 icon-btn view-members-ajax"
+                                                            href="#" title="View Members" data-teamcode="{{ $team->team_code }}"
+                                                            data-teamname="{{ $team->team_name }}">
+                                                            <i class="ti ti-eye fs-6"></i>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -281,7 +301,7 @@
     </div>
 
 
-    <!-- Modal -->
+    <!-- Create Team Modal -->
     <div class="modal fade" id="createTeamModal" tabindex="-1" aria-labelledby="createTeamModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <form id="createTeamForm" method="post" enctype="multipart/form-data">
@@ -304,25 +324,32 @@
                             </div>
                             <div class="mb-3 col-lg-6 col-12">
                                 <label for="teamLeader" class="form-label">Team Leader</label>
-                                <select class="form-control" id="teamLeader" name="team_leader">
+                                <select class="form-control select2" id="teamLeader" name="team_leader">
                                     <option value="">Select Team Leader</option>
-                                    <option vakue="IN-001*Bindu M Agarwal">IN-001*Bindu M Agarwal</option>
+                                    @if ($authusers->isEmpty())
+                                        <option value="">No Users Found</option>
+                                    @else
+                                        @foreach ($authusers as $user)
+                                            <option value="{{ $user->employee_code }}*{{ $user->employee_name }}">
+                                                {{ $user->employee_code }}*{{ $user->employee_name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
-                            <div class="mb-3 col-12">
+                            <div class="mb-3 col-lg-6 col-12">
                                 <label for="teamAvatar" class="form-label">Team Avatar</label>
                                 <input type="file" class="form-control" id="teamAvatar" name="team_avatar"
                                     accept="image/png, image/jpeg, image/jpg">
                             </div>
 
-
                             <div class="mb-3 col-12">
                                 <label for="teamMembers" class="form-label">Selcect Team members</label>
                                 <select class="form-control select2" id="teamMembers" name="team_members[]" multiple>
-                                    @if ($users->isEmpty())
+                                    @if ($authusers->isEmpty())
                                         <option value="">No Users Found</option>
                                     @else
-                                        @foreach ($users as $user)
+                                        @foreach ($authusers as $user)
                                             <option value="{{ $user->employee_code }}*{{ $user->employee_name }}">
                                                 {{ $user->employee_code }}*{{ $user->employee_name }}
                                             </option>
@@ -337,7 +364,8 @@
                                         <input class="form-check-input" type="checkbox" id="teamVisibility"
                                             name="team_visibility_switch">
                                         <input type="hidden" name="team_visibility" id="teamVisibilityValue" value="public">
-                                        <label class="form-check-label" for="teamVisibility">Public (Visible to all)</label>
+                                        <label class="form-check-label" for="teamVisibility">Public (Visible to
+                                            all)</label>
                                     </div>
                                     <!-- Dynamic Note -->
                                     <div id="teamVisibilityNote" class="mt-2 small text-muted">
@@ -358,6 +386,46 @@
             </form>
         </div>
     </div>
+
+    <!-- View Members Modal -->
+    <div class="modal fade" id="viewMembersModal" tabindex="-1" aria-labelledby="viewMembersLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content rounded-4">
+                <div class="modal-header primary-gradient-effect">
+                    <h5 class="modal-title text-white" id="viewMembersLabel">Team Members</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="teamMembersContainer">
+                    <div class="text-center text-muted">Loading members...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Teams Modal -->
+    <div class="modal fade" id="editTeamModal" tabindex="-1" aria-labelledby="editTeamLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content rounded-4">
+                <div class="modal-header primary-gradient-effect">
+                    <h5 class="modal-title text-white" id="editTeamLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row" id="editTeamsContainer">
+                        <div class="d-flex justify-content-center align-items-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 @endsection
 
 @section('customJs')
@@ -375,6 +443,18 @@
                 allowClear: true,
                 width: '100%' // Ensures it takes full container width
             });
+            
+            $(document).on("shown.bs.modal", ".modal", function () {
+                const modalId = $(this).attr("id");
+
+                // Re-initialize select2 inside this modal
+                $('#teamLeader').select2({
+                    placeholder: 'Select Team Leader',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#' + modalId) // Ensure dropdown is not clipped
+                });
+            });
             // Update team visibility state + show/hide Members Visibility section
             function updateVisibilityNote() {
                 const isPrivate = $('#teamVisibility').is(':checked');
@@ -383,15 +463,15 @@
                 $('#teamVisibilityValue').val(isPrivate ? 'private' : 'public');
 
                 // Update the label text next to the toggle
-                const labelText = isPrivate
-                    ? 'Private (Only visible to team leader)'
-                    : 'Public (Visible to all assigned members)';
+                const labelText = isPrivate ?
+                    'Private (Only visible to team leader)' :
+                    'Public (Visible to all assigned members)';
                 $('label[for="teamVisibility"]').text(labelText);
 
                 // Update the visibility note below the switch
-                const note = isPrivate
-                    ? `<i class="ti ti-lock me-1 text-danger"></i><strong>Private:</strong> Only the team leader will be able to see this team.`
-                    : `<i class="ti ti-eye me-1 text-success"></i><strong>Public:</strong> All assigned team members will be able to see this team.`;
+                const note = isPrivate ?
+                    `<i class="ti ti-lock me-1 text-danger"></i><strong>Private:</strong> Only the team leader will be able to see this team.` :
+                    `<i class="ti ti-eye me-1 text-success"></i><strong>Public:</strong> All assigned team members will be able to see this team.`;
 
                 $('#teamVisibilityNote').html(note);
             }
@@ -431,7 +511,8 @@
                         $('#membersVisibilityWrapper').hide();
                         // ✅ Hide the modal after short delay
                         setTimeout(function () {
-                            const modal = bootstrap.Modal.getInstance(document.getElementById('createTeamModal'));
+                            const modal = bootstrap.Modal.getInstance(document
+                                .getElementById('createTeamModal'));
                             if (modal) {
                                 modal.hide();
                             }
@@ -448,7 +529,336 @@
                 });
             });
 
-        });
+            $('.view-members-ajax').on('click', function (e) {
+                e.preventDefault();
 
+                let teamCode = $(this).data('teamcode');
+                let teamName = $(this).data('teamname');
+                let modal = new bootstrap.Modal($('#viewMembersModal')[0]);
+                let $container = $('#teamMembersContainer');
+                let label = $('#viewMembersLabel');
+                label.text(`Members Of Team: ${teamName}`);
+
+                $container.html('<div class="text-center text-muted">Loading members...</div>');
+
+                $.ajax({
+                    url: `/get-team-members/${teamCode}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        const { leader, members } = data;
+
+                        if (!leader && members.length === 0) {
+                            $container.html('<p class="text-muted text-center">No members found.</p>');
+                            return;
+                        }
+
+                        let cards = `<div class="row row-cols-1 row-cols-md-2 g-3">`;
+
+                        // Leader card (with crown)
+                        if (leader) {
+                            cards += `
+                            <div class="col">
+                                <div class="card border-0 shadow-sm rounded-4 position-relative">
+                                    <div class="card-body d-flex align-items-center gap-3">
+                                        <div class="position-relative">
+                                            <img src="/assets/images/profile_picture/${leader.profile_picture || 'user.png'}"
+                                                 class="rounded-circle border" width="48" height="48" alt="${leader.employee_name}">
+                                            <span class="position-absolute top-0 start-100 translate-middle badge bg-warning p-1" title="Team Leader" style="font-size: 0.65rem;">
+                                                <i class="ti ti-crown"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">${leader.employee_code}*${leader.employee_name}</h6>
+                                            <div class="text-muted small-text">Department: ${leader.department || 'N/A'}</div>
+                                            <div class="text-muted small-text">Branch: ${leader.branch || 'Team Leader'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
+
+                        // Members cards
+                        members.forEach(member => {
+                            cards += `
+                            <div class="col">
+                                <div class="card border-0 shadow-sm rounded-4">
+                                    <div class="card-body d-flex align-items-center gap-3">
+                                        <img src="/assets/images/profile_picture/${member.profile_picture || 'user.png'}"
+                                             class="rounded-circle border" width="48" height="48" alt="${member.employee_name}">
+                                        <div>
+                                            <h6 class="mb-0 fw-medium">${member.employee_code}*${member.employee_name}</h6>
+                                            <div class="text-muted small-text">Department: ${member.department || 'N/A'}</div>
+                                            <div class="text-muted small-text">Branch: ${member.branch || 'Team Member'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        });
+
+                        cards += `</div>`;
+
+                        $container.html(cards);
+
+
+                    },
+                    error: function () {
+                        $container.html(
+                            '<p class="text-danger text-center">Failed to load members.</p>');
+                    }
+                });
+
+                modal.show();
+            });
+
+            $(document).on('click', '.delete-team-btn', function (e) {
+                e.preventDefault();
+
+                const teamCode = $(this).data('teamcode');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `You are about to delete team: ${teamCode}. This action cannot be undone!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/delete-team',
+                            method: 'POST',
+                            data: {
+                                team_code: teamCode
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (res) {
+                                if (res.status === 'success') {
+                                    Swal.fire('Deleted!', res.message, 'success');
+                                    $(`[data-teamcode="${teamCode}"]`).closest('.col-lg-4')
+                                        .remove();
+                                } else {
+                                    Swal.fire('Failed!', 'Team could not be deleted.',
+                                        'error');
+                                }
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 2000);
+                            },
+                            error: function (xhr) {
+                                if (xhr.status === 403) {
+                                    Swal.fire('Unauthorized',
+                                        'You are not allowed to delete this team.',
+                                        'warning');
+                                } else {
+                                    Swal.fire('Error',
+                                        'Something went wrong while deleting the team.',
+                                        'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit-team-btn', function (e) {
+                e.preventDefault();
+
+                const teamCode = $(this).data('teamcode');
+                const modal = new bootstrap.Modal(document.getElementById('editTeamModal'));
+                modal.show();
+
+                // Show loader
+                $('#editTeamsContainer').html(`
+                                                                                <div class="d-flex justify-content-center align-items-center p-5">
+                                                                                    <div class="spinner-border text-primary" role="status">
+                                                                                        <span class="visually-hidden">Loading...</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            `);
+
+                $.ajax({
+                    url: `/fetch-team-data/${teamCode}`,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            const team = response.data;
+                            const users = response.users;
+                            const selectedMembers = team.team_members;
+
+                            $('#editTeamLabel').text(`Edit Team - ${team.team_name}`);
+
+                            let leaderOptions = '';
+                            let memberOptions = '';
+
+                            users.forEach(user => {
+                                const value = `${user.employee_code}*${user.employee_name}`;
+                                const selectedLeader = team.team_leader === value ? 'selected' : '';
+                                const selectedMember = selectedMembers.includes(value) ? 'selected' : '';
+
+                                leaderOptions += `<option value="${value}" ${selectedLeader}>${user.employee_code}*${user.employee_name}</option>`;
+                                memberOptions += `<option value="${value}" ${selectedMember}>${user.employee_code}*${user.employee_name}</option>`;
+                            });
+
+                            const avatarPreview = team.team_avatar
+                                ? `<img src="/assets/images/team_avatars/${team.team_avatar}" class="rounded-circle border mb-2" width="60" height="60" alt="Team Avatar">`
+                                : '';
+
+                            const isPrivate = team.team_visibilty === 'private';
+                            const visibilityChecked = isPrivate ? 'checked' : '';
+                            const visibilityValue = isPrivate ? 'private' : 'public';
+                            const visibilityNote = isPrivate
+                                ? 'Only team leader and members can view this team.'
+                                : 'Team is publicly visible to all.';
+                            const visibilityLabel = isPrivate
+                                ? 'Private (Restricted to members)'
+                                : 'Public (Visible to all)';
+
+                            const formHtml = `
+                                                                                                <form id="editTeamForm" enctype="multipart/form-data" method="post">
+
+                                                                                                    <input type="hidden" name="team_code" value="${team.team_code}">
+
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamName" class="form-label">Team Name</label>
+                                                                                                            <input type="text" class="form-control" id="editTeamName" name="team_name" value="${team.team_name}">
+                                                                                                        </div>
+
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamLeader" class="form-label">Team Leader</label>
+                                                                                                            <select class="form-control" id="editTeamLeader" name="team_leader">
+                                                                                                                ${leaderOptions}
+                                                                                                            </select>
+                                                                                                        </div>
+
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamAvatar" class="form-label">Team Avatar</label>
+                                                                                                            ${avatarPreview}
+                                                                                                            <input type="file" class="form-control" id="editTeamAvatar" name="team_avatar" accept="image/png, image/jpeg, image/jpg">
+                                                                                                        </div>
+
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <label for="editTeamMembers" class="form-label">Select Team Members</label>
+                                                                                                            <select class="form-select select2" id="editTeamMembers" name="team_members[]" multiple>
+                                                                                                                ${memberOptions}
+                                                                                                            </select>
+                                                                                                        </div>
+
+                                                                                                        <div class="mb-3 col-12">
+                                                                                                            <div class="select-card active-on-hover p-3">
+                                                                                                                <label class="form-label d-block">Team Visibility</label>
+                                                                                                                <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="editTeamVisibility" ${visibilityChecked}>
+                            <label class="form-check-label mb-1" for="editTeamVisibility">${visibilityLabel}</label>
+                            <input type="hidden" name="team_visibility" id="editTeamVisibilityValue" value="${visibilityValue}">
+                        </div>
+                        <div id="editTeamVisibilityNote" class="mt-1 small text-muted">
+                            ${visibilityNote}
+                        </div>
+
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                        <div class="modal-footer border-top-0 mt-3 px-0">
+                                                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                                                            <button type="submit" class="btn btn-primary">Update Team</button>
+                                                                                                        </div>
+
+                                                                                                </form>
+                                                                                            `;
+
+                            $('#editTeamsContainer').html(formHtml);
+                            $('.select2').select2(); // re-initialize if you're using Select2
+                        }
+                    },
+                    error: function () {
+                        $('#editTeamsContainer').html(`<p class="text-danger p-4">Error loading team details.</p>`);
+                    }
+                });
+            });
+
+            $(document).on('change', '#editTeamVisibility', function () {
+                const isPrivate = $(this).is(':checked'); // checked = private
+                $('#editTeamVisibilityValue').val(isPrivate ? 'private' : 'public');
+
+                $('#editTeamVisibilityNote').text(
+                    isPrivate
+                        ? 'Only team leader and members can view this team.'
+                        : 'Team is publicly visible to all.'
+                );
+
+                $('label[for="editTeamVisibility"]').text(
+                    isPrivate
+                        ? 'Private (Restricted to members)'
+                        : 'Public (Visible to all)'
+                );
+            });
+
+            $(document).on('submit', '#editTeamForm', function (e) {
+                e.preventDefault();
+
+                const form = this;
+                const formData = new FormData(form);
+
+                $.ajax({
+                    url: '/update-team', // make sure this route is registered in routes/web.php
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    beforeSend: function () {
+                        $(form).find('button[type="submit"]').prop('disabled', true).html(`
+                                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Updating...
+                                                `);
+                    },
+                    success: function (res) {
+                        if (res.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Team Updated',
+                                text: res.message || 'Team details updated successfully!',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+
+                            $('#editTeamModal').modal('hide');
+
+                            setTimeout(() => {
+                                location.reload(); // You can also re-fetch specific data here if needed
+                            }, 1200);
+
+                        } else {
+                            Swal.fire('Error', res.message || 'Failed to update the team.', 'error');
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            // Laravel validation error handling
+                            const errors = xhr.responseJSON.errors;
+                            let messages = '';
+                            for (let field in errors) {
+                                messages += `${errors[field][0]}<br>`;
+                            }
+                            Swal.fire('Validation Error', messages, 'warning');
+                        } else if (xhr.status === 403) {
+                            Swal.fire('Unauthorized', xhr.responseJSON.message || 'You are not allowed to update this team.', 'warning');
+                        } else {
+                            Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+                        }
+                    },
+                    complete: function () {
+                        $(form).find('button[type="submit"]').prop('disabled', false).text('Update Team');
+                    }
+                });
+            });
+
+
+        });
     </script>
 @endsection
