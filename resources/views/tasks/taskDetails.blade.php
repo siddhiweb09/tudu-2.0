@@ -498,7 +498,7 @@
                                                                             class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
                                                                             type="button" data-task-id="{{ $taskId }}"
                                                                             data-bs-toggle="modal"
-                                                                            data-bs-target="#taskDetailModal-{{ $taskId }}">
+                                                                            data-bs-target="#taskDetailModal_{{ $taskId }}">
                                                                             <i class="ti ti-edit fs-5"></i> Edit Task
                                                                         </button>
                                                                     </li>
@@ -1405,7 +1405,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('customJs')
