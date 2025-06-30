@@ -330,7 +330,7 @@ class TaskController extends Controller
                 $conditions['status'] = 'In Process';
                 break;
             case 'in-review':
-                $finalStatusConditions['final_status'] = 'Pending';
+                $finalStatusConditions['final_status'] = 'In Review';
                 break;
             case 'overdue':
                 $dateCondition = ['due_date', '<', $today];
@@ -1426,6 +1426,21 @@ class TaskController extends Controller
                     }
 
                     $updated = DB::table('tasks')->where('task_id', $taskId)->update($updateData);
+
+                      if ($finalStatus == 'Completed') {
+                        TaskSchedule::where('task_id', $taskId)
+                            ->update([
+                                'status' => $status,
+                                'completion_date' => Carbon::now('Asia/Kolkata'),
+                                'updated_by' => $currentUser,
+                            ]);
+                    }
+
+                    TaskLog::create([
+                        'task_id' => $taskId,
+                        'log_description' => 'Task status changed' . $status . ' by ' . $currentUser,
+                        'added_by' => $currentUser
+                    ]);
                 }
             } elseif (Str::startsWith($taskId, 'DELTASK-')) {
                 $task = DB::table('delegated_tasks')->where('delegate_task_id', $taskId)->first();
@@ -1451,6 +1466,20 @@ class TaskController extends Controller
                     }
 
                     $updated = DB::table('delegated_tasks')->where('delegate_task_id', $taskId)->update($updateData);
+
+                    if ($finalStatus == 'Completed') {
+                        TaskSchedule::where('task_id', $taskId)
+                            ->update([
+                                'status' => $status,
+                                'completion_date' => Carbon::now('Asia/Kolkata'),
+                                'updated_by' => $currentUser,
+                            ]);
+                    }
+                    TaskLog::create([
+                        'task_id' => $taskId,
+                        'log_description' => 'Task status changed' . $status . ' by ' . $currentUser,
+                        'added_by' => $currentUser
+                    ]);
                 }
             }
 
