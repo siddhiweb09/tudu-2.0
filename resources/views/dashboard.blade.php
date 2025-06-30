@@ -447,5 +447,31 @@
 @endsection
 
 @section('customJs')
+<script>
+    const authUserId = "{{ Auth::id() }}";
 
+    function loadTasksStat() {
+        $.ajax({
+            url: `/fetch-user-tasks/${authUserId}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // Clear all columns first
+
+            },
+            error: function(xhr) {
+                console.error('Error fetching tasks:', xhr.responseText);
+                $('.kanban-cards').html(`
+                    <div class="text-center py-4 text-danger">
+                        <i class="bi bi-exclamation-triangle fs-4"></i>
+                        <p class="mb-0">Failed to load tasks. Please try again.</p>
+                    </div>
+                `);
+            }
+        });
+    }
+
+    // Load tasks on page load
+    loadTasksStat();
+</script>
 @endsection
