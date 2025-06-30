@@ -58,6 +58,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::match(['get', 'post'], '/add-task', [TaskController::class, 'store'])->name('tasks.store');
     Route::match(['get', 'post'], '/task/{task_id}', [TaskController::class, 'taskDetails'])->name('tasks.taskDetails');
     Route::match(['get', 'post'], '/add-comment', [TaskController::class, 'addComment'])->name('addComment');
+    Route::post('delete-task', [TaskController::class, 'deleteTask'])->name('deleteTask');
 
 
     // Delegated Tasks
@@ -117,7 +118,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/update-team', [TeamController::class, 'updateTeam'])->name('teams.update');
 
 
-    Route::get('/projects', [UserController::class,'project']);
+    Route::get('/projects', [UserController::class, 'project']);
 });
 
 Route::match(['get', 'post'], '/demo', [DemoController::class, 'demoIndex'])->name('demo');

@@ -223,7 +223,7 @@
                                             'bg-warning-light text-warning',
                                             'bg-danger-light text-danger',
                                             'bg-secondary-light
-                                                                                                                                                                                                                                        text-secondary',
+                                                                                                                                                                                                                                                                                                                                                                                                        text-secondary',
                                             'bg-dark-light text-dark',
                                             'bg-dark text-light'
                                         ];
@@ -477,11 +477,13 @@
                                                             aria-labelledby="taskDropdownBtn">
                                                             <!-- Edit Task -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#" data-task-id="{{ $taskId }}" data-bs-toggle="modal"
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-bs-toggle="modal"
                                                                     data-bs-target="#taskDetailModal-{{ $taskId }}">
                                                                     <i class="ti ti-edit fs-5"></i> Edit Task
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Mark as Completed -->
@@ -511,10 +513,11 @@
 
                                                             <!-- Delete Task -->
                                                             <li class="border-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger delete-task-btn"
+                                                                    type="button" data-task-id="{{ $taskId }}">
                                                                     <i class="ti ti-trash fs-5"></i> Delete Task
-                                                                </a>
+                                                                </button>
                                                             </li>
                                                         </ul>
 
@@ -634,11 +637,13 @@
                                                             aria-labelledby="taskDropdownBtn">
                                                             <!-- Edit Task -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#" data-task-id="{{ $taskId }}" data-bs-toggle="modal"
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-bs-toggle="modal"
                                                                     data-bs-target="#taskDetailModal-{{ $taskId }}">
                                                                     <i class="ti ti-edit fs-5"></i> Edit Task
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Mark as Completed -->
@@ -668,10 +673,11 @@
 
                                                             <!-- Delete Task -->
                                                             <li class="border-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger delete-task-btn"
+                                                                    type="button" data-task-id="{{ $taskId }}">
                                                                     <i class="ti ti-trash fs-5"></i> Delete Task
-                                                                </a>
+                                                                </button>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -790,11 +796,13 @@
                                                             aria-labelledby="taskDropdownBtn">
                                                             <!-- Edit Task -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#" data-task-id="{{ $taskId }}" data-bs-toggle="modal"
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-bs-toggle="modal"
                                                                     data-bs-target="#taskDetailModal-{{ $taskId }}">
                                                                     <i class="ti ti-edit fs-5"></i> Edit Task
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Mark as Completed -->
@@ -824,10 +832,11 @@
 
                                                             <!-- Delete Task -->
                                                             <li class="border-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger delete-task-btn"
+                                                                    type="button" data-task-id="{{ $taskId }}">
                                                                     <i class="ti ti-trash fs-5"></i> Delete Task
-                                                                </a>
+                                                                </button>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -947,11 +956,13 @@
                                                             aria-labelledby="taskDropdownBtn">
                                                             <!-- Edit Task -->
                                                             <li class="border-0 p-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                    href="#" data-task-id="{{ $taskId }}" data-bs-toggle="modal"
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                                    type="button" data-task-id="{{ $taskId }}"
+                                                                    data-bs-toggle="modal"
                                                                     data-bs-target="#taskDetailModal-{{ $taskId }}">
                                                                     <i class="ti ti-edit fs-5"></i> Edit Task
-                                                                </a>
+                                                                </button>
                                                             </li>
 
                                                             <!-- Mark as Completed -->
@@ -981,10 +992,11 @@
 
                                                             <!-- Delete Task -->
                                                             <li class="border-0">
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger"
-                                                                    href="#">
+                                                                <button
+                                                                    class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 text-danger delete-task-btn"
+                                                                    type="button" data-task-id="{{ $taskId }}">
                                                                     <i class="ti ti-trash fs-5"></i> Delete Task
-                                                                </a>
+                                                                </button>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -1373,50 +1385,50 @@
                 } else {
                     // Create new nav tab
                     const navTab = `
-                                        <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
-                                            data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
-                                            aria-controls="${tabId}" aria-selected="false">
-                                            <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
-                                            <div class="d-flex mb-2 small">
-                                                <p>Started by ${addedBy}</p>
-                                                <p class="mx-2">•</p>
-                                                <p>${createdAt}</p>
-                                            </div>
-                                            <div class="d-flex small">
-                                                <p>0 replies</p>
-                                            </div>
-                                        </button>
-                                    `;
+                                                        <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
+                                                            data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
+                                                            aria-controls="${tabId}" aria-selected="false">
+                                                            <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
+                                                            <div class="d-flex mb-2 small">
+                                                                <p>Started by ${addedBy}</p>
+                                                                <p class="mx-2">•</p>
+                                                                <p>${createdAt}</p>
+                                                            </div>
+                                                            <div class="d-flex small">
+                                                                <p>0 replies</p>
+                                                            </div>
+                                                        </button>
+                                                    `;
                     $("#v-pills-tab .card").append(navTab);
 
                     // Create new content pane (note: initially not active)
                     const contentTab = `
-                                        <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
-                                            <div class="card">
-                                                <div class="card-body d-flex flex-column">
-                                                    <div class="mb-3">
-                                                        <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
-                                                        <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
-                                                        <hr>
-                                                    </div>
-                                                    <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
-                                                        <p class="text-muted">No comments yet.</p>
-                                                    </div>
-                                                    <div class="d-flex">
-                                                        <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
-                                                            alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                                                        <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
-                                                            <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
-                                                            <input hidden type="text" name="task_id" value="${taskId}" />
-                                                            <div class="text-end">
-                                                                <button class="btn btn-primary">Post Reply</button>
+                                                        <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
+                                                            <div class="card">
+                                                                <div class="card-body d-flex flex-column">
+                                                                    <div class="mb-3">
+                                                                        <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
+                                                                        <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
+                                                                        <hr>
+                                                                    </div>
+                                                                    <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
+                                                                        <p class="text-muted">No comments yet.</p>
+                                                                    </div>
+                                                                    <div class="d-flex">
+                                                                        <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
+                                                                            alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                                                        <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
+                                                                            <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
+                                                                            <input hidden type="text" name="task_id" value="${taskId}" />
+                                                                            <div class="text-end">
+                                                                                <button class="btn btn-primary">Post Reply</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
+                                                        </div>
+                                                    `;
                     $("#v-pills-tabContent").append(contentTab);
 
                     // Activate newly created tab using Bootstrap's Tab API
@@ -1441,6 +1453,66 @@
                 $(target).addClass("active show");
             });
 
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $(document).on('click', '.delete-task-btn', function () {
+                const taskId = $(this).data('task-id');
+
+                // Detect type
+                const isDelegate = taskId.startsWith('DELTASK-');
+
+                // Custom text for each type
+                const title = isDelegate ? 'Delete Delegated Task?' : 'Delete Task?';
+                const text = isDelegate
+                    ? 'Deleting this delegated task will remove it along with all its comments, media attachments, and any references in the parent task. This action is irreversible.'
+                    : 'This action will permanently delete the task and all its associated Delegated tasks and Data, including task lists, media files, comments, and other related records. This action cannot be undone';
+
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/delete-task',
+                            method: 'POST',
+                            data: { task_id: taskId },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (res) {
+                                Swal.fire({
+                                    icon: res.status === 'success' ? 'success' : 'error',
+                                    title: res.status === 'success' ? 'Deleted!' : 'Error',
+                                    text: res.message || (res.status === 'success'
+                                        ? 'Task deleted successfully.'
+                                        : 'Something went wrong.')
+                                });
+
+                                if (res.status === 'success') {
+                                    setTimeout(() => location.reload(), 1000);
+                                }
+                            },
+                            error: function (xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: xhr.responseJSON?.message || 'Something went wrong.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endsection
