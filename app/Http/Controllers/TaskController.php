@@ -523,7 +523,7 @@ class TaskController extends Controller
             'breakdown' => [
                 'by_status' => $tasksByStatus,
                 'by_priority' => $tasksByPriority,
-                'by_project' =>  $tasksByProject,
+                'by_project' => $tasksByProject,
             ],
             'all_tasks' => $allTasks->map(function ($task) {
                 // Common fields for both Task and DelegatedTask
@@ -1410,6 +1410,7 @@ class TaskController extends Controller
             }
 
             // Delete all related records by delegate_task_id
+            TaskSchedule::where('task_id', $taskId)->delete();
             TaskMedia::where('task_id', $taskId)->delete();
             TaskLog::where('task_id', $taskId)->delete();
             TaskList::where('task_id', $taskId)->delete();
@@ -1435,6 +1436,7 @@ class TaskController extends Controller
 
             // Delete all related records by task_id
             DelegatedTask::where('task_id', $taskId)->delete();
+            TaskSchedule::where('task_id', $taskId)->delete();
             TaskMedia::where('task_id', $taskId)->delete();
             TaskLog::where('task_id', $taskId)->delete();
             TaskList::where('task_id', $taskId)->delete();
