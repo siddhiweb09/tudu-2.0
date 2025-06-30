@@ -1147,6 +1147,7 @@ class TaskController extends Controller
             // Handle delegated task case (single task)
             $taskItem = DelegatedTask::where('delegate_task_id', $task_id)->firstOrFail();
             $task['task_info'] = $taskItem->toArray();
+            $task['task_info']['flag'] = 'Delegated';
             $allTaskIds = $task_id;
 
             // Extract member codes with relationship flags
@@ -1180,6 +1181,7 @@ class TaskController extends Controller
 
             $delegatedTaskIds = $delegatedTasks->pluck('delegate_task_id')->toArray();
             $task['task_info'] = $mainTask->toArray();
+            $task['task_info']['flag'] = 'Main';
             $allTaskIds = array_unique(array_merge([$mainTask->task_id], $delegatedTaskIds));
 
             // Process main task with relationship flags
@@ -1489,7 +1491,6 @@ class TaskController extends Controller
                 'status' => 'success',
                 'message' => 'Delegated task priority updated successfully.',
             ]);
-
         } else {
             $task = Task::where('task_id', $taskId)->first();
 
@@ -1517,6 +1518,4 @@ class TaskController extends Controller
             ]);
         }
     }
-
-
 }
