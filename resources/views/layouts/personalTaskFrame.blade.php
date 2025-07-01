@@ -10,7 +10,8 @@
     <!-- Favicon icon-->
     <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
@@ -57,15 +58,19 @@
 
                         <!-- Example single danger button -->
                         <div class="dropdown-center">
-                            <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{{ asset('assets/images/profile_picture/' . ($user->profile_picture ?: 'user.png')) }}" class="rounded-circle profile-pic" />
+                            <button class="btn p-0 dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img src="{{ asset('assets/images/profile_picture/' . ($user->profile_picture ?: 'user.png')) }}"
+                                    class="rounded-circle profile-pic" />
                             </button>
                             <ul class="dropdown-menu profile-menu">
                                 <li><a class="dropdown-item" href="/profile/{{ Auth::user()->id}}">Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                     </div>
@@ -82,17 +87,23 @@
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ti ti-list-details menu-icon"></i>
                                     <span class="menu-title">My Tasks</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="{{ route('tasks.allTask') }}">Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTask') }}">Pending Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTask') }}">In Process Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTask') }}">In Review Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTask') }}">Overdiew Tasks</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do List</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.pendingTask') }}">Pending
+                                            Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inProcessTask') }}">In Process
+                                            Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.inReviewTask') }}">In Review
+                                            Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('tasks.overdueTask') }}">Overdiew
+                                            Tasks</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('personal-tasks.index') }}">To Do
+                                            List</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -140,12 +151,14 @@
 
     @extends('modalCreateTask')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             const preloader = document.querySelector('.preloader');
             if (preloader) {
                 preloader.style.opacity = '0';
@@ -155,7 +168,7 @@
         });
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             $.ajaxSetup({
                 headers: {
@@ -171,7 +184,7 @@
             const $formSteps = $(".form-step");
             const $stepIndicators = $(".step");
 
-            $nextButtons.on("click", function() {
+            $nextButtons.on("click", function () {
                 const $currentStep = $(".form-step.active");
                 const currentStepNumber = parseInt($currentStep.data("step"));
                 const nextStepNumber = currentStepNumber + 1;
@@ -185,7 +198,7 @@
                 }
             });
 
-            $prevButtons.on("click", function() {
+            $prevButtons.on("click", function () {
                 const $currentStep = $(".form-step.active");
                 const currentStepNumber = parseInt($currentStep.data("step"));
                 const prevStepNumber = currentStepNumber - 1;
@@ -198,7 +211,7 @@
             });
 
             function updateStepIndicators(activeStep) {
-                $stepIndicators.each(function() {
+                $stepIndicators.each(function () {
                     const $step = $(this);
                     const stepNumber = parseInt($step.data("step"));
                     const $stepNumberElement = $step.find(".step-number");
@@ -248,9 +261,7 @@
                 return isValid;
             }
 
-
-
-            $("#flexSwitchCheckDefault").on("change", function() {
+            $("#flexSwitchCheckDefault").on("change", function () {
                 if ($(this).is(":checked")) {
                     $("#frequency_section").removeClass("d-none");
                     $("#due_date_section_form1").addClass("d-none");
@@ -263,7 +274,7 @@
                 }
             });
 
-            $("#frequency_form1").on("change", function() {
+            $("#frequency_form1").on("change", function () {
                 var frequency = $(this).val();
                 $("#additional_fields_form1").removeClass("d-none");
 
@@ -338,7 +349,7 @@
             const $documentsContainer = $("#documentsContainer");
             const $addDocumentButton = $("#addDocument");
 
-            $addDocumentButton.on("click", function() {
+            $addDocumentButton.on("click", function () {
                 const newDocument = $(`
             <div class="document-item mb-3">
                 <div class="input-group">
@@ -353,13 +364,12 @@
             });
 
             // Handle document removal
-            $documentsContainer.on("click", ".remove-document", function() {
+            $documentsContainer.on("click", ".remove-document", function () {
                 $(this).closest(".document-item").remove();
             });
 
-
             // Update all inputs before form submission
-            $("form").on("submit", function(e) {
+            $("form").on("submit", function (e) {
                 // Prevent default form submission
                 e.preventDefault();
 
@@ -382,13 +392,13 @@
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Laravel
                     },
-                    beforeSend: function() {
+                    beforeSend: function () {
                         // Show loading indicator
                         $("#submitBtn")
                             .prop("disabled", true)
                             .html('<i class="ti ti-loader me-2"></i>Processing...');
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             // Show success message
                             toastr.success(response.message);
@@ -403,7 +413,7 @@
                             toastr.error(response.message || "An error occurred");
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         let errorMessage = "An error occurred";
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
@@ -414,7 +424,7 @@
                         }
                         toastr.error(errorMessage);
                     },
-                    complete: function() {
+                    complete: function () {
                         // Re-enable submit button
                         $("#submitBtn").prop("disabled", false).html("Create Task");
                     },
@@ -427,9 +437,6 @@
                 $("#priorityInput").val(priority.replace("btnradio", "").toLowerCase());
             }
 
-
-            // Update tasks input
-
             // Add this new function to handle frequency duration
             function updateFrequencyDuration() {
                 const frequency = $("#frequency_form1").val();
@@ -437,7 +444,7 @@
 
                 if (frequency === "Weekly") {
                     duration = $(".day-checkbox:checked")
-                        .map(function() {
+                        .map(function () {
                             return $(this).val();
                         })
                         .get();
@@ -463,12 +470,10 @@
                 $("#frequencyDurationInput").val(JSON.stringify(duration));
             }
 
-            // Update links input more reliably
-
             // Update reminders input
             function updateRemindersInput() {
                 const reminders = [];
-                $('input[name="reminders[]"]:checked').each(function() {
+                $('input[name="reminders[]"]:checked').each(function () {
                     reminders.push($(this).val());
                 });
                 $("#remindersInput").val(JSON.stringify(reminders));
@@ -495,11 +500,11 @@
             initializeForm();
 
             // Also update when priority changes
-            $('input[name="btnradio"]').change(function() {
+            $('input[name="btnradio"]').change(function () {
                 updatePriorityInput();
             });
 
-            $(".view-task").click(function() {
+            $(".view-task").click(function () {
                 const taskId = $(this).data("id");
                 $("#modalEditTaskBtn").data("id", taskId);
                 $("#modalDeleteTaskBtn").data("id", taskId);
@@ -513,7 +518,7 @@
                     url: `/personal-tasks-show/${taskId}`,
                     type: "GET",
                     dataType: "json",
-                    success: function(data) {
+                    success: function (data) {
                         console.log("Received data:", data);
                         if (!data || typeof data !== "object") {
                             throw new Error("Invalid data received");
@@ -557,7 +562,7 @@
                         // Initialize form submission handlers
                         initFormHandlers(taskId);
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("AJAX Error:", status, error);
                         $modal
                             .find(".modal-body")
@@ -576,9 +581,11 @@
                         "badge badge-pill " +
                         (status === "completed" ?
                             "badge-success" :
-                            status === "in_progress" ?
-                            "badge-info" :
-                            "badge-secondary")
+                            status === "in-progress" ?
+                                "badge-warning" :
+                                status === "Pending" ?
+                                    "badge-primary" :
+                                    "badge-danger")
                     );
             }
 
@@ -591,8 +598,8 @@
                         (priority === "high" ?
                             "badge-danger" :
                             priority === "medium" ?
-                            "badge-warning" :
-                            "badge-success")
+                                "badge-warning" :
+                                "badge-success")
                     );
             }
 
@@ -643,22 +650,20 @@
                                     <i class="ti-time mr-1"></i>${note.timestamp}
                                 </small>
                                 <div class="note-actions">
-                                    <button class="btn btn-sm btn-outline-primary edit-note mr-1" data-note-id="${
-                                    note.id
-                                    }">
-                                        <i class="ti-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger delete-note" data-note-id="${
-                                    note.id
-                                    }">
-                                        <i class="ti-trash"></i>
-                                    </button>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-outline-primary personal-btn-icon rounded-pill shadow-sm edit-note" data-note-id="${note.id}" title="Edit Note">
+                                            <i class="ti ti-edit fs-6"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger personal-btn-icon rounded-pill shadow-sm delete-note" data-note-id="${note.id}" title="Delete Note">
+                                            <i class="ti ti-trash fs-6"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="note-content mt-2">${note.content.replace(
                             /\n/g,
                             "<br>"
-                            )}</div>
+                        )}</div>
                         </div>
                     </div>`;
                     });
@@ -674,9 +679,9 @@
                         `<div class="alert alert-info">
                 <h5>Notes History</h5>
                 <div style="white-space: pre-line">${notesJson.replace(
-                  /\n/g,
-                  "<br>"
-                )}</div>
+                            /\n/g,
+                            "<br>"
+                        )}</div>
             </div>`
                     );
                 }
@@ -684,7 +689,7 @@
 
             function initNoteActionHandlers(notesJson) {
                 // Delete note handler
-                $(".delete-note").click(function() {
+                $(".delete-note").click(function () {
                     const noteId = $(this).data("note-id");
                     if (confirm("Are you sure you want to delete this note?")) {
                         deleteNote(noteId);
@@ -692,7 +697,7 @@
                 });
 
                 // Edit note handler
-                $(".edit-note").click(function() {
+                $(".edit-note").click(function () {
                     const noteId = $(this).data("note-id");
                     const noteItem = $(this).closest(".note-item");
                     const currentContent = noteItem
@@ -720,12 +725,12 @@
                     `);
 
                     // Cancel edit handler
-                    noteItem.find(".cancel-edit").click(function() {
+                    noteItem.find(".cancel-edit").click(function () {
                         displayNotes(notesJson);
                     });
 
                     // Submit edit handler
-                    noteItem.find(".edit-note-form").submit(function(e) {
+                    noteItem.find(".edit-note-form").submit(function (e) {
                         e.preventDefault();
                         const newContent = $(this).find("[name=note]").val().trim();
                         if (newContent) {
@@ -739,7 +744,7 @@
                 // Add note form handler
                 $("#addNoteForm")
                     .off("submit")
-                    .submit(function(e) {
+                    .submit(function (e) {
                         e.preventDefault();
                         const noteContent = $(this).find("[name=note]").val().trim();
                         if (noteContent) {
@@ -756,7 +761,7 @@
                         task_id: taskId,
                         note: content,
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             fetchTaskDetails(taskId);
                             $("#addNoteForm")[0].reset();
@@ -764,7 +769,7 @@
                             alert(response.error || "Failed to add note");
                         }
                     },
-                    error: function() {
+                    error: function () {
                         alert("Error adding note");
                     },
                 });
@@ -781,14 +786,14 @@
                         note_id: noteId,
                         note: newContent,
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             fetchTaskDetails(taskId);
                         } else {
                             alert(response.error || "Failed to update note");
                         }
                     },
-                    error: function() {
+                    error: function () {
                         alert("Error updating note");
                     },
                 });
@@ -804,14 +809,14 @@
                         task_id: taskId,
                         note_id: noteId,
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             fetchTaskDetails(taskId);
                         } else {
                             alert(response.error || "Failed to delete note");
                         }
                     },
-                    error: function() {
+                    error: function () {
                         alert("Error deleting note");
                     },
                 });
@@ -822,12 +827,12 @@
                     url: `/personal-tasks-show/${taskId}`,
                     type: "GET",
                     dataType: "json",
-                    success: function(data) {
+                    success: function (data) {
                         if (data && typeof data === "object") {
                             displayNotes(data.notes || null);
                         }
                     },
-                    error: function() {
+                    error: function () {
                         console.error("Failed to refresh task details");
                     },
                 });
@@ -838,7 +843,7 @@
                     url: `/personal-tasks/${taskId}/documents`,
                     type: "GET",
                     dataType: "json",
-                    success: function(documents) {
+                    success: function (documents) {
                         const container = $("#detail-documents");
                         container.empty();
 
@@ -867,8 +872,8 @@
                                     ${doc.description ? `<p class="mt-2 mb-1">${doc.description}</p>` : ""}
                                 </div>
                                 <div class="document-actions">
-                                    <button class="btn btn-sm btn-outline-danger delete-doc" data-doc-id="${doc.id}">
-                                        <i class="ti-trash"></i>
+                                    <button class="btn btn-sm btn-outline-danger personal-btn-icon rounded-pill shadow-sm delete-doc" data-doc-id="${doc.id}">
+                                        <i class="ti ti-trash fs-6"></i>
                                     </button>
                                 </div>
                             </div>
@@ -883,7 +888,7 @@
 
                         initDocumentActionHandlers();
                     },
-                    error: function() {
+                    error: function () {
                         console.error("Failed to load documents");
                     },
                 });
@@ -984,7 +989,7 @@
             }
 
             function initDocumentActionHandlers() {
-                $(".delete-doc").click(function() {
+                $(".delete-doc").click(function () {
                     const docId = $(this).data("doc-id");
                     if (confirm("Are you sure you want to delete this document?")) {
                         deleteDocument(docId);
@@ -1002,20 +1007,20 @@
                         doc_id: docId,
                         task_id: taskId,
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             displayDocuments(taskId);
                         } else {
                             alert(response.error || "Failed to delete document");
                         }
                     },
-                    error: function() {
+                    error: function () {
                         alert("Error deleting document");
                     },
                 });
             }
 
-            $("#uploadDocumentForm").off('submit').on("submit", function(e) {
+            $("#uploadDocumentForm").off('submit').on("submit", function (e) {
                 e.preventDefault();
                 const form = this;
                 const formData = new FormData(form);
@@ -1041,7 +1046,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             displayDocuments(taskId);
                             form.reset();
@@ -1049,11 +1054,11 @@
                             alert(response.error || "Failed to upload document");
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error("Upload error:", xhr.responseText);
                         alert("Upload failed: " + (xhr.responseJSON?.error || 'Unknown error'));
                     },
-                    complete: function() {
+                    complete: function () {
                         submitBtn.prop("disabled", false).html('<i class="ti-upload mr-1"></i> Upload');
                     }
                 });
@@ -1065,7 +1070,7 @@
                     Work: "#4caf50",
                     Personal: "#ff9800",
                 };
-                return colors[category] || "#6c757d";
+                return colors[category] || "#000";
             }
         });
     </script>

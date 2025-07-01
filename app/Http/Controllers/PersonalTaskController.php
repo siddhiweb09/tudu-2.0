@@ -417,7 +417,7 @@ class PersonalTaskController extends Controller
             // Get the task with notes
             $task = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by',  $activeUser)
+                ->where('assign_by', $activeUser)
                 ->first(['notes']);
 
             if (!$task) {
@@ -449,7 +449,7 @@ class PersonalTaskController extends Controller
             // Re-index array and update database
             $rowsAffected = DB::table('personal_tasks')
                 ->where('task_id', $taskId)
-                ->where('assign_by',  $activeUser)
+                ->where('assign_by', $activeUser)
                 ->update(['notes' => json_encode(array_values($updatedNotes))]);
 
             return response()->json([
@@ -588,6 +588,42 @@ class PersonalTaskController extends Controller
         ];
 
         return ($groups[$oldStatus] ?? null) !== ($groups[$newStatus] ?? null);
+    }
+
+    public function updatePersonalStatus(Request $request, $taskId)
+    {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        $task = PersonalTask::findOrFail($taskId);
+
+        $task->status = $request->status;
+        $task->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Task status updated successfully.'
+        ]);
+    }
+
+    public function deleteTask($id)
+    {
+        $task = PersonalTask::where('task_id', $id)->first(); // ✅ Correct
+
+        if (!$task) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Task not found.'
+            ], 404);
+        }
+
+        $task->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Task deleted successfully.'
+        ]);
     }
 
 }

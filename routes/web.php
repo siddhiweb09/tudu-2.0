@@ -121,8 +121,10 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/personal-tasks-delete-document', [PersonalTaskController::class, 'deleteDocument'])->name('personal-tasks.delete-document');
 
     Route::match(['get', 'post'], '/personal-tasks/{task}', [PersonalTaskController::class, 'update'])->name('personal-tasks.update');
-    Route::match(['get', 'post'], '/personal-tasks/{task}/status', [PersonalTaskController::class, 'updatePersonalStatus'])->name('personal-tasks.update-status');
+    Route::match(['get', 'post'], '/personal-tasks-update-status/{task}', [PersonalTaskController::class, 'updatePersonalStatus'])->name('personal-tasks.update-status');
     Route::delete('/personal-tasks/{task}', [PersonalTaskController::class, 'destroy'])->name('personal-tasks.destroy');
+    Route::delete('/personal-tasks-delete/{task}', [PersonalTaskController::class, 'deleteTask'])->name('personal-tasks.delete');
+
 
     //fetch Functions
     Route::get('/get-task-details/{id}', [TaskController::class, 'getTaskById']);
