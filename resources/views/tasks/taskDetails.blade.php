@@ -557,9 +557,9 @@
                                                 @if ($canMarkCompleted)
                                                 <!-- Mark as Completed -->
                                                 <li class="border-0 p-0">
-                                                    <button id="markAsCompleted"
-                                                        class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                        type="button">
+                                                    <button 
+                                                        class="mark-as-completed-btn dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                        type="button" data-task-id="{{ $taskId }}">
                                                         <i class="ti ti-circle-check fs-5"></i> Mark as Completed
                                                     </button>
                                                 </li>
@@ -757,10 +757,11 @@
                                                 @if ($canMarkCompleted)
                                                 <!-- Mark as Completed -->
                                                 <li class="border-0 p-0">
-                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                        href="#">
+                                                    <button 
+                                                        class="mark-as-completed-btn dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                        type="button" data-task-id="{{ $taskId }}">
                                                         <i class="ti ti-circle-check fs-5"></i> Mark as Completed
-                                                    </a>
+                                                    </button>
                                                 </li>
                                                 @endif
 
@@ -956,10 +957,11 @@
                                                 @if ($canMarkCompleted)
                                                 <!-- Mark as Completed -->
                                                 <li class="border-0 p-0">
-                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                        href="#">
+                                                    <button 
+                                                        class="mark-as-completed-btn dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                        type="button" data-task-id="{{ $taskId }}">
                                                         <i class="ti ti-circle-check fs-5"></i> Mark as Completed
-                                                    </a>
+                                                    </button>
                                                 </li>
                                                 @endif
 
@@ -1156,10 +1158,11 @@
                                                 @if ($canMarkCompleted)
                                                 <!-- Mark as Completed -->
                                                 <li class="border-0 p-0">
-                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                        href="#">
+                                                    <button 
+                                                        class="mark-as-completed-btn dropdown-item d-flex align-items-center gap-2 py-2 px-2"
+                                                        type="button" data-task-id="{{ $taskId }}">
                                                         <i class="ti ti-circle-check fs-5"></i> Mark as Completed
-                                                    </a>
+                                                    </button>
                                                 </li>
                                                 @endif
 
@@ -1838,7 +1841,7 @@
             });
         });
 
-        $(document).on('click', '#markAsCompleted', function() {
+        $(document).on('click', '.mark-as-completed-btn', function() {
             const $btn = $(this);
             const taskId = $btn.data('task-id');
             const isDelegated = taskId.startsWith('DELTASK-');
