@@ -10,13 +10,14 @@
     <!-- Favicon icon-->
     <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
 
-    <!-- Core Css -->
     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <link rel="stylesheet" href="assets/css/buttons.css" />
     <link rel="stylesheet" href="assets/css/animate.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Core Css -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/buttons.css" />
 
     <title>Make Your Tasks Easy</title>
 </head>
@@ -78,7 +79,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mb-2 mb-lg-0 d-flex justify-content-between w-100">
                             <li class="nav-item">
-                                <a class="nav-link" href="../../">
+                                <a class="nav-link" href="../">
                                     <i class="ti ti-home-2 menu-icon"></i>
                                     <span class="menu-title">Dashboard</span>
                                 </a>
@@ -100,7 +101,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../projects">
+                                <a class="nav-link" href="../projects">
                                     <i class="ti ti-presentation-analytics menu-icon"></i>
                                     <span class="menu-title">Projects</span>
                                 </a>
@@ -118,7 +119,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
+                                <a class="nav-link" href="../index.html">
                                     <i class="ti ti-tags menu-icon"></i>
                                     <span class="menu-title">Tags / Labels</span>
                                 </a>
@@ -161,7 +162,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="assets/js/task-form.js"></script>
-    <script src="assets/js/task-update-form.js"></script>
 
     <script>
         window.addEventListener('load', function() {
@@ -171,11 +171,13 @@
                 preloader.style.visibility = 'hidden';
                 preloader.style.transition = 'opacity 0.5s ease';
             }
+
             $(".summernote").summernote({
                 placeholder: "Describe your task here....",
                 tabsize: 2,
                 height: 100,
             });
+            
             $('.js-example-basic-single').select2({
                 placeholder: 'Select an option'
             });
