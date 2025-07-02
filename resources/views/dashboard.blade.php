@@ -11,8 +11,8 @@
             <div class="card border shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <i class="ti ti-file-text text-primary"></i>
+                        <div class="rounded-circle bg-blue-100 bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="ti ti-file-text text-primary fs-3"></i>
                         </div>
                     </div>
                     <div class="mt-3">
@@ -29,12 +29,12 @@
             <div class="card border shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <i class="ti ti-clock text-primary"></i>
+                        <div class="rounded-circle bg-blue-100 bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="ti ti-clock text-primary fs-3"></i>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <h6 class="text-muted mb-0">In Progress</h6>
+                        <h6 class="text-muted mb-0">In Progress Tasks</h6>
                         <h3 class="fw-bold text-dark mt-1" id="in-progress">0</h3>
                         <small class="text-muted">from last month</small>
                     </div>
@@ -47,12 +47,12 @@
             <div class="card border shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <i class="ti ti-circle-check text-primary"></i>
+                        <div class="rounded-circle bg-blue-100 bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="ti ti-circle-check text-primary fs-3"></i>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <h6 class="text-muted mb-0">Completed</h6>
+                        <h6 class="text-muted mb-0">Completed Tasks</h6>
                         <h3 class="fw-bold text-dark mt-1" id="completed-tasks">0</h3>
                         <small class="text-muted">from last month</small>
                     </div>
@@ -65,12 +65,12 @@
             <div class="card border shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <i class="ti ti-info-circle text-primary"></i>
+                        <div class="rounded-circle bg-blue-100 bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="ti ti-info-circle text-primary fs-3"></i>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <h6 class="text-muted mb-0">Pending</h6>
+                        <h6 class="text-muted mb-0">Pending Tasks</h6>
                         <h3 class="fw-bold text-dark mt-1" id="pending-tasks">0</h3>
                         <small class="text-muted">from last month</small>
                     </div>
@@ -435,14 +435,11 @@
     }
 
     function updateMetricsCards(metrics, breakdown) {
-        console.log('Metrics:', metrics);
-        console.log('Breakdown:', breakdown);
-
-        // Total Projects Card - count the keys in by_project
+        // Total Projects Card
         const projectCount = breakdown.by_project ? Object.keys(breakdown.by_project).length : 0;
         $('#total-projects').text(projectCount);
 
-        // In Progress Card - check for 'in progress' status (note the space)
+        // In Progress Card
         const inProgressCount = breakdown.by_status?.['in progress'] || 0;
         $('#in-progress').text(inProgressCount);
 
@@ -460,7 +457,6 @@
         $('#in-progress-percent').text(Math.round((inProgressCount / totalTasks) * 100) + '%');
         $('#pending-percent').text(Math.round((pendingCount / totalTasks) * 100) + '%');
     }
-
     async function updateProjectOverview(response) {
         const projectOverviewContainer = $('#project-overview');
         projectOverviewContainer.empty();
@@ -571,40 +567,32 @@
     }
 
     function updateTaskLists(tasks) {
-        // Group tasks by status and due date
+        // Group tasks by due date
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         const todayTasks = [];
         const tomorrowTasks = [];
         const upcomingTasks = [];
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
         tasks.forEach(task => {
-            const dueDate = task.due_date ? new Date(task.due_date) : null;
-
-            if (!dueDate) {
+            if (!task.due_date) {
                 upcomingTasks.push(task);
-            } else {
-                const timeDiff = dueDate - today;
-                const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                if (daysDiff === 0) {
-                    todayTasks.push(task);
-                } else if (daysDiff === 1) {
-                    tomorrowTasks.push(task);
-                } else {
-                    upcomingTasks.push(task);
-                }
+                return;
             }
+
+            const dueDate = new Date(task.due_date);
+            const timeDiff = dueDate - today;
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            if (daysDiff === 0) todayTasks.push(task);
+            else if (daysDiff === 1) tomorrowTasks.push(task);
+            else upcomingTasks.push(task);
         });
 
-        // Update Today tab
+        // Update each tab
         updateTaskTab('#today', todayTasks);
-
-        // Update Tomorrow tab
         updateTaskTab('#tomorrow', tomorrowTasks);
-
-        // Update Upcoming tab
         updateTaskTab('#upcoming', upcomingTasks);
     }
 
@@ -613,7 +601,7 @@
         tabContent.empty();
 
         if (tasks.length === 0) {
-            tabContent.append('<p class="text-muted text-center py-4">No tasks found</p>');
+            tabContent.html('<div class="text-center py-4 text-muted">No tasks found</div>');
             return;
         }
 
@@ -627,44 +615,42 @@
             tasksByProject[projectName].push(task);
         });
 
-        // Create task groups
+        // Create task cards
         Object.entries(tasksByProject).forEach(([projectName, projectTasks]) => {
             const taskGroup = `
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between mb-2">
-                        <h6 class="text-muted fw-medium mb-0">${projectName}</h6>
-                        <span class="badge bg-light text-dark">${projectTasks.length} tasks</span>
-                    </div>
-            `;
-
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <h6 class="text-muted fw-medium mb-0">${projectName}</h6>
+                    <span class="badge bg-light text-dark">${projectTasks.length} tasks</span>
+                </div>
+        `;
             tabContent.append(taskGroup);
 
-            // Add individual tasks
-            projectTasks.forEach((task, index) => {
+            projectTasks.forEach(task => {
                 const isCompleted = task.status.toLowerCase() === 'completed';
                 const taskCard = `
-                    <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-start ${isCompleted ? 'bg-light-subtle' : ''}">
-                        <div class="d-flex">
-                            <input class="form-check-input me-3" type="checkbox" id="task-${task.id}" ${isCompleted ? 'checked' : ''}>
-                            <div>
-                                <label for="task-${task.id}" class="${isCompleted ? 'text-decoration-line-through text-muted' : 'fw-semibold'}">${task.title}</label>
-                                <div class="small text-muted mt-1 d-flex align-items-center gap-3 flex-wrap">
-                                    <span class="d-flex align-items-center text-primary">
-                                        <i class="ti ti-clock me-1"></i>
-                                        ${task.due_date ? formatDateTime(task.due_date) : 'No due date'}
-                                    </span>
-                                    <span class="badge ${getPriorityBadgeClass(task.priority)}">${capitalizeFirstLetter(task.priority)}</span>
-                                    ${isCompleted ? '<span class="text-success d-flex align-items-center"><i class="ti ti-check-circle me-1"></i> Completed</span>' : ''}
-                                </div>
+                <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-start ${isCompleted ? 'bg-light-subtle' : ''}">
+                    <div class="d-flex">
+                        <input class="form-check-input me-3" type="checkbox" ${isCompleted ? 'checked' : ''}>
+                        <div>
+                            <div class="${isCompleted ? 'text-decoration-line-through text-muted' : 'fw-semibold'}">${task.title}</div>
+                            <div class="small text-muted mt-1 d-flex align-items-center gap-3 flex-wrap">
+                                <span class="d-flex align-items-center">
+                                    <i class="ti ti-clock me-1"></i>
+                                    ${task.due_date ? formatDate(task.due_date) : 'No due date'}
+                                </span>
+                                <span class="badge ${getPriorityBadgeClass(task.priority)}">
+                                    ${task.priority ? capitalizeFirstLetter(task.priority) : 'No priority'}
+                                </span>
+                                ${isCompleted ? '<span class="text-success d-flex align-items-center"><i class="ti ti-check-circle me-1"></i> Completed</span>' : ''}
                             </div>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
-                            ${getAssigneeAvatar(task.assign_to)}
-                            <button class="btn btn-sm btn-light"><i class="ti ti-three-dots"></i></button>
-                        </div>
                     </div>
-                `;
-
+                    <button class="btn btn-sm btn-light">
+                        <i class="ti ti-three-dots"></i>
+                    </button>
+                </div>
+            `;
                 tabContent.append(taskCard);
             });
 
@@ -672,34 +658,162 @@
         });
     }
 
+    function initCharts() {
+        // Project Analytics Chart
+        const projectCtx = document.getElementById('project-analytics-chart');
+        if (projectCtx) {
+            new Chart(projectCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Task Completion',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: '#3b82f620',
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        // My Progress Chart
+        const progressCtx = document.getElementById('my-progress-chart');
+        if (progressCtx) {
+            new Chart(progressCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Completed', 'In Progress', 'Pending'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            '#10b981',
+                            '#3b82f6',
+                            '#64748b'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Team Performance Chart
+        const teamCtx = document.getElementById('team-performance-chart');
+        if (teamCtx) {
+            new Chart(teamCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: [],
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     function updateCharts(response) {
-        // Update Project Analytics Chart (Line Chart)
-        const projectAnalyticsChart = Chart.getChart("project-analytics-chart");
-        if (projectAnalyticsChart) {
-            // Example data - replace with your actual time-based data
-            projectAnalyticsChart.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-            projectAnalyticsChart.data.datasets[0].data = [12, 19, 8, 15];
-            projectAnalyticsChart.update();
+        // Project Analytics Chart - create sample weekly data
+        const projectChart = Chart.getChart('project-analytics-chart');
+        if (projectChart) {
+            projectChart.data = {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                datasets: [{
+                    label: 'Completed Tasks',
+                    data: [2, 5, 3, 7],
+                    borderColor: '#10b981',
+                    backgroundColor: '#10b98120',
+                    tension: 0.1,
+                    fill: true
+                }, {
+                    label: 'Pending Tasks',
+                    data: [5, 3, 6, 2],
+                    borderColor: '#f59e0b',
+                    backgroundColor: '#f59e0b20',
+                    tension: 0.1,
+                    fill: true
+                }]
+            };
+            projectChart.update();
         }
 
-        // Update My Progress Chart (Pie Chart)
-        const myProgressChart = Chart.getChart("my-progress-chart");
-        if (myProgressChart) {
-            myProgressChart.data.datasets[0].data = [
+        // My Progress Chart
+        const progressChart = Chart.getChart('my-progress-chart');
+        if (progressChart) {
+            progressChart.data.datasets[0].data = [
                 response.metrics.completed_tasks || 0,
-                response.metrics.breakdown?.by_status?.['in progress'] || 0,
-                response.metrics.breakdown?.by_status?.pending || 0
+                response.breakdown.by_status?.['in progress'] || 0,
+                response.breakdown.by_status?.pending || 0
             ];
-            myProgressChart.update();
+            progressChart.update();
         }
 
-        // Update Team Performance Chart (Bar Chart)
-        const teamPerformanceChart = Chart.getChart("team-performance-chart");
-        if (teamPerformanceChart) {
-            // Example data - replace with your actual team data
-            teamPerformanceChart.data.labels = ['Alex', 'Jamie', 'Taylor', 'Morgan'];
-            teamPerformanceChart.data.datasets[0].data = [12, 8, 15, 10];
-            teamPerformanceChart.update();
+        // Team Performance Chart
+        const teamChart = Chart.getChart('team-performance-chart');
+        if (teamChart) {
+            // Extract team members from tasks
+            const members = {};
+            response.all_tasks.forEach(task => {
+                if (task.assign_to) {
+                    const [code, name] = task.assign_to.split('*');
+                    if (!members[code]) {
+                        members[code] = {
+                            name: name || 'Team Member',
+                            completed: 0
+                        };
+                    }
+                    if (task.status.toLowerCase() === 'completed') {
+                        members[code].completed++;
+                    }
+                }
+            });
+
+            const memberNames = Object.values(members).map(m => m.name);
+            const completedTasks = Object.values(members).map(m => m.completed);
+
+            teamChart.data = {
+                labels: memberNames.length > 0 ? memberNames : ['Your Team'],
+                datasets: [{
+                    label: 'Tasks Completed',
+                    data: completedTasks.length > 0 ? completedTasks : [0],
+                    backgroundColor: '#3b82f6'
+                }]
+            };
+            teamChart.update();
         }
     }
 
@@ -707,78 +821,77 @@
         const teamMembersTable = $('#team-members-table');
         teamMembersTable.empty();
 
-        // Example data - replace with your actual team data
-        const teamMembers = [{
-                name: "Alex Morgan",
-                email: "alex.morgan@example.com",
-                role: "UI/UX Designer",
-                tasks: {
-                    total: 18,
-                    inProgress: 7,
-                    completed: 11
-                },
-                performance: "+12%"
-            },
-            {
-                name: "Jamie Smith",
-                email: "jamie.smith@example.com",
-                role: "Frontend Developer",
-                tasks: {
-                    total: 15,
-                    inProgress: 5,
-                    completed: 10
-                },
-                performance: "+8%"
-            },
-            {
-                name: "Taylor Johnson",
-                email: "taylor.johnson@example.com",
-                role: "Backend Developer",
-                tasks: {
-                    total: 22,
-                    inProgress: 12,
-                    completed: 10
-                },
-                performance: "+5%"
+        // Extract unique team members from tasks
+        const teamMembers = {};
+        response.all_tasks.forEach(task => {
+            if (task.assign_to) {
+                const [code, name] = task.assign_to.split('*');
+                if (!teamMembers[code]) {
+                    teamMembers[code] = {
+                        name: name || 'Unknown',
+                        role: 'Team Member', // Default role
+                        tasks: {
+                            total: 0,
+                            completed: 0,
+                            pending: 0
+                        },
+                        performance: '0%'
+                    };
+                }
+                teamMembers[code].tasks.total++;
+                if (task.status.toLowerCase() === 'completed') {
+                    teamMembers[code].tasks.completed++;
+                } else {
+                    teamMembers[code].tasks.pending++;
+                }
             }
-        ];
+        });
 
-        if (teamMembers.length === 0) {
-            teamMembersTable.html('<tr><td colspan="5" class="text-center py-4 text-muted">No team members found</td></tr>');
+        // Calculate performance percentage
+        Object.values(teamMembers).forEach(member => {
+            const performance = member.tasks.total > 0 ?
+                Math.round((member.tasks.completed / member.tasks.total) * 100) :
+                0;
+            member.performance = `${performance}%`;
+        });
+
+        if (Object.keys(teamMembers).length === 0) {
+            teamMembersTable.html('<tr><td colspan="5" class="text-center py-4 text-muted">No team members found in your tasks</td></tr>');
             return;
         }
 
-        teamMembers.forEach(member => {
+        // Populate the table
+        Object.values(teamMembers).forEach(member => {
             const row = `
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <img src="/assets/images/profile_picture/${member.profile_picture ? member.profile_picture : 'user.png'}"  alt="${member.name}" class="rounded-circle me-2" width="32" height="32">
-                            <div>
-                                <div class="fw-semibold">${member.name}</div>
-                                <small class="text-muted">${member.email}</small>
-                            </div>
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="/assets/images/profile_picture/user.png" alt="${member.name}" class="rounded-circle me-2" width="32" height="32">
+                        <div>
+                            <div class="fw-semibold">${member.name}</div>
+                            <small class="text-muted">${member.role}</small>
                         </div>
-                    </td>
-                    <td class="text-nowrap text-muted">${member.role}</td>
-                    <td class="text-center">
-                        <span class="badge bg-primary-subtle text-primary fw-medium me-1">${member.tasks.total}</span>
-                        <span class="badge bg-warning-subtle text-warning fw-medium me-1">${member.tasks.inProgress}</span>
-                        <span class="badge bg-success-subtle text-success fw-medium">${member.tasks.completed}</span>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-success-subtle text-success d-inline-flex align-items-center">
-                            <i class="ti ti-arrow-up-right me-1"></i> ${member.performance}
-                        </span>
-                    </td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-light">
-                            <i class="ti ti-three-dots-vertical"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-
+                    </div>
+                </td>
+                <td class="text-nowrap text-muted">${member.role}</td>
+                <td class="text-center">
+                    <span class="badge bg-primary-subtle text-primary fw-medium me-1">${member.tasks.total}</span>
+                    <span class="badge bg-warning-subtle text-warning fw-medium me-1">${member.tasks.pending}</span>
+                    <span class="badge bg-success-subtle text-success fw-medium">${member.tasks.completed}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge ${member.performance.startsWith('-') ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'} d-inline-flex align-items-center">
+                        <i class="ti ti-${member.performance.startsWith('-') ? 'arrow-down-right' : 'arrow-up-right'} me-1"></i> 
+                        ${member.performance}
+                    </span>
+                </td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-light">
+                        <i class="ti ti-three-dots-vertical"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
             teamMembersTable.append(row);
         });
     }
@@ -842,58 +955,6 @@
         if (!string) return '';
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
-
-
-    // async function updateProjectOverview(response) {
-    //     const projectOverviewContainer = $('#project-overview');
-    //     projectOverviewContainer.empty();
-
-    //     if (!response.all_tasks?.length) {
-    //         projectOverviewContainer.html('<div class="col-12 text-center py-4 text-muted">No projects found</div>');
-    //         return;
-    //     }
-
-    //     // Group tasks by project
-    //     const projects = {};
-    //     response.all_tasks.forEach(task => {
-    //         if (!task.project_name?.trim()) return;
-
-    //         if (!projects[task.project_name]) {
-    //             projects[task.project_name] = {
-    //                 name: task.project_name,
-    //                 tasks: [],
-    //                 status: task.status,
-    //                 priority: task.priority,
-    //                 dueDate: task.due_date
-    //             };
-    //         }
-    //         projects[task.project_name].tasks.push(task);
-    //     });
-
-    //     if (!Object.keys(projects).length) {
-    //         projectOverviewContainer.html('<div class="col-12 text-center py-4 text-muted">No projects with names found</div>');
-    //         return;
-    //     }
-
-    //     // Create project cards
-    //     for (const project of Object.values(projects)) {
-    //         const completedTasks = project.tasks.filter(t => t.status.toLowerCase() === 'completed').length;
-    //         const progressPercentage = Math.round((completedTasks / project.tasks.length) * 100) || 0;
-
-    //         const projectCard = `
-    //         <div class="col-12 col-md-6 col-xxl-4">
-    //             <div class="card border shadow-sm h-100">
-    //                 <!-- Other card content... -->
-    //                 <div class="aspect-square-container mb-2">
-    //                     ${await getAssigneeAvatars(project.tasks)}
-    //                 </div>
-    //                 <!-- Rest of card content... -->
-    //             </div>
-    //         </div>
-    //     `;
-    //         projectOverviewContainer.append(projectCard);
-    //     }
-    // }
 
     async function getAssigneeAvatars(tasks) {
         try {

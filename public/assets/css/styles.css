@@ -280,6 +280,11 @@ img.logo {
     background: #1520a6;
 }
 
+.bg-blue-100 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1));
+}
+
 .menu-icon {
     margin-right: 10px;
     font-size: 1.25rem;
