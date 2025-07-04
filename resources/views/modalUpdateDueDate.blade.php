@@ -8,9 +8,8 @@
                     aria-label="Close"></button>
             </div>
             <div class="px-4 pt-3" id="current_schedule_info"></div>
-            <form method="POST" id="changeFrequencyForm">
+            <form method="POST" id="changeTaskFrequency">
                 @csrf
-                @method('POST')
 
                 <div class="modal-body row">
                     <div class="col-md-12 mb-3">
@@ -25,6 +24,8 @@
                                     <input type="hidden" name="prev_frequency" id="prev_frequency">
                                     <input type="hidden" name="prev_frequency_duration" id="prev_frequency_duration">
                                     <input type="hidden" name="task_id" id="modal_task_id">
+                                    <input type="hidden" name="frequency_duration_json" id="frequencyDurationInput">
+
                                     <!-- for identifying the task -->
                                     <div class="col-md-6">
                                         <div class="form-check form-switch float-end">

@@ -1427,7 +1427,7 @@ class TaskController extends Controller
 
                     $updated = DB::table('tasks')->where('task_id', $taskId)->update($updateData);
 
-                      if ($finalStatus == 'Completed') {
+                    if ($finalStatus == 'Completed') {
                         TaskSchedule::where('task_id', $taskId)
                             ->update([
                                 'status' => $status,
@@ -1506,7 +1506,7 @@ class TaskController extends Controller
             'all_completed' => $incompleteCount === 0
         ]);
     }
-    
+
     public function deleteTask(Request $request)
     {
         $taskId = $request->task_id;
@@ -1748,6 +1748,98 @@ class TaskController extends Controller
                 'message' => 'Main task marked as completed and moved to In-Review.'
             ]);
         }
+    }
+
+    public function changeTaskDueDate(Request $request)
+    {
+        $validated = $request->validate([
+            'task_id' => 'required|string',
+            'due_date' => 'nullable|date',
+            'frequency' => 'nullable|string',
+            'custom_frequency_dropdown' => 'nullable|string',
+            'frequency_duration_json' => 'nullable',
+            'prev_due_date' => 'nullable|string',
+            'prev_frequency' => 'nullable|string',
+            'prev_frequency_duration' => 'nullable|string',
+        ]);
+
+        $taskId = $validated['task_id'];
+        $taskModel = Str::startsWith($taskId, 'DELTASK-')
+            ? DelegatedTask::where('delegate_task_id', $taskId)->first()
+            : Task::where('task_id', $taskId)->first();
+
+        if (!$taskModel) {
+            return response()->json(['error' => 'Task not found.'], 404);
+        }
+
+        $newDueDate = $request->input('due_date');
+        $newFrequency = null;
+        $newDuration = [];
+
+        $hasFrequencyInput = $request->filled('frequency') ||
+            $request->filled('custom_frequency_dropdown') ||
+            $request->filled('frequency_duration_json');
+
+        // ⛳ Case 1: If user submitted due_date → clear recurrence
+        if (!empty($newDueDate) && !$hasFrequencyInput) {
+            $newFrequency = null;
+            $newDuration = [];
+        }
+
+        // ⛳ Case 2: If user submitted frequency or duration → clear due_date
+        elseif ($hasFrequencyInput) {
+            $newDueDate = null;
+
+            // Frequency input
+            $newFrequency = $request->input('frequency') ?? $request->input('prev_frequency');
+
+            if ($newFrequency === 'Custom') {
+                $newFrequency = $request->input('custom_frequency_dropdown') ?? $newFrequency;
+            }
+
+            // Duration
+            $durationInput = $request->input('frequency_duration_json');
+
+            if (is_array($durationInput)) {
+                $newDuration = $durationInput;
+            } elseif (is_string($durationInput)) {
+                $decoded = json_decode($durationInput, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $newDuration = $decoded;
+                }
+            }
+
+            // Fallback to previous duration if empty
+            if (empty($newDuration)) {
+                $prevDuration = json_decode($request->input('prev_frequency_duration'), true);
+                $newDuration = is_array($prevDuration) ? $prevDuration : [];
+            }
+        }
+
+        // ⛳ Case 3: No new values provided → use previous
+        else {
+            $newDueDate = $request->input('prev_due_date');
+            $newFrequency = $request->input('prev_frequency');
+            $prevDuration = json_decode($request->input('prev_frequency_duration'), true);
+            $newDuration = is_array($prevDuration) ? $prevDuration : [];
+        }
+
+        // ✅ Save
+        $taskModel->due_date = $newDueDate;
+        $taskModel->frequency = $newFrequency;
+        $taskModel->frequency_duration = $newDuration;
+        $taskModel->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task due date and frequency updated successfully.',
+            'data' => [
+                'task_id' => $taskId,
+                'due_date' => $newDueDate,
+                'frequency' => $newFrequency,
+                'frequency_duration' => $newDuration,
+            ]
+        ]);
     }
 
 

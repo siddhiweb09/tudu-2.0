@@ -88,6 +88,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('delete-task', [TaskController::class, 'deleteTask'])->name('deleteTask');
     Route::post('update-task-priority', [TaskController::class, 'updateTaskPriority'])->name('updateTaskPriority');
     Route::post('/mark-task-completed', [TaskController::class, 'markTaskAsCompleted'])->name('markTaskCompleted');
+    Route::post('change-task-dueDate', [TaskController::class,'changeTaskDueDate'])->name('changeTaskDueDate');
 
 
     // Delegated Tasks

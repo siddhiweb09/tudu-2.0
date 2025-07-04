@@ -692,7 +692,7 @@ function initializeTaskForm(formId) {
 
         // Serialize form data including our hidden inputs
         const formData = new FormData(this);
-
+        console.log(formData);
         // Remove array versions
         formData.delete("tasks[]");
         formData.delete("reminders[]");
@@ -713,6 +713,8 @@ function initializeTaskForm(formId) {
             url = "/add-task";
         } else if (formId === "form2") {
             url = "/store-delegate-task";
+        } else if(formId === "changeTaskFrequency") {
+            url = "/change-task-dueDate";
         }
 
         // Submit the form via AJAX

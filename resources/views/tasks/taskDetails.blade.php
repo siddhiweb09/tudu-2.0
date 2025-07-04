@@ -245,7 +245,7 @@
                                             'bg-warning-light text-warning',
                                             'bg-danger-light text-danger',
                                             'bg-secondary-light
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                text-secondary',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        text-secondary',
                                             'bg-dark-light text-dark',
                                             'bg-dark text-light'
                                         ];
@@ -531,10 +531,16 @@
                                                                 @if ($canDueDate)
                                                                     <!-- Change Due Date -->
                                                                     <li class="border-0 p-0">
-                                                                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                            href="#">
+                                                                        <button type="button"
+                                                                            class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 change-due-date-btn"
+                                                                            data-task-id="{{ $taskId }}"
+                                                                            data-task-due-date="{{ $taskIdData['each_task_info']['due_date'] }}"
+                                                                            data-task-frequency="{{ $taskIdData['each_task_info']['frequency'] }}"
+                                                                            data-task-frequency-duration='{!! json_encode($taskIdData["each_task_info"]["frequency_duration"]) !!}'
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#ChangeDueDateModal-{{ $taskId }}">
                                                                             <i class="ti ti-clock fs-5"></i> Change Due Date
-                                                                        </a>
+                                                                        </button>
                                                                     </li>
                                                                 @endif
 
@@ -730,11 +736,27 @@
 
                                                                 @if ($canDueDate)
                                                                     <!-- Change Due Date -->
+                                                                    @php
+                                                                        $raw = $taskIdData["each_task_info"]["frequency_duration"];
+
+                                                                        // Step 1: Decode once
+                                                                        $decodedOnce = is_string($raw) ? json_decode($raw, true) : $raw;
+
+                                                                        // Step 2: Decode again if it's still a string (double-encoded)
+                                                                        $durationArray = is_string($decodedOnce) ? json_decode($decodedOnce, true) : $decodedOnce;
+                                                                    @endphp
+                                                                    <!-- Change Due Date -->
                                                                     <li class="border-0 p-0">
-                                                                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                            href="#">
+                                                                        <button type="button"
+                                                                            class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 change-due-date-btn"
+                                                                            data-task-id="{{ $taskId }}"
+                                                                            data-task-due-date="{{ $taskIdData['each_task_info']['due_date'] }}"
+                                                                            data-task-frequency="{{ $taskIdData['each_task_info']['frequency'] }}"
+                                                                            data-task-frequency-duration='@json($durationArray)'
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#ChangeDueDateModal-{{ $taskId }}">
                                                                             <i class="ti ti-clock fs-5"></i> Change Due Date
-                                                                        </a>
+                                                                        </button>
                                                                     </li>
                                                                 @endif
 
@@ -930,11 +952,27 @@
 
                                                                 @if ($canDueDate)
                                                                     <!-- Change Due Date -->
+                                                                    @php
+                                                                        $raw = $taskIdData["each_task_info"]["frequency_duration"];
+
+                                                                        // Step 1: Decode once
+                                                                        $decodedOnce = is_string($raw) ? json_decode($raw, true) : $raw;
+
+                                                                        // Step 2: Decode again if it's still a string (double-encoded)
+                                                                        $durationArray = is_string($decodedOnce) ? json_decode($decodedOnce, true) : $decodedOnce;
+                                                                    @endphp
+                                                                    <!-- Change Due Date -->
                                                                     <li class="border-0 p-0">
-                                                                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-2"
-                                                                            href="#">
+                                                                        <button type="button"
+                                                                            class="dropdown-item d-flex align-items-center gap-2 py-2 px-2 change-due-date-btn"
+                                                                            data-task-id="{{ $taskId }}"
+                                                                            data-task-due-date="{{ $taskIdData['each_task_info']['due_date'] }}"
+                                                                            data-task-frequency="{{ $taskIdData['each_task_info']['frequency'] }}"
+                                                                            data-task-frequency-duration='@json($durationArray)'
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#ChangeDueDateModal-{{ $taskId }}">
                                                                             <i class="ti ti-clock fs-5"></i> Change Due Date
-                                                                        </a>
+                                                                        </button>
                                                                     </li>
                                                                 @endif
 
@@ -1130,6 +1168,15 @@
                                                                 @endif
 
                                                                 @if ($canDueDate)
+                                                                    @php
+                                                                        $raw = $taskIdData["each_task_info"]["frequency_duration"];
+
+                                                                        // Step 1: Decode once
+                                                                        $decodedOnce = is_string($raw) ? json_decode($raw, true) : $raw;
+
+                                                                        // Step 2: Decode again if it's still a string (double-encoded)
+                                                                        $durationArray = is_string($decodedOnce) ? json_decode($decodedOnce, true) : $decodedOnce;
+                                                                    @endphp
                                                                     <!-- Change Due Date -->
                                                                     <li class="border-0 p-0">
                                                                         <button type="button"
@@ -1137,10 +1184,10 @@
                                                                             data-task-id="{{ $taskId }}"
                                                                             data-task-due-date="{{ $taskIdData['each_task_info']['due_date'] }}"
                                                                             data-task-frequency="{{ $taskIdData['each_task_info']['frequency'] }}"
-                                                                            data-task-frequency-duration='{!! json_encode($taskIdData["each_task_info"]["frequency_duration"]) !!}'
+                                                                            data-task-frequency-duration='@json($durationArray)'
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#ChangeDueDateModal-{{ $taskId }}">
-                                                                            <i class="ti ti-clock fs-5 text-primary"></i> Change Due Date
+                                                                            <i class="ti ti-clock fs-5"></i> Change Due Date
                                                                         </button>
                                                                     </li>
                                                                 @endif
@@ -1637,50 +1684,50 @@
                 } else {
                     // Create new nav tab
                     const navTab = `
-                                                                                                                                                                                                            <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
-                                                                                                                                                                                                                data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
-                                                                                                                                                                                                                aria-controls="${tabId}" aria-selected="false">
-                                                                                                                                                                                                                <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
-                                                                                                                                                                                                                <div class="d-flex mb-2 small">
-                                                                                                                                                                                                                    <p>Started by ${addedBy}</p>
-                                                                                                                                                                                                                    <p class="mx-2">•</p>
-                                                                                                                                                                                                                    <p>${createdAt}</p>
-                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                <div class="d-flex small">
-                                                                                                                                                                                                                    <p>0 replies</p>
-                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                                                                        <button class="nav-link bg-light text-start text-muted mb-2" id="${tabId}-tab"
+                                                                                                                                                                                                                                                                            data-bs-toggle="pill" data-bs-target="#${tabId}" type="button" role="tab"
+                                                                                                                                                                                                                                                                            aria-controls="${tabId}" aria-selected="false">
+                                                                                                                                                                                                                                                                            <h6 class="card-title mb-3 text-decoration-underline text-dark">${taskTitle}</h6>
+                                                                                                                                                                                                                                                                            <div class="d-flex mb-2 small">
+                                                                                                                                                                                                                                                                                <p>Started by ${addedBy}</p>
+                                                                                                                                                                                                                                                                                <p class="mx-2">•</p>
+                                                                                                                                                                                                                                                                                <p>${createdAt}</p>
+                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                            <div class="d-flex small">
+                                                                                                                                                                                                                                                                                <p>0 replies</p>
+                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                        </button>
+                                                                                                                                                                                                                                                                    `;
                     $("#v-pills-tab .card").append(navTab);
 
                     // Create new content pane (note: initially not active)
                     const contentTab = `
-                                                                                                                                                                                                            <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
-                                                                                                                                                                                                                <div class="card">
-                                                                                                                                                                                                                    <div class="card-body d-flex flex-column">
-                                                                                                                                                                                                                        <div class="mb-3">
-                                                                                                                                                                                                                            <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
-                                                                                                                                                                                                                            <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
-                                                                                                                                                                                                                            <hr>
-                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                        <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
-                                                                                                                                                                                                                            <p class="text-muted">No comments yet.</p>
-                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                        <div class="d-flex">
-                                                                                                                                                                                                                            <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
-                                                                                                                                                                                                                                alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
-                                                                                                                                                                                                                            <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
-                                                                                                                                                                                                                                <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
-                                                                                                                                                                                                                                <input hidden type="text" name="task_id" value="${taskId}" />
-                                                                                                                                                                                                                                <div class="text-end">
-                                                                                                                                                                                                                                    <button class="btn btn-primary">Post Reply</button>
-                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                            </form>
-                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                                                                        <div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${tabId}-tab" tabindex="0">
+                                                                                                                                                                                                                                                                            <div class="card">
+                                                                                                                                                                                                                                                                                <div class="card-body d-flex flex-column">
+                                                                                                                                                                                                                                                                                    <div class="mb-3">
+                                                                                                                                                                                                                                                                                        <h4 class="card-title mb-3 text-decoration-underline">${taskTitle}</h4>
+                                                                                                                                                                                                                                                                                        <small class="text-muted">Started by ${addedBy} • ${createdAt}</small>
+                                                                                                                                                                                                                                                                                        <hr>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                    <div class="flex-grow-1 overflow-auto" style="max-height: 400px;">
+                                                                                                                                                                                                                                                                                        <p class="text-muted">No comments yet.</p>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                    <div class="d-flex">
+                                                                                                                                                                                                                                                                                        <img src="/assets/images/profile_picture/{{ $activeUser->profile_picture ?? 'user.png' }}"
+                                                                                                                                                                                                                                                                                            alt="Profile Picture" class="rounded-circle me-3" width="40" height="40">
+                                                                                                                                                                                                                                                                                        <form class="flex-grow-1 comment-form" id="comment-form-${taskId}" data-task-id="${taskId}">
+                                                                                                                                                                                                                                                                                            <textarea class="form-control mb-2" name="comment" placeholder="Write a reply..." rows="3"></textarea>
+                                                                                                                                                                                                                                                                                            <input hidden type="text" name="task_id" value="${taskId}" />
+                                                                                                                                                                                                                                                                                            <div class="text-end">
+                                                                                                                                                                                                                                                                                                <button class="btn btn-primary">Post Reply</button>
+                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                        </form>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                    `;
                     $("#v-pills-tabContent").append(contentTab);
 
                     // Activate newly created tab using Bootstrap's Tab API
@@ -1902,98 +1949,173 @@
                 });
             });
 
-            $(document).on('click', '.change-due-date-btn', function () {
+            $(document).on('click', '.change-due-date-btn', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
                 const taskId = $(this).data('task-id');
                 const dueDate = $(this).data('task-due-date');
                 const frequency = $(this).data('task-frequency');
-                const rawDuration = $(this).data('task-frequency-duration');
+                let rawDuration = $(this).data('task-frequency-duration');
+                // my current task-frequency-duration value = "&quot;[\u002228\u0022]&quot";
+                // in value database = ["28"]
 
-                // 💾 Store original values in hidden inputs
-                modal.find('#modal_task_id').val(taskId);
-                modal.find('#prev_due_date').val(dueDate || '');
-                modal.find('#prev_frequency').val(frequency || '');
-                modal.find('#prev_frequency_duration').val(JSON.stringify(duration || []));
-
-                // Safely parse frequency duration
+                // ✅ Improved duration parsing with HTML entity decoding
                 let duration = [];
+
                 try {
-                    duration = typeof rawDuration === 'string' ? JSON.parse(rawDuration) : rawDuration;
-                } catch (e) {
+                    if (typeof rawDuration === 'string') {
+                        const decoded = $('<textarea/>').html(rawDuration).text();
+                        duration = JSON.parse(decoded);
+                    } else if (Array.isArray(rawDuration)) {
+                        duration = rawDuration;
+                    }
+
+                    duration = duration.map(item => String(item));
+                } catch (error) {
+                    console.warn("Error parsing duration:", error, rawDuration);
                     duration = [];
                 }
-
-                // Format due date (e.g. "25 June 2025 at 5:30 AM")
+                console.log(duration);
+                // 🕒 Format due date
                 let formattedDueDate = '';
                 if (dueDate && dueDate !== 'null') {
-                    const parsed = new Date(dueDate);
-                    if (!isNaN(parsed)) {
-                        formattedDueDate = parsed.toLocaleString('en-IN', {
-                            year: 'numeric', month: 'long', day: 'numeric',
-                            hour: '2-digit', minute: '2-digit', hour12: true
+                    const parsedDate = new Date(dueDate);
+                    if (!isNaN(parsedDate)) {
+                        formattedDueDate = parsedDate.toLocaleString('en-IN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
                         });
                     }
                 }
 
-                // Get modal and info container
                 const modal = $(`#ChangeDueDateModal-${taskId}`);
                 const infoContainer = modal.find('#current_schedule_info');
 
-                // Clear info container
+                // 💾 Store previous values
+                modal.find('#modal_task_id').val(taskId);
+                modal.find('#prev_due_date').val(dueDate || '');
+                modal.find('#prev_frequency').val(frequency || '');
+                modal.find('#prev_frequency_duration').val(JSON.stringify(duration));
+
                 infoContainer.empty();
 
+                // 💡 Frequency UI builder
+                const getFrequencyDescription = (freq, dur) => {
+                    console.log(dur);
+                    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-                const weekdaysPill = `
-                        <div class="weekdays-pill-container d-flex gap-2 mt-1">
-                            ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => `
-                                <div class="weekday-pill ${duration.includes(day) ? 'active' : ''}" title="${day}">
-                                    ${day.charAt(0)}
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                // 1️⃣ Display current due date if exists
+                    switch (freq) {
+                        case 'Daily':
+                            return `<p class="mb-0 fw-medium">Daily</p>`;
+
+                        case 'Weekly':
+                            // Normalize weekday names for comparison
+                            const activeDays = dur.map(day => {
+                                const lowerDay = day.toLowerCase();
+                                const weekday = weekdays.find(w => w.toLowerCase() === lowerDay);
+                                return weekday || day;
+                            }).filter(Boolean);
+
+                            const weeklyPills = `
+                                                <div class="weekdays-pill-container d-flex gap-2 mt-1">
+                                                    ${weekdays.map(day => `
+                                                        <div class="weekday-pill ${activeDays.includes(day) ? 'active' : ''}" title="${day}">
+                                                            ${day.charAt(0)}
+                                                        </div>
+                                                    `).join('')}
+                                                </div>
+                                            `;
+                            return `
+                                                <p class="mb-0 fw-medium">Weekly</p>
+                                                ${dur.length ? weeklyPills : '<p class="text-muted small mt-1">No days selected</p>'}
+                                            `;
+
+                        case 'Monthly':
+                            const dayNum = dur.length > 0 ? parseInt(dur[0], 10) : NaN;
+                            return `
+                                                <p class="mb-0 fw-medium">Monthly</p>
+                                                <p class="small text-muted mb-0">Occurs every month on day ${isNaN(dayNum) ? '?' : dayNum}</p>
+                                            `;
+
+                        case 'Yearly':
+                            const dateStr = dur.length > 0 ? dur[0] : '?';
+                            return `
+                                                <p class="mb-0 fw-medium">Yearly</p>
+                                                <p class="small text-muted mb-0">Occurs yearly on ${dateStr}</p>
+                                            `;
+
+                        case 'Periodic':
+                            const interval = dur.length > 0 ? parseInt(dur[0], 10) : NaN;
+                            return `
+                                                <p class="mb-0 fw-medium">Every ${isNaN(interval) ? '?' : interval} day(s)</p>
+                                                <p class="small text-muted mb-0">Task recurs after every ${isNaN(interval) ? '?' : interval} day(s)</p>
+                                            `;
+
+                        case 'Custom':
+                        case 'Week':
+                        case 'Month':
+                            const unit = dur.length > 0 ? dur[0] : '?';
+                            const count = dur.length > 1 ? parseInt(dur[1], 10) : NaN;
+                            return `
+                                                <p class="mb-0 fw-medium">Custom (${unit})</p>
+                                                <p class="small text-muted mb-0">
+                                                    Occurs every ${isNaN(count) ? '?' : count} ${unit.toLowerCase()}${!isNaN(count) && count > 1 ? 's' : ''}
+                                                </p>
+                                            `;
+
+                        default:
+                            return `<p class="mb-0 fw-medium">${freq || 'Unknown Frequency'}</p>`;
+                    }
+                };
+
+                // 🧾 Create current settings card
                 const currentSettingsCard = $(`
-                        <div class="current-settings-card mb-4">
-                            <div class="settings-header d-flex align-items-center gap-2 mb-3">
-                                <i class="ti ti-info-circle fs-5 text-primary"></i>
-                                <h6 class="m-0">Current Schedule Settings</h6>
-                            </div>
-                            <div class="settings-body">
-                                ${formattedDueDate ? `
-                                <div class="setting-item d-flex align-items-start gap-3 mb-3">
-                                    <div class="icon-circle bg-primary bg-opacity-10 p-2 rounded-circle">
-                                        <i class="ti ti-calendar-due text-white"></i>
+                                    <div class="current-settings-card mb-4">
+                                        <div class="settings-header d-flex align-items-center gap-2 mb-3">
+                                            <i class="ti ti-info-circle fs-5 text-primary"></i>
+                                            <h6 class="m-0">Current Schedule Settings</h6>
+                                        </div>
+                                        <div class="settings-body">
+                                            ${formattedDueDate ? `
+                                                <div class="setting-item d-flex align-items-start gap-3 mb-3">
+                                                    <div class="icon-circle bg-primary bg-opacity-10 p-2 rounded-circle">
+                                                        <i class="ti ti-calendar-due text-white"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-1 text-muted small">Due Date</p>
+                                                        <p class="mb-0 fw-medium">${formattedDueDate}</p>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
+                                            ${frequency ? `
+                                                <div class="setting-item d-flex align-items-start gap-3 mb-3">
+                                                    <div class="icon-circle bg-primary bg-opacity-10 p-2 rounded-circle">
+                                                        <i class="ti ti-repeat text-white"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-1 text-muted small">Recurrence</p>
+                                                        ${getFrequencyDescription(frequency, duration)}
+                                                    </div>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                        <div class="settings-footer mt-3 pt-3 border-top">
+                                            <p class="small text-muted mb-0">
+                                                <i class="ti ti-pencil"></i> Modify these settings below
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="mb-1 text-muted small">Due Date</p>
-                                        <p class="mb-0 fw-medium">${formattedDueDate}</p>
-                                    </div>
-                                </div>
-                                ` : ''}
-                                ${frequency ? `
-                                <div class="setting-item d-flex align-items-start gap-3 mb-3">
-                                    <div class="icon-circle bg-primary bg-opacity-10 p-2 rounded-circle">
-                                        <i class="ti ti-repeat text-white"></i>
-                                    </div>
-                                    <div>
-                                        <p class="mb-1 text-muted small">Recurrence</p>
-                                        <p class="mb-0 fw-medium">${frequency}</p>
-                                        ${frequency === 'Weekly' && duration.length ? weekdaysPill : ''}
-                                    </div>
-                                </div>
-                                ` : ''}
-                            </div>
-                            <div class="settings-footer mt-3 pt-3 border-top">
-                                <p class="small text-muted mb-0">
-                                    <i class="ti ti-pencil"></i> Modify these settings below
-                                </p>
-                            </div>
-                        </div>
-                    `);
-
+                                `);
 
                 infoContainer.append(currentSettingsCard);
             });
+
+
 
         });
     </script>
