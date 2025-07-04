@@ -1842,6 +1842,131 @@ class TaskController extends Controller
         ]);
     }
 
+    public function updateTaskInfo(Request $request, $taskId)
+    {
+        $request->validate([
+            'task_id' => 'required|string',
+            'tasks_json' => 'nullable|string',
+            'links_json' => 'nullable|string',
+            'assign_to' => 'nullable|array',
+            'subtasks' => 'nullable|array',
+            'documents.*' => 'nullable',
+        ]);
+
+        $activeUser = auth()->user()->employee_code . '*' . auth()->user()->employee_name;
+
+        // Determine if it's a delegated task
+        $isDelegate = Str::startsWith($taskId, 'DELTASK-');
+        $task = $isDelegate
+            ? DelegatedTask::where('delegate_task_id', $taskId)->first()
+            : Task::where('task_id', $taskId)->first();
+
+        if (!$task) {
+            return response()->json(['status' => 'error', 'message' => 'Task not found.'], 404);
+        }
+
+        // ✅ 1. Update existing subtasks
+        $submittedSubtasks = $request->input('subtasks', []);
+        $existingSubtasks = TaskList::where('task_id', $taskId)->get();
+
+        foreach ($existingSubtasks as $subtask) {
+            $subtask->status = in_array($subtask->tasks, $submittedSubtasks) ? 'Completed' : 'Pending';
+            $subtask->save();
+        }
+
+        // ✅ 2. Prepare assign_to list (from request or fallback)
+        $assignToList = [];
+
+        if ($request->filled('assign_to')) {
+            $rawAssignTo = $request->assign_to;
+            $incomingAssignTo = is_array($rawAssignTo) ? $rawAssignTo : [$rawAssignTo];
+
+            // Get existing assign_to string and convert to array
+            $existingAssignTo = isset($task->assign_to) ? array_map('trim', explode(',', $task->assign_to)) : [];
+
+            $assignToList = array_unique(array_merge($existingAssignTo, $incomingAssignTo));
+        } else {
+            // Fallback to original task assign_to if not present in request
+            $originalTask = Task::where('task_id', $taskId)->first();
+            $assignToList = isset($originalTask->assign_to)
+                ? array_map('trim', explode(',', $originalTask->assign_to))
+                : [];
+        }
+
+        // Convert final assign_to list to comma-separated string
+        $assignToString = implode(', ', $assignToList);
+
+
+        // ✅ 3. Add new subtasks from JSON
+        $task_list = json_decode($request->tasks_json, true) ?? [];
+
+        foreach ($task_list as $taskItem) {
+            if (!empty($taskItem)) {
+                TaskList::create([
+                    'task_id' => $taskId,
+                    'tasks' => $taskItem,
+                    'assign_to' => $assignToString,
+                    'assign_by' => $activeUser,
+                    'updated_by' => $activeUser,
+                    'status' => 'Pending',
+                ]);
+            }
+        }
+
+
+        // ✅ 4. Store merged assign_to as plain comma-separated string
+        $task->assign_to = $assignToString;
+        $task->save();
+
+        // ✅ 5. Save new links (no duplicate check needed)
+        $newLinks = json_decode($request->links_json, true) ?? [];
+        foreach ($newLinks as $link) {
+            if (!empty($link)) {
+                TaskMedia::create([
+                    'task_id' => $taskId,
+                    'category' => 'link',
+                    'file_name' => $link,
+                    'created_by' => $activeUser
+                ]);
+            }
+        }
+
+        // ✅ 6. Handle documents upload
+        if ($request->hasFile('documents')) {
+            foreach ($request->file('documents') as $document) {
+                $fileName = uniqid() . '.' . $document->getClientOriginalExtension();
+                $document->move(public_path('assets/uploads'), $fileName);
+
+                TaskMedia::create([
+                    'task_id' => $taskId,
+                    'category' => 'document',
+                    'file_name' => $fileName,
+                    'created_by' => $activeUser
+                ]);
+            }
+        }
+
+        if ($request->hasFile('voice_notes')) {
+            foreach ($request->file('voice_notes') as $voiceNote) {
+                if ($voiceNote->isValid()) {
+                    $fileName = 'voice_note_' . time() . '_' . uniqid() . '.wav';
+                    $voiceNote->move(public_path('assets/uploads'), $fileName);
+                    // ... create record ...
+                    TaskMedia::create([
+                        'task_id' => $taskId,
+                        'category' => 'voice_note',
+                        'file_name' => $fileName,
+                        'created_by' => $activeUser
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Task updated successfully!',
+        ]);
+    }
 
 
 }

@@ -79,7 +79,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mb-2 mb-lg-0 d-flex justify-content-between w-100">
                             <li class="nav-item">
-                                <a class="nav-link" href="../../index.html">
+                                <a class="nav-link" href="{{ route('dashboard') }}">
                                     <i class="ti ti-home-2 menu-icon"></i>
                                     <span class="menu-title">Dashboard</span>
                                 </a>
@@ -165,6 +165,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="../assets/js/task-form.js"></script>
+    <script src="../assets/js/task-update-form.js"></script>
 
     <script>
         window.addEventListener('load', function() {

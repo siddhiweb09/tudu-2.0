@@ -6,7 +6,8 @@
             <div class="modal-header border-0 primary-gradient-effect">
                 <div class="w-100 d-flex justify-content-between align-items-center">
                     <h5 class="modal-title fs-5 fw-semibold text-white">Task Details</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
             </div>
 
@@ -20,6 +21,9 @@
                             <label for="taskTitle" class="form-label fw-medium text-muted">TASK TITLE</label>
                             <input type="text" class="form-control border py-2 px-3" id="taskTitle"
                                 value="{{ $taskIdData['each_task_info']['title'] }}">
+                            <input type="hidden" name="task_id" value="{{ $taskId }}" />
+                            <input type="hidden" name="tasks_json" id="tasksInput">
+                            <input type="hidden" name="links_json" id="linksInput">
                         </div>
 
                         <!-- Subtasks - Modern card style -->
@@ -27,22 +31,22 @@
                             <label class="form-label fw-medium text-muted">SUBTASKS</label>
                             <div class="border rounded p-3 bg-white">
                                 @foreach ($taskIdData['lists'] as $task)
-                                    @if($task->status === 'Completed')
-                                        <div class="form-check mb-3 d-flex align-items-center">
-                                            <input class="form-check-input me-3" value="{{ $task->tasks }}" type="checkbox"
-                                                id="subtask1" checked>
-                                            <label class="form-check-label text-dark" for="subtask1">{{ $task->tasks }}</label>
-                                        </div>
-                                    @else
-                                        <div class="form-check mb-3 d-flex align-items-center">
-                                            <input class="form-check-input me-3" type="checkbox" id="subtask1">
-                                            <label class="form-check-label text-dark" for="subtask1">{{ $task->tasks }}</label>
-                                        </div>
-                                    @endif
+                                    <div class="form-check mb-3 d-flex align-items-center">
+                                        <input
+                                            class="form-check-input me-3"
+                                            type="checkbox"
+                                            name="subtasks[]"
+                                            value="{{ $task->tasks }}"
+                                            id="subtask-{{ $task->tasks }}"
+                                            {{ $task->status === 'Completed' ? 'checked' : '' }}>
+                                        <label class="form-check-label text-dark" for="subtask-{{ $task->tasks }}">
+                                            {{ $task->tasks }}
+                                        </label>
+                                    </div>
                                 @endforeach
                                 <div class="task-container"></div>
                                 <!-- Add Button -->
-                                <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2 add-task-btn">
+                                <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2 add-task-btn" type="button">
                                     <i class="ti ti-plus me-2"></i>Add
                                 </button>
                             </div>
@@ -79,7 +83,7 @@
                                 @endforeach
 
                                 <!-- Add Button -->
-                                <button
+                                <button type="button"
                                     class="btn btn-sm btn-outline-primary d-flex align-items-center px-3 add-assignees">
                                     <i class="ti ti-plus me-1"></i>
                                     <span>Add</span>
@@ -124,7 +128,7 @@
                                         @endif
                                     @endforeach
                                     <div id="documentsContainer"></div>
-                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="addDocument">
+                                    <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="addDocument">
                                         <i class="ti ti-file-text me-2"></i>Add Documents
                                     </button>
                                 </div>
@@ -162,7 +166,7 @@
                                         @endif
                                     @endforeach
                                     <div id="linksContainer"></div>
-                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="addMoreLinks">
+                                    <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="addMoreLinks">
                                         <i class="ti ti-link me-2"></i>Add Links
                                     </button>
                                 </div>
@@ -223,24 +227,26 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <button class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="add-recording">
+                                    <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-3 py-2" id="add-recording">
                                         <i class="ti ti-microphone me-2"></i>Add Voice Notes
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
 
-            <!-- Modern footer with better buttons -->
-            <div class="modal-footer border-0 px-4 pb-4 pt-3">
-                <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
-                    Close
-                </button>
-                <button type="button" class="btn btn-primary px-4 py-2 shadow-sm">
-                    Save Changes
-                </button>
+
+
+                    <!-- Modern footer with better buttons -->
+                    <div class="modal-footer border-0 px-4 pb-4 pt-3">
+                        <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -709,12 +709,15 @@ function initializeTaskForm(formId) {
 
         // 🔽 ADD THIS block before AJAX call
         let url = "";
-        if (formId === "form1") {
+        if (formId === "create-form") {
             url = "/add-task";
-        } else if (formId === "form2") {
+        } else if (formId === "delegate-tasks-form") {
             url = "/store-delegate-task";
-        } else if(formId === "changeTaskFrequency") {
+        } else if (formId === "changeTaskFrequency") {
             url = "/change-task-dueDate";
+        } else if (formId.startsWith("edit-form-")) {
+            const taskId = formId.split("edit-form-")[1]; // extract taskId from ID
+            url = `/tasks-update/${taskId}`;
         }
 
         // Submit the form via AJAX
